@@ -66,17 +66,4 @@ public class Maintenance extends Aftersale {
 
 
 
-
-    /**
-     * 可选重写父类普通虚方法：扩展维修类的商品确认逻辑
-     */
-    @Override
-    public void confirmProduct(boolean confirm, String reason) {
-        // 先执行父类通用逻辑
-        super.confirmProduct(confirm, reason);
-        // 维修类专属扩展：确认商品时校验维修配件是否齐全
-        if (confirm) {
-            System.out.println("维修类商品确认通过 | 售后单ID：" + getAftersaleId() + "，已校验维修配件齐全");
-        }
-    }
 }

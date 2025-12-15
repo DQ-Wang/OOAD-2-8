@@ -35,15 +35,6 @@ public abstract class Aftersale {
     // 审核售后
     public abstract boolean HandleAftersale(boolean confirm, String reason);
 
-//    // 类图中定义的通用方法：确认商品
-//    public void confirmProduct(boolean confirm, String reason) {
-//        // 通用逻辑：记录商品确认状态（子类可重写扩展）
-//        this.setReason(reason);
-//        // 示例：若确认则更新状态（具体逻辑可根据业务调整）
-//        if (confirm) {
-//            this.setStatus((byte) 1);
-//        }
-//    }
 
     // 类图中定义的通用方法：设置售后状态
     public void SetStatus(boolean confirm, String reason) {

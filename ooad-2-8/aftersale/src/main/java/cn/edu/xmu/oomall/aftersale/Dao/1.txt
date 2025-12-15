@@ -1,0 +1,6 @@
+
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor
+@CopyFrom({Region.class})
+@Getter

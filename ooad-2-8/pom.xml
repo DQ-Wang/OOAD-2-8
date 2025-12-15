@@ -17,6 +17,7 @@
     <modules>
         <module>aftersale</module>
         <module>core</module>
+
     </modules>
     <url/>
     <licenses>

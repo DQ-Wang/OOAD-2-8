@@ -3,22 +3,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>cn.edu.xmu.oomall</groupId>
+        <artifactId>ooad-2-8</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <groupId>cn.edu.xmu.oomall</groupId>
-    <artifactId>ooad-2-8</artifactId>
+    <groupId>com.xmu</groupId>
+    <artifactId>service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>ooad-2-8</name>
-    <description>ooad-2-8</description>
-    <modules>
-        <module>aftersale</module>
-        <module>core</module>
-        <module>service</module>
-    </modules>
+    <name>service</name>
+    <description>service</description>
     <url/>
     <licenses>
         <license/>
@@ -34,40 +28,10 @@
     </scm>
     <properties>
         <java.version>17</java.version>
-        <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <spring-cloud.version>2025.1.0</spring-cloud.version>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.auth0</groupId>
-                <artifactId>java-jwt</artifactId>
-                <version>4.4.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>1.4.7</version>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup</groupId>
-                <artifactId>javapoet</artifactId>
-                <version>1.13.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.auto.service</groupId>
-                <artifactId>auto-service</artifactId>
-                <version>1.1.1</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -75,6 +39,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -103,7 +71,23 @@
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>cn.edu.xmu.javaee</groupId>  <!-- 必须和core的groupId一致 -->
+            <artifactId>core</artifactId>         <!-- core模块的artifactId -->
+            <version>0.1.1-SNAPSHOT</version>    <!-- 必须和core的version一致 -->
+        </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

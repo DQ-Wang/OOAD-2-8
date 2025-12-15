@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 // value：服务订单模块的服务名（需与Nacos/Eureka等注册中心的服务名一致）
 // fallback：可选，定义熔断降级类（生产环境建议添加，避免服务调用失败导致整体异常）
-@FeignClient(value = "service-order", fallback = ServiceOrderFeignClientFallback.class)
+@FeignClient(value = "service-order")
 public interface ServiceOrderFeignClient {
 
     /**

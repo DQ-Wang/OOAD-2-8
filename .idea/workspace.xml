@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c2397362-8bc6-4176-9346-5b5563294d04" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/ooad-2-8/core/src/main/java/cn/edu/xmu/javaee/core/model/ReturnNo.java" beforeDir="false" afterPath="$PROJECT_DIR$/ooad-2-8/core/src/main/java/cn/edu/xmu/javaee/core/model/ReturnNo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ooad-2-8/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ooad-2-8/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

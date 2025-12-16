@@ -1,11 +1,12 @@
 package cn.edu.xmu.oomall.aftersale.service.vo;
 
 
+import cn.edu.xmu.oomall.aftersale.Dao.bo.Aftersale;
+import cn.edu.xmu.oomall.core.clonefactory.CopyFrom;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
 import lombok.Setter;
 import lombok.ToString;
 // TODO:import Aftersalse

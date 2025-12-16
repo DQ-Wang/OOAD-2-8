@@ -2,6 +2,8 @@ package cn.edu.xmu.oomall.aftersale.service;
 
 
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
+import cn.edu.xmu.oomall.core.model.IdNameTypeVo;
+import cn.edu.xmu.oomall.core.model.ReturnObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ import cn.edu.xmu.oomall.aftersale.Dao.bo.Aftersale;
 @Slf4j
 public class AfterSaleService {
 
-    private final AfterSaleDao regionDao;
+    private final AftersaleDao regionDao;
 
     /**
      * 审核售后单
@@ -27,9 +29,12 @@ public class AfterSaleService {
      * @param id               售后单id
      * @param dto              审核售后单dto
      */
-    public void reviewAftersale(@PathVariable String id, @RequestBody AftersaleConfirmDto dto)
+    public IdNameTypeVo reviewAftersale(@PathVariable String id, @RequestBody AftersaleConfirmDto dto)
     {
-        Aftersale aftersale = AfterSaleDao.findById(id);
-        aftersale.handelAftersale(dto.getConfirm(),dto.getConclusion());
+        log.debug("reviewAftersale(Service): aftersaleId = {}", id);
+        Aftersale aftersale = AftersaleDao.findAftersaleById(id);
+        IdNameTypeVo vo = IdNameTypeVo.builder().id(aftersale.getAftersaleId()).name("").build();
+        aftersale.HandleAftersale(dto.getConfirm(),dto.getConclusion());
+        return vo;
     }
 }

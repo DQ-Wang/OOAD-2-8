@@ -2,16 +2,6 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for aftersale" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="D:/maven/apache-maven-3.9.11/repository/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
-        </processorPath>
-        <module name="aftersale" />
-      </profile>
       <profile name="Annotation profile for ooad-2-8" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -19,17 +9,10 @@
         <processorPath useClasspath="false">
           <entry name="D:/maven/apache-maven-3.9.11/repository/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
         </processorPath>
-        <module name="aftersale" />
         <module name="core" />
         <module name="service" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="aftersale" target="17" />
-      <module name="core" target="17" />
-      <module name="ooad-2-8" target="17" />
-      <module name="service" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

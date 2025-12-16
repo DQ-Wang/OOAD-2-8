@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/OOAD-2-8new.iml" filepath="$PROJECT_DIR$/.idea/OOAD-2-8new.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ooad-2-8/core/core.iml" filepath="$PROJECT_DIR$/ooad-2-8/core/core.iml" />
     </modules>
   </component>
 </project>

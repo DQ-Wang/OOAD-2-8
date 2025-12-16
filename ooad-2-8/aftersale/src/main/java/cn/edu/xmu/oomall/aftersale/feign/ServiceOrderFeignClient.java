@@ -1,0 +1,34 @@
+package cn.edu.xmu.oomall.aftersale.feign;
+
+import cn.edu.xmu.oomall.aftersale.Dao.bo.Maintenance;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+/**
+ * 服务订单模块Feign客户端
+ * 售后模块（尤其是维修类售后）通过该客户端调用服务订单模块的接口，创建/查询服务单
+ * 注：需确保服务订单模块已提供对应接口，且服务名（service-order）与注册中心一致
+ */
+// value：服务订单模块的服务名（需与Nacos/Eureka等注册中心的服务名一致）
+// fallback：可选，定义熔断降级类（生产环境建议添加，避免服务调用失败导致整体异常）
+@FeignClient(value = "service-order")
+public interface ServiceOrderFeignClient {
+
+    /**
+     * 创建维修服务单（核心方法：维修类售后审核同意时调用）
+     * 适配场景：售后模块→服务订单模块，创建与售后单关联的维修服务单
+     * @param shopId 店铺ID（必填，服务单归属店铺）
+     * @param aftersaleId 售后单ID（必填，关联售后单）
+     * @param maintenance 维修类售后BO（包含服务类型、技师等专属信息）
+     * @return 服务单ID（创建成功后返回自增主键）
+     */
+    @PostMapping("/service-order/maintenance") // 服务订单模块的接口路径
+    Long createServiceOrder(
+            @RequestParam("shopId") Long shopId,          // URL参数传递店铺ID
+            @RequestParam("aftersaleId") Long aftersaleId,// URL参数传递售后单ID
+            @RequestBody Maintenance maintenance          // 请求体传递维修类售后详情
+    );
+
+}

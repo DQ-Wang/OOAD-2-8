@@ -72,9 +72,19 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>cn.edu.xmu.javaee</groupId>  <!-- 必须和core的groupId一致 -->
-            <artifactId>core</artifactId>         <!-- core模块的artifactId -->
-            <version>0.1.1-SNAPSHOT</version>    <!-- 必须和core的version一致 -->
+            <groupId>cn.edu.xmu.oomall</groupId>
+            <artifactId>core</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- MyBatis依赖：因为Mapper使用了MyBatis注解 -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
         </dependency>
     </dependencies>
     <dependencyManagement>

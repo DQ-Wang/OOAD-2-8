@@ -1,30 +1,38 @@
 management:
+  health:
+    redis:
+      enabled: false
   endpoints:
     web:
       exposure:
         include: "*"
 spring:
-#  cloud:
-#    nacos:
-#      discovery:
-#        server-addr: nacos:8848
-#  data:
-#    redis:
-#      repositories:
-#        #forbid redis to scan repositories
-#        enabled: false
-#   #redis:
-#      host: redis
-#      database: 0
-#      password: 123456
+  cloud:
+    compatibility-verifier:
+      enabled: false # 禁用版本兼容性校验
+    autoconfigure:
+      exclude: com.alibaba.druid.spring.boot3.autoconfigure.stat.DruidStatViewServletConfiguration
+  #  cloud:
+  #    nacos:
+  #      discovery:
+  #        server-addr: nacos:8848
+  #  data:
+  #    redis:
+  #      repositories:
+  #        #forbid redis to scan repositories
+  #        enabled: false
+  #   #redis:
+  #      host: redis
+  #      database: 0
+  #      password: 123456
   datasource:
     #JDBC drivers
     driver-class-name: com.mysql.cj.jdbc.Driver
     #database url
-    url: jdbc:mysql://mysql:3306/region?serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306
     #database username and password
-    username: demouser
-    password: 20251010
+    username: root
+    password: Ooad_2_8
     #database connection pool
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -37,7 +45,10 @@ spring:
         login-password: 123456
         enabled: true
         url-pattern: /druid/*
-
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
       filter:
         stat:
           log-slow-sql: true
@@ -70,3 +81,4 @@ logging:
   level:
     cn.edu.xmu.javaee.core: debug
     cn.edu.xmu.oomall.service: debug
+

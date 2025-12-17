@@ -1,14 +1,14 @@
 package cn.edu.xmu.oomall.aftersale.controller;
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
-import cn.edu.xmu.oomall.core.model.IdNameTypeVo;
-import cn.edu.xmu.oomall.core.model.ReturnNo;
-import cn.edu.xmu.oomall.core.model.ReturnObject;
+import cn.edu.xmu.javaee.core.model.IdNameTypeVo;
+import cn.edu.xmu.javaee.core.model.ReturnNo;
+import cn.edu.xmu.javaee.core.model.ReturnObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import cn.edu.xmu.oomall.core.aop.Audit;
+import cn.edu.xmu.javaee.core.aop.Audit;
 //TODO: import AftersaleService
 
 @RestController

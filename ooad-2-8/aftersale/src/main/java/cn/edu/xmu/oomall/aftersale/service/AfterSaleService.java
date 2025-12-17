@@ -2,8 +2,8 @@ package cn.edu.xmu.oomall.aftersale.service;
 
 
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
-import cn.edu.xmu.oomall.core.model.IdNameTypeVo;
-import cn.edu.xmu.oomall.core.model.ReturnObject;
+import cn.edu.xmu.javaee.core.model.IdNameTypeVo;
+import cn.edu.xmu.javaee.core.model.ReturnObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -27,7 +27,7 @@ public interface ServiceOrderFeignClient {
      * @param maintenance 维修类售后BO（包含服务类型、技师等专属信息）
      * @return 服务单ID（创建成功后返回自增主键）
      */
-    @PostMapping("/service-order/maintenance") // 服务订单模块的接口路径
+    @PostMapping("/internal/shops/{shopId}/aftersales/{id}/serviceorders") // 服务订单模块的接口路径
     Long createServiceOrder(
             @RequestParam("shopId") Long shopId,          // URL参数传递店铺ID
             @RequestParam("aftersaleId") Long aftersaleId,// URL参数传递售后单ID

@@ -31,7 +31,7 @@ public class AftersaleController {
      */
     @Audit(departName = "shops")
     @PutMapping("/shops/{shopId}/aftersales/{id}/confirm")
-    public ReturnObject reviewAftersale(@PathVariable String shopId, @PathVariable String id, @RequestBody AftersaleConfirmDto dto)
+    public ReturnObject reviewAftersale(@PathVariable Long shopId, @PathVariable Long id, @RequestBody AftersaleConfirmDto dto)
     {
 
         log.debug("reviewAftersale(Controller): aftersaleId = {}", id);

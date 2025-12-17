@@ -1,5 +1,5 @@
 //School of Informatics Xiamen University, GPL-3.0 license
-package src.main.java.cn.edu.xmu.javaee.core.aop;
+package cn.edu.xmu.javaee.core.aop;
 
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.UserToken;
@@ -168,19 +168,22 @@ public class AuditAspect {
 
         if (Objects.isNull(tokenString)){
             log.debug("decryptToken : no token..");
-            throw new BusinessException(ReturnNo.AUTH_NEED_LOGIN);
+            // throw new BusinessException(ReturnNo.AUTH_NEED_LOGIN);
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST);
         }
 
         UserToken token = new JwtHelper().verifyTokenAndGetClaims(tokenString);
 
         if (Objects.isNull(token)) {
             log.debug("decryptToken : invalid token..");
-            throw new BusinessException(ReturnNo.AUTH_INVALID_JWT);
+            // throw new BusinessException(ReturnNo.AUTH_INVALID_JWT);
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST);
         }
 
         if (Objects.isNull(token.getId())) {
             log.debug("decryptToken : userId is null");
-            throw new BusinessException(ReturnNo.AUTH_NEED_LOGIN);
+            // throw new BusinessException(ReturnNo.AUTH_INVALID_JWT);
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST);
         }
         log.debug("decryptToken : token = {}", token);
         return  token;

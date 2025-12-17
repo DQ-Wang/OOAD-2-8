@@ -2,7 +2,7 @@ package cn.edu.xmu.oomall.aftersale.service.vo;
 
 
 import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
-import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
+//import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import lombok.ToString;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
-@CopyFrom({AfterSale.class})
+//@CopyFrom({AfterSale.class})
 @Getter
 
 

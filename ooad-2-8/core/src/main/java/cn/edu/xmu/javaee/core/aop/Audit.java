@@ -1,5 +1,5 @@
 //School of Informatics Xiamen University, GPL-3.0 license
-package cn.edu.xmu.javaee.core.aop;
+package src.main.java.cn.edu.xmu.javaee.core.aop;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,10 +1,14 @@
 package cn.edu.xmu.oomall.aftersale.controller;
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
+import cn.edu.xmu.oomall.core.model.IdNameTypeVo;
+import cn.edu.xmu.oomall.core.model.ReturnNo;
+import cn.edu.xmu.oomall.core.model.ReturnObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import cn.edu.xmu.oomall.core.aop.Audit;
 //TODO: import AftersaleService
 
 @RestController
@@ -25,10 +29,13 @@ public class AftersaleController {
      * @param dto 请求体：审核参数（confirm/conclusion/type）
      * @return 统一返回对象（包含操作结果）
      */
-
+    @Audit(departName = "shops")
     @PutMapping("/shops/{shopId}/aftersales/{id}/confirm")
-    public void reviewAftersale(@PathVariable String shopId, @PathVariable String id, @RequestBody AftersaleConfirmDto dto)
+    public ReturnObject reviewAftersale(@PathVariable String shopId, @PathVariable String id, @RequestBody AftersaleConfirmDto dto)
     {
-        aftersaleService.reviewAftersale(id,dto);
+
+        log.debug("reviewAftersale(Controller): aftersaleId = {}", id);
+        IdNameTypeVo vo = aftersaleService.reviewAftersale(id,dto);
+        return new ReturnObject(ReturnNo.OK,"成功",vo);
     }
 }

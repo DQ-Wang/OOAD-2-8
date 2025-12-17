@@ -2,6 +2,7 @@ package cn.edu.xmu.oomall.aftersale.service;
 
 
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
+import cn.edu.xmu.oomall.core.model.IdNameTypeVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,8 +10,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import cn.edu.xmu.oomall.aftersale.Dao.AftersaleDao;
-import cn.edu.xmu.oomall.aftersale.Dao.bo.Aftersale;
+import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
+import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -27,9 +28,12 @@ public class AfterSaleService {
      * @param id               售后单id
      * @param dto              审核售后单dto
      */
-    public void reviewAftersale(@PathVariable String id, @RequestBody AftersaleConfirmDto dto)
+    public IdNameTypeVo reviewAftersale(@PathVariable String id, @RequestBody AftersaleConfirmDto dto)
     {
-        Aftersale aftersale = AfterSaleDao.findById(id);
-        aftersale.handelAftersale(dto.getConfirm(),dto.getConclusion());
+        log.debug("reviewAftersale(Service): aftersaleId = {}", id);
+        AfterSale aftersale = AfterSaleDao.findAftersaleById(id);
+        IdNameTypeVo vo = IdNameTypeVo.builder().id(aftersale.getAftersaleId()).name("").build();
+        aftersale.HandleAftersale(dto.getConfirm(),dto.getConclusion());
+        return vo;
     }
 }

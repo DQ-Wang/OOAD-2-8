@@ -1,31 +1,34 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 import cn.edu.xmu.oomall.aftersale.feign.ServiceOrderFeignClient;
+import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
+import jakarta.annotation.Resource;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Repository;
 
 /**
  * 对应类图中的maintenance（维修类售后子类）
  * 继承抽象父类Aftersale，重写核心抽象方法实现维修专属逻辑
  * 核心特性：审核同意时调用服务模块创建服务单，关联服务单ID
  */
-@Component // 交给Spring管理，方便注入Feign客户端
-@Data // 自动生成get/set，继承父类属性的get/set
-@NoArgsConstructor // 无参构造
-@EqualsAndHashCode(callSuper = true) // 重写equals/hashCode时包含父类属性
-@ToString(callSuper = true) // toString时包含父类属性
-public class Maintenance extends Aftersale {
-
-    // 维修类专属属性（类图未标注但业务必需）
-    private Long serviceOrderId; // 关联的服务单ID（创建服务单后赋值）
-    private String serviceType;  // 服务类型：如"上门维修"/"寄修"
-    private String technician;   // 维修技师姓名（可选）
+// 标记为Spring组件，用于扫描注册
+@Repository("maintenanceBO") // 指定beanName，方便后续通过名称获取
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@Slf4j
+public class Maintenance extends AfterSale {
 
 
+    // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
+    @Resource
+    private ServiceOrderFeignClient serviceOrderFeignClient;
     /**
      * 重写父类抽象方法（纯虚函数）：实现维修类售后审核逻辑
      * 核心逻辑：同意审核→调用服务模块创建服务单→更新状态；拒绝审核→仅更新状态
@@ -33,10 +36,10 @@ public class Maintenance extends Aftersale {
     @Override
     public boolean HandleAftersale(boolean confirm, String reason)
     {
+        log.debug("HandleAftersale:aftersaleId={}",this.getAftersaleId());
         // 1. 审核拒绝：仅更新状态，无额外逻辑
         if (!confirm) {
             super.SetStatus(false, reason); // 调用父类普通虚方法更新状态
-            System.out.println("维修类售后审核拒绝 | 售后单ID：" + getAftersaleId() + "，原因：" + reason);
             return true;
         }
 
@@ -49,21 +52,19 @@ public class Maintenance extends Aftersale {
             Long serviceId = serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, this);
 
             // 3. 更新维修类专属属性+售后状态
-            this.serviceOrderId = serviceId; // 绑定服务单ID
+            this.setServiceOrderId(serviceId); // 绑定服务单ID
             super.SetStatus(true, reason); // 调用父类方法更新状态
-            System.out.println("维修类售后审核同意 | 售后单ID：" + aftersaleId +
-                    "，创建服务单ID：" + serviceId + "，服务类型：" + this.serviceType);
+            AfterSalePo afterSalePo = new AfterSalePo();
+            BeanUtils.copyProperties(this, afterSalePo); // 拷贝同名属性（驼峰命名需一致）
+            this.afterSaleDao.saveAftersale(afterSalePo);
+
             return true;
         } catch (Exception e) {
-            System.err.println("维修类售后创建服务单失败 | 售后单ID：" + getAftersaleId() + "，异常：" + e.getMessage());
+
             return false;
         }
+
     }
-
-    // 注入Feign客户端：调用服务模块创建服务单（维修类核心依赖）
-    @Autowired
-    private ServiceOrderFeignClient serviceOrderFeignClient;
-
 
 
 }

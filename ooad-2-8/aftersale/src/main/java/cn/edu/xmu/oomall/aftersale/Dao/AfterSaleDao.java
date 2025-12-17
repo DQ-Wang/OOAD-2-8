@@ -27,25 +27,24 @@ public class AfterSaleDao {
 
     // 注入JPA Mapper接口（Spring自动生成代理类）
     @Autowired
-    private AfterSaleMapper aftersaleMapper;
+    private static AfterSaleMapper aftersaleMapper;
 
 
     /**
      * 根据店铺ID + 售后单ID查询售后单（转换为BO对象）
      * 核心：PO→BO转换，供业务层直接使用BO而非PO
-     * @param shopId 店铺ID（防止跨店铺查询，数据安全）
      * @param aftersaleId 售后单ID
      * @return 售后单BO对象（业务层使用）
      * @throws IllegalArgumentException 售后单不存在时抛出
      */
-    public AfterSale findAftersaleById(Long shopId, Long aftersaleId) {
+    public static AfterSale findAftersaleById(Long aftersaleId) {
         log.debug("findAftersaleById:aftersaleId={}",aftersaleId);
         // 1. 调用Mapper查询PO（带店铺ID校验）
         Optional<AfterSalePo> optionalPo = aftersaleMapper.findByAftersaleId(aftersaleId);
         log.debug("findByAftersaleId:aftersaleId={}",aftersaleId);
 
         AfterSalePo po = optionalPo.orElseThrow(() ->
-                new IllegalArgumentException("售后单不存在：shopId=" + shopId + ", aftersaleId=" + aftersaleId)
+                new IllegalArgumentException("售后单不存在:"+ ", aftersaleId=" + aftersaleId)
         );
 
         ApplicationContext context = new ClassPathXmlApplicationContext("classpath:aftersale.xml");

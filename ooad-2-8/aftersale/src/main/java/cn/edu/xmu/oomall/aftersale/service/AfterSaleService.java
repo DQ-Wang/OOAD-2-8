@@ -29,7 +29,7 @@ public class AfterSaleService {
      * @param id               售后单id
      * @param dto              审核售后单dto
      */
-    public IdNameTypeVo reviewAftersale(@PathVariable String id, @RequestBody AftersaleConfirmDto dto)
+    public IdNameTypeVo reviewAftersale(@PathVariable Long id, @RequestBody AftersaleConfirmDto dto)
     {
         log.debug("reviewAftersale(Service): aftersaleId = {}", id);
         AfterSale aftersale = AfterSaleDao.findAftersaleById(id);

@@ -45,6 +45,13 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>1.0.20</version>
+            </dependency>
+
             <dependency>
                 <groupId>cn.edu.xmu.javaee</groupId>
                 <artifactId>core</artifactId>

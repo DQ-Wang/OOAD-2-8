@@ -30,7 +30,7 @@ public class AftersaleController {
      * @return 统一返回对象（包含操作结果）
      */
     @Audit(departName = "shops")
-    @PutMapping("/shops/{shopId}/aftersales/{id}/confirm")
+    @PutMapping("/{id}/confirm")
     public ReturnObject reviewAftersale(@PathVariable Long shopId, @PathVariable Long id, @RequestBody AftersaleConfirmDto dto)
     {
 

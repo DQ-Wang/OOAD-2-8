@@ -1,9 +1,15 @@
 management:
+  health:
+    redis:
+      enabled: false
   endpoints:
     web:
       exposure:
         include: "*"
 spring:
+  cloud:
+    compatibility-verifier:
+      enabled: false # 禁用版本兼容性校验
 #  cloud:
 #    nacos:
 #      discovery:
@@ -21,10 +27,10 @@ spring:
     #JDBC drivers
     driver-class-name: com.mysql.cj.jdbc.Driver
     #database url
-    url: jdbc:mysql://mysql:3306/region?serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306
     #database username and password
-    username: demouser
-    password: 20251010
+    username: root
+    password: Ooad_2_8
     #database connection pool
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -70,3 +76,4 @@ logging:
   level:
     cn.edu.xmu.javaee.core: debug
     cn.edu.xmu.oomall.aftersale: debug
+

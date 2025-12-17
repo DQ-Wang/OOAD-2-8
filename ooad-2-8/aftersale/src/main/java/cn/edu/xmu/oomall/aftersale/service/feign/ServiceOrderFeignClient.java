@@ -36,5 +36,4 @@ public interface ServiceOrderFeignClient {
             // 请求体参数
             @RequestBody Maintenance maintenance
     );
-
 }

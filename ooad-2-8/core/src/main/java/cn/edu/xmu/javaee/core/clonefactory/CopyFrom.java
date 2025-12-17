@@ -1,4 +1,4 @@
-package src.main.java.cn.edu.xmu.javaee.core.clonefactory;
+package cn.edu.xmu.javaee.core.clonefactory;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

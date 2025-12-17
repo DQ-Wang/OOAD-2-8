@@ -1,6 +1,6 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
-import cn.edu.xmu.oomall.aftersale.feign.ServiceOrderFeignClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import jakarta.annotation.Resource;
 import lombok.Data;

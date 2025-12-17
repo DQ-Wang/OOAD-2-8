@@ -42,6 +42,7 @@ public class AfterSaleDao {
         log.debug("findAftersaleById:aftersaleId={}",aftersaleId);
         // 1. 调用Mapper查询PO（带店铺ID校验）
         Optional<AfterSalePo> optionalPo = aftersaleMapper.findByAftersaleId(aftersaleId);
+        log.debug("findByAftersaleId:aftersaleId={}",aftersaleId);
 
         AfterSalePo po = optionalPo.orElseThrow(() ->
                 new IllegalArgumentException("售后单不存在：shopId=" + shopId + ", aftersaleId=" + aftersaleId)

@@ -31,10 +31,20 @@ public class AfterSaleService {
      */
     public IdNameTypeVo reviewAftersale(@PathVariable Long id, @RequestBody AftersaleConfirmDto dto)
     {
+        log.info("【Service层】开始审核售后单 - aftersaleId={}, confirm={}, conclusion={}", 
+                id, dto.getConfirm(), dto.getConclusion());
         log.debug("reviewAftersale(Service): aftersaleId = {}", id);
+        
         AfterSale aftersale = afterSaleDao.findAftersaleById(id);
+        log.info("【Service层】查询到售后单 - aftersaleId={}, type={}, status={}", 
+                aftersale.getAftersaleId(), aftersale.getType(), aftersale.getStatus());
+        
         IdNameTypeVo vo = IdNameTypeVo.builder().id(aftersale.getAftersaleId()).name("").build();
-        aftersale.HandleAftersale(dto.getConfirm(),dto.getConclusion());
+        
+        log.info("【Service层】开始执行售后单审核处理逻辑 - aftersaleId={}", id);
+        String handleResult = aftersale.HandleAftersale(dto.getConfirm(), dto.getConclusion());
+        log.info("【Service层】售后单审核处理完成 - aftersaleId={}, 处理结果={}", id, handleResult);
+        
         return vo;
     }
 }

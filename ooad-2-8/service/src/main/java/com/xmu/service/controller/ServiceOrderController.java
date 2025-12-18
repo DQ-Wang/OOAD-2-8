@@ -27,9 +27,20 @@ public class ServiceOrderController {
             @PathVariable("shopId") Long shopId, // 接收商铺ID路径参数
             @PathVariable("id") Long aftersalesId, // 接收售后单ID路径参数
             @RequestBody CreateServiceOrderDto dto) {
-        LOGGER.info("接收到创建服务单请求：商铺ID={}, 售后单ID={}, 请求体={}",
-                shopId, aftersalesId, dto);
-        ServiceOrderBo bo = serviceOrderService.createServiceOrder(shopId, aftersalesId, dto);
-        return ResponseEntity.ok( bo.getServiceSn());
+        LOGGER.info("【ServiceOrder Controller】收到Feign调用创建服务单请求 - shopId={}, aftersalesId={}, customerId={}, productId={}, address={}, mobile={}",
+                shopId, aftersalesId, dto.getCustomerId(), dto.getProductId(), dto.getAddress(), dto.getMobile());
+        LOGGER.debug("【ServiceOrder Controller】完整请求体={}", dto);
+        
+        try {
+            ServiceOrderBo bo = serviceOrderService.createServiceOrder(shopId, aftersalesId, dto);
+            String serviceSn = bo.getServiceSn();
+            LOGGER.info("【ServiceOrder Controller】服务单创建成功，准备返回 - shopId={}, aftersalesId={}, serviceSn={}, serviceOrderId={}", 
+                    shopId, aftersalesId, serviceSn, bo.getId());
+            return ResponseEntity.ok(serviceSn);
+        } catch (Exception e) {
+            LOGGER.error("【ServiceOrder Controller】创建服务单异常 - shopId={}, aftersalesId={}, 异常类型={}, 异常信息={}", 
+                    shopId, aftersalesId, e.getClass().getName(), e.getMessage(), e);
+            throw e;
+        }
     }
 }

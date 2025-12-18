@@ -33,9 +33,13 @@ public class AftersaleController {
     @PutMapping("/{id}/confirm")
     public ReturnObject reviewAftersale(@PathVariable Long shopId, @PathVariable Long id, @RequestBody AftersaleConfirmDto dto)
     {
-
+        log.info("【审核售后API入口】收到审核请求 - shopId={}, aftersaleId={}, confirm={}, conclusion={}", 
+                shopId, id, dto.getConfirm(), dto.getConclusion());
         log.debug("reviewAftersale(Controller): aftersaleId = {}", id);
+        
         IdNameTypeVo vo = aftersaleService.reviewAftersale(id,dto);
+        
+        log.info("【审核售后API完成】审核成功 - shopId={}, aftersaleId={}, 返回结果={}", shopId, id, vo);
         return new ReturnObject(ReturnNo.OK,"成功",vo);
     }
 }

@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 
-@FeignClient(value = "service-order",
-        url = "http://localhost:8081" // service-order的本地启动端口
+@FeignClient(
+        value = "service-order",
+        // 通过配置指定服务地址，本地和云上可分别配置
+        url = "${service.order.base-url}"
 )
 public interface ServiceOrderFeignClient {
 

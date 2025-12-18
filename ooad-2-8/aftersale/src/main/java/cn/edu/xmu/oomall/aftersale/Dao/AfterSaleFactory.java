@@ -21,6 +21,11 @@ public class AfterSaleFactory {
 
     public AfterSale creatAfterSale(AfterSalePo aftersalePo)
     {
-        return (AfterSale) context.getBean(aftersalePo.getBeanName());
+        AfterSale bo=(AfterSale) context.getBean(aftersalePo.getBeanName());
+        bo.setMobile(aftersalePo.getMobile());
+        bo.setAddress(aftersalePo.getAddress());
+        bo.setQuantity(aftersalePo.getQuantity());
+        bo.setAftersalePo(aftersalePo);
+        return bo;
     }
 }

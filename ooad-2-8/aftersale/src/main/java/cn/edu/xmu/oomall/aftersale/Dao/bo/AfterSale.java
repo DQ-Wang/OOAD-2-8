@@ -1,6 +1,7 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 
+import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @AllArgsConstructor
 @ToString
 @Slf4j
+@CopyFrom(AfterSalePo.class)
 public abstract class AfterSale {
     // 类图中定义的通用属性
     private Long aftersaleId;    // 售后单ID（主键）
@@ -29,13 +31,24 @@ public abstract class AfterSale {
     private Long customerId;     // 顾客ID
     private Byte type;           // 售后类型：1=维修 2=仅退款 3=退货退款 4=换货
     private Byte status;         // 售后状态：0=待审核 1=已同意 2=已拒绝 3=已完成
-    private String reason;       // 售后原因
+    protected String reason;       // 售后原因
+    protected String beanName;
+    protected String mobile;
+    protected String address;
+    protected int quantity;
 
 
     protected AfterSalePo aftersalePo;
 
     @Autowired
     protected AfterSaleDao afterSaleDao;
+
+
+    public void setAftersalePo(AfterSalePo aftersalePo) {
+        this.aftersalePo = aftersalePo;
+        // 可选：加日志，验证setter是否被调用
+        log.debug("AfterSale.aftersalePo已赋值：{}", aftersalePo);
+    }
 
 
     // 父类的抽象方法：子类必须进行重写
@@ -50,9 +63,6 @@ public abstract class AfterSale {
         // 通用逻辑：更新售后状态（子类可重写扩展）
         this.setReason(reason);
         this.setStatus(confirm ? (byte) 1 : (byte) 2);
-        AfterSalePo afterSalePo = new AfterSalePo();
-        BeanUtils.copyProperties(this, afterSalePo); // 拷贝同名属性（驼峰命名需一致）
-        this.afterSaleDao.saveAftersale(afterSalePo);
         log.debug("saveAftersale:aftersaleId={}",aftersaleId);
     }
 }

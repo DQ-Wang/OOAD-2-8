@@ -30,6 +30,6 @@ public class ServiceOrderController {
         LOGGER.info("接收到创建服务单请求：商铺ID={}, 售后单ID={}, 请求体={}",
                 shopId, aftersalesId, dto);
         ServiceOrderBo bo = serviceOrderService.createServiceOrder(shopId, aftersalesId, dto);
-        return ResponseEntity.ok("服务单创建成功，单号：" + bo.getServiceSn());
+        return ResponseEntity.ok( bo.getServiceSn());
     }
 }

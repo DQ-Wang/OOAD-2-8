@@ -10,6 +10,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Repository;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
+
 public class Maintenance extends AfterSale {
 
 
@@ -42,6 +44,8 @@ public class Maintenance extends AfterSale {
         // 1. 审核拒绝：仅更新状态，无额外逻辑
         if (!confirm) {
             super.SetStatus(false, reason); // 调用父类普通虚方法更新状态
+            BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
             return true;
         }
 

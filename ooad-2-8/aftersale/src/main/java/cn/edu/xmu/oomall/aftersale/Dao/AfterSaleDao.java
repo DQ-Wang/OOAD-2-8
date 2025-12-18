@@ -60,8 +60,9 @@ public class AfterSaleDao {
         AfterSale bo = aftersaleFactory.creatAfterSale(po);
 
 
-        bo.setAftersalePo(po);
+
         BeanUtils.copyProperties(po, bo); // 拷贝同名属性（驼峰命名需一致）
+
 
         // 3. 补充PO中无但BO需要的属性（若有）
         // 示例：若BO的serviceOrderId在PO中无，需额外查询（此处仅演示）

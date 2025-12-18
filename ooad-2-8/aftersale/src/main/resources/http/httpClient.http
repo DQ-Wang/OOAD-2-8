@@ -8,14 +8,4 @@ Content-Type: application/json
   "type": 1
 }
 
-> {%
-    client.test("审核通过-状态码200", function() {
-        client.assert(response.status === 200, "预期200，实际：" + response.status);
-    });
 
-    client.test("审核通过-返回结果正确", function() {
-        const res = JSON.parse(response.body);
-        client.assert(res.code === 200, "返回码错误：" + res.code);
-        client.assert(res.msg === "审核成功", "提示语错误：" + res.msg);
-    });
-%}

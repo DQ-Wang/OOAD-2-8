@@ -1,6 +1,7 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
+import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Repository;
  * 核心特性：审核同意时调用服务模块创建服务单，关联服务单ID
  */
 // 标记为Spring组件，用于扫描注册
-@Repository("maintenanceBO") // 指定beanName，方便后续通过名称获取
+//@Repository("maintenanceBO") // 指定beanName，方便后续通过名称获取
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -33,6 +34,15 @@ public class Maintenance extends AfterSale {
     @Resource
     @JsonIgnore
     private ServiceOrderFeignClient serviceOrderFeignClient;
+
+
+    public Maintenance(AfterSaleDao afterSaleDao,ServiceOrderFeignClient serviceOrderFeignClient) {
+        this.afterSaleDao = afterSaleDao;
+        this.serviceOrderFeignClient = serviceOrderFeignClient;
+    }
+
+
+
     /**
      * 重写父类抽象方法（纯虚函数）：实现维修类售后审核逻辑
      * 核心逻辑：同意审核→调用服务模块创建服务单→更新状态；拒绝审核→仅更新状态
@@ -58,6 +68,9 @@ public class Maintenance extends AfterSale {
             CreateServiceOrderDto createServiceOrderDto = new CreateServiceOrderDto();
             createServiceOrderDto.setCustomerId(this.getCustomerId());
             createServiceOrderDto.setProductId(this.getProductId());
+            createServiceOrderDto.setAddress(this.getAddress());
+            createServiceOrderDto.setMobile(this.getMobile());
+
             ResponseEntity<String> serviceId= serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
             // 3. 更新维修类专属属性+售后状态
             log.debug(serviceId.getBody());

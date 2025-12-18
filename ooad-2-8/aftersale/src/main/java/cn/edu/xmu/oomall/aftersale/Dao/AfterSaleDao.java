@@ -3,6 +3,7 @@ package cn.edu.xmu.oomall.aftersale.Dao;
 import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
 import cn.edu.xmu.oomall.aftersale.mapper.AfterSaleMapper;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
+import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,8 @@ public class AfterSaleDao {
     // 注入JPA Mapper接口（Spring自动生成代理类）
     private final AfterSaleMapper aftersaleMapper;
     private final AfterSaleFactory aftersaleFactory;
+    @Autowired
+    ServiceOrderFeignClient serviceOrderFeignClient;
 
 
     /**
@@ -56,8 +59,11 @@ public class AfterSaleDao {
         //ApplicationContext context = new ClassPathXmlApplicationContext("classpath:aftersale.xml");
         //AfterSaleFactory aftersaleFactory=new AfterSaleFactory();
 
+
+
+
         // 2. PO对象转换为BO对象（属性拷贝）
-        AfterSale bo = aftersaleFactory.creatAfterSale(po);
+        AfterSale bo = aftersaleFactory.creatAfterSale(po,this,serviceOrderFeignClient);
 
 
 

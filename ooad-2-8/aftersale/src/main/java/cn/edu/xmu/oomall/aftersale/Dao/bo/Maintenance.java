@@ -48,7 +48,7 @@ public class Maintenance extends AfterSale {
      * 核心逻辑：同意审核→调用服务模块创建服务单→更新状态；拒绝审核→仅更新状态
      */
     @Override
-    public boolean HandleAftersale(boolean confirm, String reason)
+    public String HandleAftersale(boolean confirm, String reason)
     {
         log.debug("HandleAftersale:aftersaleId={}",this.getAftersaleId());
         // 1. 审核拒绝：仅更新状态，无额外逻辑
@@ -56,7 +56,7 @@ public class Maintenance extends AfterSale {
             super.SetStatus(false, reason); // 调用父类普通虚方法更新状态
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
             this.afterSaleDao.saveAftersale(this.getAftersalePo());
-            return true;
+            return "NULL";
         }
 
         // 2. 审核同意：调用服务模块创建服务单
@@ -79,10 +79,10 @@ public class Maintenance extends AfterSale {
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
             this.afterSaleDao.saveAftersale(this.getAftersalePo());
 
-            return true;
+            return serviceId.getBody();
         } catch (Exception e) {
 
-            return false;
+            return "ERROR";
         }
 
     }

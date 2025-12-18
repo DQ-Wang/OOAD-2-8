@@ -57,7 +57,7 @@ public abstract class AfterSale {
 
     // 父类的抽象方法：子类必须进行重写
     // 审核售后
-    public abstract boolean HandleAftersale(boolean confirm, String reason);
+    public abstract String HandleAftersale(boolean confirm, String reason);
 
 
     // 类图中定义的通用方法：设置售后状态

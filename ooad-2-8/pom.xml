@@ -48,7 +48,7 @@
 
 
             <dependency>
-                <groupId>cn.edu.xmu.javaee</groupId>
+                <groupId>cn.edu.xmu.oomall</groupId>
                 <artifactId>core</artifactId>
                 <version>0.1.1-SNAPSHOT</version>
             </dependency>

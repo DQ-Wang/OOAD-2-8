@@ -24,7 +24,7 @@ services:
           - node.labels.mysql==yes
 
   aftersale:
-    image: swr.cn-north-4.myhuaweicloud.com/oomall-javaeeh/aftersale:0.0.1-SNAPSHOT
+    image: swr.cn-north-4.myhuaweicloud.com/oomall-javaeeh/aftersale:0.0.2-SNAPSHOT
     networks:
       - javaee-proxy
     ports:
@@ -51,7 +51,7 @@ services:
       - "--service.order.base-url=http://service:8081"
 
   service:
-    image: swr.cn-north-4.myhuaweicloud.com/oomall-javaeeh/service:0.0.1-SNAPSHOT
+    image: swr.cn-north-4.myhuaweicloud.com/oomall-javaeeh/service:0.0.2-SNAPSHOT
     networks:
       - javaee-proxy
     ports:

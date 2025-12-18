@@ -1,12 +1,12 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
+import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
 import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.xmu.service.controller.dto.CreateServiceOrderDto;
 import jakarta.annotation.Resource;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
@@ -28,6 +28,7 @@ public class Maintenance extends AfterSale {
 
     // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
     @Resource
+    @JsonIgnore
     private ServiceOrderFeignClient serviceOrderFeignClient;
     /**
      * 重写父类抽象方法（纯虚函数）：实现维修类售后审核逻辑
@@ -49,9 +50,12 @@ public class Maintenance extends AfterSale {
             Long shopId = getShopId();
             Long aftersaleId = getAftersaleId();
             // 调用Feign客户端创建服务单（返回服务单ID）
-            Long serviceId = serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, this);
-
+            CreateServiceOrderDto createServiceOrderDto = new CreateServiceOrderDto();
+            createServiceOrderDto.setCustomerId(this.getCustomerId());
+            createServiceOrderDto.setProductId(this.getProductId());
+            String serviceId= serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
             // 3. 更新维修类专属属性+售后状态
+            log.debug(serviceId);
             this.setServiceOrderId(serviceId); // 绑定服务单ID
             super.SetStatus(true, reason); // 调用父类方法更新状态
             AfterSalePo afterSalePo = new AfterSalePo();

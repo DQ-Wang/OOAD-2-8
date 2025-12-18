@@ -95,6 +95,6 @@ public class AfterSalePo {
      * 服务单ID（维修类售后专属）
      * 关联服务订单模块的服务单，创建服务单后赋值
      */
-    private Long serviceOrderId;
+    private String serviceOrderId;
 
 }

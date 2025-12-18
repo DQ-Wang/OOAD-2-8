@@ -20,7 +20,7 @@ import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
 @Slf4j
 public class AfterSaleService {
 
-    private final AfterSaleDao regionDao;
+    private final AfterSaleDao afterSaleDao;
 
     /**
      * 审核售后单
@@ -32,7 +32,7 @@ public class AfterSaleService {
     public IdNameTypeVo reviewAftersale(@PathVariable Long id, @RequestBody AftersaleConfirmDto dto)
     {
         log.debug("reviewAftersale(Service): aftersaleId = {}", id);
-        AfterSale aftersale = AfterSaleDao.findAftersaleById(id);
+        AfterSale aftersale = afterSaleDao.findAftersaleById(id);
         IdNameTypeVo vo = IdNameTypeVo.builder().id(aftersale.getAftersaleId()).name("").build();
         aftersale.HandleAftersale(dto.getConfirm(),dto.getConclusion());
         return vo;

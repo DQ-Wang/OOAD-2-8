@@ -29,7 +29,7 @@ spring:
     #JDBC drivers
     driver-class-name: com.mysql.cj.jdbc.Driver
     #database url
-    url: jdbc:mysql://localhost:3306
+    url: jdbc:mysql://localhost:3306/javaee-2-8?serverTimezone=Asia/Shanghai
     #database username and password
     username: root
     password: Ooad_2_8

@@ -4,12 +4,10 @@ package cn.edu.xmu.oomall.aftersale.Dao.bo;
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 对应类图中的`aftersale`：售后业务抽象父类
@@ -27,14 +25,14 @@ public abstract class AfterSale {
     private long productId;      // 商品ID
     private Long regionId;       // 地区ID（关联region模块的RegionPo）
     private long orderId;        // 订单ID
-    protected Long serviceOrderId;      // 服务单ID
+    protected String serviceOrderId;      // 服务单ID
     private Long customerId;     // 顾客ID
     private Byte type;           // 售后类型：1=维修 2=仅退款 3=退货退款 4=换货
     private Byte status;         // 售后状态：0=待审核 1=已同意 2=已拒绝 3=已完成
     private String reason;       // 售后原因
 
 
-
+    @Autowired
     protected AfterSaleDao afterSaleDao;
 
 

@@ -1,7 +1,7 @@
 package cn.edu.xmu.oomall.aftersale.service.feign;
 
 import cn.edu.xmu.oomall.aftersale.Dao.bo.Maintenance;
-import com.xmu.service.controller.dto.CreateServiceOrderDto;
+import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

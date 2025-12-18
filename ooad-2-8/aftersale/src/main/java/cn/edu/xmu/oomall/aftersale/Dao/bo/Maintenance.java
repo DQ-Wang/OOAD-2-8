@@ -2,10 +2,10 @@ package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
+import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
 import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.xmu.service.controller.dto.CreateServiceOrderDto;
 import jakarta.annotation.Resource;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;

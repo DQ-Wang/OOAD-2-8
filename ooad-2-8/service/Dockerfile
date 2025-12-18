@@ -1,0 +1,11 @@
+# 私有镜像
+FROM swr.cn-north-4.myhuaweicloud.com/myoomall-javaee/openjdk:17-alpine
+# 官方镜像
+#FROM openjdk:17-alpine
+MAINTAINER wangdingqi 2070651521@qq.com
+WORKDIR /app
+ARG JAR_FILE
+ADD ${JAR_FILE} /app/app.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["--spring.datasource.url=jdbc:mysql://mysql:3306/oomall_demo?serverTimezone=Asia/Shanghai","--spring.datasource.username=demouser", "--spring.datasource.password=Ooad_2_8","--server.tomcat.threads.max=300","--spring.datasource.druid.max-active=300","--spring.datasource.druid.initial-size=100","--spring.datasource.druid.min-idle=100","--spring.datasource.druid.stat-view-servlet.login-password=123456"]

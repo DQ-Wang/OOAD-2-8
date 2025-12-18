@@ -59,6 +59,8 @@ public class AfterSaleDao {
         // 2. PO对象转换为BO对象（属性拷贝）
         AfterSale bo = aftersaleFactory.creatAfterSale(po);
 
+
+        bo.setAftersalePo(po);
         BeanUtils.copyProperties(po, bo); // 拷贝同名属性（驼峰命名需一致）
 
         // 3. 补充PO中无但BO需要的属性（若有）

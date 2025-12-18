@@ -3,6 +3,7 @@ package cn.edu.xmu.oomall.aftersale.service.feign;
 import cn.edu.xmu.oomall.aftersale.Dao.bo.Maintenance;
 import com.xmu.service.controller.dto.CreateServiceOrderDto;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +32,7 @@ public interface ServiceOrderFeignClient {
      */
     // 服务端路径
     @PostMapping("/internal/shops/{shopId}/aftersales/{id}/serviceorders")
-    String createServiceOrder(
+    ResponseEntity<String> createServiceOrder(
             // 路径占位符{shopId} → @PathVariable("shopId") 绑定
             @PathVariable("shopId") Long shopId,
             // 路径占位符{id} → @PathVariable("id") 绑定（参数名可仍为aftersaleId，注解内指定"id"即可）

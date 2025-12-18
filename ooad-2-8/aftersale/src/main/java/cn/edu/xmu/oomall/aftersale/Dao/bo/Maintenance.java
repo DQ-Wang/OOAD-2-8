@@ -9,6 +9,7 @@ import jakarta.annotation.Resource;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -53,14 +54,13 @@ public class Maintenance extends AfterSale {
             CreateServiceOrderDto createServiceOrderDto = new CreateServiceOrderDto();
             createServiceOrderDto.setCustomerId(this.getCustomerId());
             createServiceOrderDto.setProductId(this.getProductId());
-            String serviceId= serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
+            ResponseEntity<String> serviceId= serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
             // 3. 更新维修类专属属性+售后状态
-            log.debug(serviceId);
-            this.setServiceOrderId(serviceId); // 绑定服务单ID
+            log.debug(serviceId.getBody());
+            this.setServiceOrderId(serviceId.getBody()); // 绑定服务单ID
             super.SetStatus(true, reason); // 调用父类方法更新状态
-            AfterSalePo afterSalePo = new AfterSalePo();
-            BeanUtils.copyProperties(this, afterSalePo); // 拷贝同名属性（驼峰命名需一致）
-            this.afterSaleDao.saveAftersale(afterSalePo);
+            BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
 
             return true;
         } catch (Exception e) {

@@ -32,6 +32,8 @@ public abstract class AfterSale {
     private String reason;       // 售后原因
 
 
+    protected AfterSalePo aftersalePo;
+
     @Autowired
     protected AfterSaleDao afterSaleDao;
 

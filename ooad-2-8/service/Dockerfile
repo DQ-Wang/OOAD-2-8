@@ -1,5 +1,5 @@
 # 私有镜像
-FROM swr.cn-north-4.myhuaweicloud.com/oomall-javaee/openjdk:21-alpine
+FROM swr.cn-north-4.myhuaweicloud.com/oomall-javaee/openjdk:17-alpine
 # 官方镜像
 #FROM openjdk:17-alpine
 MAINTAINER mingqiu mingqiu@xmu.edu.cn

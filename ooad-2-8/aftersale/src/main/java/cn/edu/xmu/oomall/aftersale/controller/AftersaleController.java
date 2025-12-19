@@ -1,9 +1,9 @@
 package cn.edu.xmu.oomall.aftersale.controller;
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
-import cn.edu.xmu.javaee.core.model.IdNameTypeVo;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
+import cn.edu.xmu.oomall.aftersale.service.vo.AftersaleVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +37,9 @@ public class AftersaleController {
                 shopId, id, dto.getConfirm(), dto.getConclusion());
         log.debug("reviewAftersale(Controller): aftersaleId = {}", id);
         
-        IdNameTypeVo vo = aftersaleService.reviewAftersale(id,dto);
-        
-        log.info("【审核售后API完成】审核成功 - shopId={}, aftersaleId={}, 返回结果={}", shopId, id, vo);
-        return new ReturnObject(ReturnNo.OK,"成功",vo);
+        AftersaleVo aftersaleVo = aftersaleService.reviewAftersale(id,dto);
+
+        log.info("【审核售后API完成】审核成功 - shopId={}, aftersaleId={}, 返回结果={}", shopId, id, aftersaleVo);
+        return new ReturnObject(ReturnNo.OK,"成功",aftersaleVo);
     }
 }

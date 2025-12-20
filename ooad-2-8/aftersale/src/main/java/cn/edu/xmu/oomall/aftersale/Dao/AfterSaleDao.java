@@ -4,14 +4,11 @@ import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
 import cn.edu.xmu.oomall.aftersale.mapper.AfterSaleMapper;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -78,10 +75,6 @@ public class AfterSaleDao {
         AfterSale bo = aftersaleFactory.creatAfterSale(po,this,serviceOrderFeignClient);
         BeanUtils.copyProperties(po, bo); // 拷贝同名属性（驼峰命名需一致）
         log.info("【DAO层】PO转BO完成 - aftersaleId={}, BO类型={}", aftersaleId, bo.getClass().getSimpleName());
-
-        // 3. 补充PO中无但BO需要的属性（若有）
-        // 示例：若BO的serviceOrderId在PO中无，需额外查询（此处仅演示）
-        // bo.setServiceOrderId(getServiceOrderIdByAftersaleId(aftersaleId));
 
         return bo;
     }

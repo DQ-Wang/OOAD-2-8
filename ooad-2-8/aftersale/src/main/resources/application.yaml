@@ -27,10 +27,10 @@ spring:
     #JDBC drivers
     driver-class-name: com.mysql.cj.jdbc.Driver
     #database url
-    url: jdbc:mysql://localhost:3306/javaee-2-8?serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://124.70.97.167:3306/oomall_demo?serverTimezone=Asia/Shanghai
 
     #database username and password
-    username: root
+    username: demouser
     password: Ooad_2_8
     #database connection pool
     type: com.alibaba.druid.pool.DruidDataSource

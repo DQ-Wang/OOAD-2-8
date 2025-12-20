@@ -1,6 +1,6 @@
 package com.xmu.service.Dao;
 
-import com.xmu.service.Dao.bo.ServiceOrderBo;
+import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.mapper.ServiceOrderMapper ;
 import com.xmu.service.mapper.po.ServiceOrderPo;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class ServiceOrderDao {
     /**
      * 保存服务单（调用Mapper持久化）
      */
-    public void save(ServiceOrderBo bo) {
+    public void save(ServiceOrder bo) {
         LOGGER.info("【ServiceOrder Dao】开始保存服务单到数据库 - serviceSn={}, aftersalesId={}", 
                 bo.getServiceSn(), bo.getAftersalesId());
         LOGGER.debug("【ServiceOrder Dao】BO转PO前 - BO={}", bo);

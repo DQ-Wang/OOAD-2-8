@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.xmu.service.Dao.ServiceOrderDao;
 import com.xmu.service.controller.dto.CreateServiceOrderDto;
-import com.xmu.service.Dao.bo.ServiceOrderBo ;
+import com.xmu.service.Dao.bo.ServiceOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +21,14 @@ public class ServiceOrderService {
     /**
      * 创建服务单核心流程
      */
-    public ServiceOrderBo createServiceOrder(Long shopId, Long aftersalesId, CreateServiceOrderDto dto){
+    public ServiceOrder createServiceOrder(Long shopId, Long aftersalesId, CreateServiceOrderDto dto){
         LOGGER.info("【ServiceOrder Service】开始创建服务单流程 - shopId={}, aftersalesId={}, customerId={}, productId={}",
                 shopId, aftersalesId, dto.getCustomerId(), dto.getProductId());
         LOGGER.debug("【ServiceOrder Service】完整请求参数={}", dto);
         
         // 1. 初始化BO
         LOGGER.debug("【ServiceOrder Service】开始初始化ServiceOrderBo");
-        ServiceOrderBo bo = new ServiceOrderBo(dto, shopId, aftersalesId);
+        ServiceOrder bo = new ServiceOrder(dto, shopId, aftersalesId);
         LOGGER.info("【ServiceOrder Service】BO初始化完成，预生成服务单号={}", bo.getServiceSn());
         
         // 2. 校验业务规则

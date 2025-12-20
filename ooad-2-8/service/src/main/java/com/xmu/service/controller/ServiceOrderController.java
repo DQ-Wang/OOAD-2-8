@@ -1,7 +1,7 @@
 package com.xmu.service.controller;
 import com.xmu.service.controller.dto.CreateServiceOrderDto ;
 import com.xmu.service.service.ServiceOrderService;
-import com.xmu.service.Dao.bo.ServiceOrderBo;
+import com.xmu.service.Dao.bo.ServiceOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,7 @@ public class ServiceOrderController {
         LOGGER.debug("【ServiceOrder Controller】完整请求体={}", dto);
         
         try {
-            ServiceOrderBo bo = serviceOrderService.createServiceOrder(shopId, aftersalesId, dto);
+            ServiceOrder bo = serviceOrderService.createServiceOrder(shopId, aftersalesId, dto);
             String serviceSn = bo.getServiceSn();
             LOGGER.info("【ServiceOrder Controller】服务单创建成功，准备返回 - shopId={}, aftersalesId={}, serviceSn={}, serviceOrderId={}", 
                     shopId, aftersalesId, serviceSn, bo.getId());

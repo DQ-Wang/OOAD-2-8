@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * 服务单领域业务对象（充血模型）
  */
-public class ServiceOrderBo {
+public class ServiceOrder {
     private Long id;
     private String serviceSn;
     private String serviceConsignee;
@@ -29,7 +29,7 @@ public class ServiceOrderBo {
     /**
      * 用请求DTO初始化BO
      */
-    public ServiceOrderBo(CreateServiceOrderDto dto, Long shopId, Long aftersalesId) {
+    public ServiceOrder(CreateServiceOrderDto dto, Long shopId, Long aftersalesId) {
         // 初始化属性
         this.serviceConsignee = dto.getName();
         this.serviceMobile = dto.getMobile();

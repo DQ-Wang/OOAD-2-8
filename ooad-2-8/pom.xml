@@ -45,8 +45,10 @@
 
     <dependencyManagement>
         <dependencies>
+
+
             <dependency>
-                <groupId>cn.edu.xmu.javaee</groupId>
+                <groupId>cn.edu.xmu.oomall</groupId>
                 <artifactId>core</artifactId>
                 <version>0.1.1-SNAPSHOT</version>
             </dependency>
@@ -147,9 +149,10 @@
 
             <dependency>
                 <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
-                <version>1.2.24</version>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>1.2.20</version>
             </dependency>
+
             <dependency>
                 <groupId>com.auth0</groupId>
                 <artifactId>java-jwt</artifactId>

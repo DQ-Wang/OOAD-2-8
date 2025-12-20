@@ -10,25 +10,26 @@ spring:
   cloud:
     compatibility-verifier:
       enabled: false # 禁用版本兼容性校验
-#  cloud:
-#    nacos:
-#      discovery:
-#        server-addr: nacos:8848
-#  data:
-#    redis:
-#      repositories:
-#        #forbid redis to scan repositories
-#        enabled: false
-#   #redis:
-#      host: redis
-#      database: 0
-#      password: 123456
+    autoconfigure:
+      exclude: com.alibaba.druid.spring.boot3.autoconfigure.stat.DruidStatViewServletConfiguration
+  #  cloud:
+  #    nacos:
+  #      discovery:
+  #        server-addr: nacos:8848
+  #  data:
+  #    redis:
+  #      repositories:
+  #        #forbid redis to scan repositories
+  #        enabled: false
+  #   #redis:
+  #      host: redis
+  #      database: 0
+  #      password: 123456
   datasource:
     #JDBC drivers
     driver-class-name: com.mysql.cj.jdbc.Driver
     #database url
     url: jdbc:mysql://localhost:3306/javaee-2-8?serverTimezone=Asia/Shanghai
-
     #database username and password
     username: root
     password: Ooad_2_8
@@ -44,7 +45,10 @@ spring:
         login-password: 123456
         enabled: true
         url-pattern: /druid/*
-
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
       filter:
         stat:
           log-slow-sql: true
@@ -58,13 +62,8 @@ spring:
       hibernate:
         format_sql: false
 
-service:
-  order:
-    # 本地开发时，服务订单模块运行在本机 8081 端口
-    base-url: http://localhost:8081
-
 server:
-  port: 8080
+  port: 8081
   tomcat:
     threads:
       max: 100
@@ -81,5 +80,5 @@ oomall:
 logging:
   level:
     cn.edu.xmu.javaee.core: debug
-    cn.edu.xmu.oomall.aftersale: debug
+    cn.edu.xmu.oomall.service: debug
 

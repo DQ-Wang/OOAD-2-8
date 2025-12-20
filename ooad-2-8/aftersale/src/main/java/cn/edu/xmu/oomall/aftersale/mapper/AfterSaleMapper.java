@@ -36,7 +36,7 @@ public interface AfterSaleMapper extends JpaRepository<AfterSalePo, Long> {
      * @param aftersaleId 售后单ID
      * @return 售后单PO（Optional避免空指针）
      */
-    Optional<AfterSalePo> findByAftersaleId(Long aftersaleId);
+    Optional<AfterSalePo> findByaftersaleId(Long aftersaleId);
 
 
 }

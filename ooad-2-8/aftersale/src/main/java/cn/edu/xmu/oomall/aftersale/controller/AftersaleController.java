@@ -1,9 +1,9 @@
 package cn.edu.xmu.oomall.aftersale.controller;
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
-import cn.edu.xmu.javaee.core.model.IdNameTypeVo;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
+import cn.edu.xmu.oomall.aftersale.service.vo.AftersaleVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,12 +30,16 @@ public class AftersaleController {
      * @return 统一返回对象（包含操作结果）
      */
     @Audit(departName = "shops")
-    @PutMapping("/shops/{shopId}/aftersales/{id}/confirm")
+    @PutMapping("/{id}/confirm")
     public ReturnObject reviewAftersale(@PathVariable Long shopId, @PathVariable Long id, @RequestBody AftersaleConfirmDto dto)
     {
-
+        log.info("【审核售后API入口】收到审核请求 - shopId={}, aftersaleId={}, confirm={}, conclusion={}", 
+                shopId, id, dto.getConfirm(), dto.getConclusion());
         log.debug("reviewAftersale(Controller): aftersaleId = {}", id);
-        IdNameTypeVo vo = aftersaleService.reviewAftersale(id,dto);
-        return new ReturnObject(ReturnNo.OK,"成功",vo);
+        
+        AftersaleVo aftersaleVo = aftersaleService.reviewAftersale(id,dto);
+
+        log.info("【审核售后API完成】审核成功 - shopId={}, aftersaleId={}, 返回结果={}", shopId, id, aftersaleVo);
+        return new ReturnObject(ReturnNo.OK,"成功",aftersaleVo);
     }
 }

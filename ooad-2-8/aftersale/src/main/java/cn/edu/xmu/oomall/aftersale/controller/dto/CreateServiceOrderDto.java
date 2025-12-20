@@ -1,7 +1,4 @@
-
-package com.xmu.service.controller.dto;
-
-
+package cn.edu.xmu.oomall.aftersale.controller.dto;
 
 /**
  * 创建服务单请求DTO

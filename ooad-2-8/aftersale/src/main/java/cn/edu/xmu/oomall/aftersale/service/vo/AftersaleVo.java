@@ -1,49 +1,24 @@
 package cn.edu.xmu.oomall.aftersale.service.vo;
 
 
-import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
 //import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 // TODO:import Aftersalse
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 //@CopyFrom({AfterSale.class})
 @Getter
+@AllArgsConstructor
 
-
-public class aftersaleVo {
+public class AftersaleVo {
     @Setter
-    private Long id;
-
-    @Setter
-    private Long shop_id;
+    private Long aftersale_id;
 
     @Setter
-    private Long product_id;
-
-    @Setter
-    private Long region_id;
-
-    @Setter
-    private Long order_id;
-
-    @Setter
-    private Long custom_id;
-
-    @Setter
-    private Byte status;
-
-    @Setter
-    private Long aftersale_sn;
-
-    @Setter
-    private String apply_reason;
+    private String serviceOrder_id;
     /**
      * 共三种状态
      */

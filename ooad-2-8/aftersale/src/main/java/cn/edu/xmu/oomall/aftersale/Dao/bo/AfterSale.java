@@ -1,15 +1,14 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 
+import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 对应类图中的`aftersale`：售后业务抽象父类
@@ -20,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 @AllArgsConstructor
 @ToString
 @Slf4j
+@CopyFrom(AfterSalePo.class)
 public abstract class AfterSale {
     // 类图中定义的通用属性
     private Long aftersaleId;    // 售后单ID（主键）
@@ -27,20 +27,37 @@ public abstract class AfterSale {
     private long productId;      // 商品ID
     private Long regionId;       // 地区ID（关联region模块的RegionPo）
     private long orderId;        // 订单ID
-    protected Long serviceOrderId;      // 服务单ID
+    protected String serviceOrderId;      // 服务单ID
     private Long customerId;     // 顾客ID
     private Byte type;           // 售后类型：1=维修 2=仅退款 3=退货退款 4=换货
     private Byte status;         // 售后状态：0=待审核 1=已同意 2=已拒绝 3=已完成
-    private String reason;       // 售后原因
+    protected String reason;       // 审核原因
+    protected String beanName;
+    protected String mobile;
+    protected String address;
+    protected int quantity;
 
+
+    protected AfterSalePo aftersalePo;
 
 
     protected AfterSaleDao afterSaleDao;
 
+    public AfterSale(AfterSaleDao afterSaleDao) {
+        this.afterSaleDao = afterSaleDao;
+    }
+
+
+    public void setAftersalePo(AfterSalePo aftersalePo) {
+        this.aftersalePo = aftersalePo;
+        // 可选：加日志，验证setter是否被调用
+        log.debug("AfterSale.aftersalePo已赋值：{}", aftersalePo);
+    }
+
 
     // 父类的抽象方法：子类必须进行重写
     // 审核售后
-    public abstract boolean HandleAftersale(boolean confirm, String reason);
+    public abstract String HandleAftersale(boolean confirm, String reason);
 
 
     // 类图中定义的通用方法：设置售后状态
@@ -50,9 +67,6 @@ public abstract class AfterSale {
         // 通用逻辑：更新售后状态（子类可重写扩展）
         this.setReason(reason);
         this.setStatus(confirm ? (byte) 1 : (byte) 2);
-        AfterSalePo afterSalePo = new AfterSalePo();
-        BeanUtils.copyProperties(this, afterSalePo); // 拷贝同名属性（驼峰命名需一致）
-        this.afterSaleDao.saveAftersale(afterSalePo);
         log.debug("saveAftersale:aftersaleId={}",aftersaleId);
     }
 }

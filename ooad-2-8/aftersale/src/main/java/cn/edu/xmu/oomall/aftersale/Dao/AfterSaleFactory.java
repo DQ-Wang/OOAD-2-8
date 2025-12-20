@@ -30,7 +30,7 @@ public class AfterSaleFactory {
                 bo=new Maintenance(afterSaleDao,serviceOrderFeignClient);
                 break;
 
-                default:bo=null;
+            default:bo=null;
         }
         bo.setMobile(aftersalePo.getMobile());
         bo.setAddress(aftersalePo.getAddress());

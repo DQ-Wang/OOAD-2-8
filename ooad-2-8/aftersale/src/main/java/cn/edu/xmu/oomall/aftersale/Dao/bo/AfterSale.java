@@ -62,6 +62,10 @@ public abstract class AfterSale {
     // 审核售后
     public abstract String HandleAftersale(boolean confirm, String reason);
 
+    // 取消售后
+    public abstract String CancleAftersale(boolean confirm, String reason);
+
+
 
     // 类图中定义的通用方法：设置售后状态
     public void SetStatus(boolean confirm, String reason) {

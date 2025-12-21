@@ -15,7 +15,7 @@ public class DeliveryServiceOrderBuilder implements ServiceOrderBuilder {
 
     @Override
     public String getType() {
-        return ServiceOrder.TYPE_DELIVERY;
+        return ServiceOrder.TYPE_NAMES.get(ServiceOrder.TYPE_DELIVERY);
     }
 
     @Override

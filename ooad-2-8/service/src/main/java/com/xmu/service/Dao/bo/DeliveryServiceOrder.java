@@ -8,6 +8,7 @@ package com.xmu.service.Dao.bo;
 public class DeliveryServiceOrder extends ServiceOrder {
 
 
+
     public void receive() {
 
     }

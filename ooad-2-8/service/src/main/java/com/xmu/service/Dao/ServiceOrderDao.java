@@ -1,5 +1,6 @@
 package com.xmu.service.Dao;
 
+import cn.edu.xmu.javaee.core.clonefactory.CloneFactory;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
@@ -111,14 +112,6 @@ public class ServiceOrderDao {
     }
 
 
-
-
-
-
-    public void update(ServiceOrder bo)
-    {
-
-    }
 
     public ServiceOrder insert(ServiceOrder bo)
     {

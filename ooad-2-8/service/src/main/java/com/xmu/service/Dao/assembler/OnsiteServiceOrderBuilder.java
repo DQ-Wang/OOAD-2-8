@@ -16,7 +16,7 @@ public class OnsiteServiceOrderBuilder implements ServiceOrderBuilder {
 
     @Override
     public String getType() {
-        return ServiceOrder.TYPE_ON_SITE;
+        return ServiceOrder.TYPE_NAMES.get(ServiceOrder.TYPE_ON_SITE);
     }
 
     @Override

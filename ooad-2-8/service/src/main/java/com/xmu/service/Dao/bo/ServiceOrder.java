@@ -1,7 +1,6 @@
 package com.xmu.service.Dao.bo;
 
 import cn.edu.xmu.javaee.core.exception.BusinessException;
-import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.ServiceOrderDao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -23,14 +24,74 @@ import java.util.UUID;
 public abstract class ServiceOrder  implements Serializable {
 
     /**
-     * 服务单类型：上门服务
+     * 服务单类型常量：上门服务
      */
-    public static final String TYPE_ON_SITE = "ONSITE";
+    public static final Byte TYPE_ON_SITE = 0;
 
     /**
-     * 服务单类型：寄件服务
+     * 服务单类型常量：寄件服务
      */
-    public static final String TYPE_DELIVERY = "DELIVERY";
+    public static final Byte TYPE_DELIVERY = 1;
+
+    /**
+     * 服务单状态常量：新建
+     */
+    public static final Byte STATUS_NEW = 0;
+
+    /**
+     * 服务单状态常量：已分配
+     */
+    public static final Byte STATUS_ASSIGN = 1;
+
+    /**
+     * 服务单状态常量：已取消
+     */
+    public static final Byte STATUS_CANCEL = 2;
+
+    /**
+     * 服务单状态常量：上门中
+     */
+    public static final Byte STATUS_ONDOOR = 3;
+
+    /**
+     * 服务单状态常量：已接收
+     */
+    public static final Byte STATUS_RECEIVE = 4;
+
+    /**
+     * 服务单状态常量：进行中
+     */
+    public static final Byte STATUS_PROGRESS = 5;
+
+    /**
+     * 服务单状态常量：已完成
+     */
+    public static final Byte STATUS_FINISH = 6;
+
+    /**
+     * 类型名称映射：Byte -> String
+     */
+    public static final Map<Byte, String> TYPE_NAMES = new HashMap<>() {
+        {
+            put(TYPE_ON_SITE, "ONSITE");
+            put(TYPE_DELIVERY, "DELIVERY");
+        }
+    };
+
+    /**
+     * 状态名称映射：Byte -> String
+     */
+    public static final Map<Byte, String> STATUS_NAMES = new HashMap<>() {
+        {
+            put(STATUS_NEW, "NEW");
+            put(STATUS_ASSIGN, "ASSIGN");
+            put(STATUS_CANCEL, "CANCEL");
+            put(STATUS_ONDOOR, "ONDOOR");
+            put(STATUS_RECEIVE, "RECEIVE");
+            put(STATUS_PROGRESS, "PROGRESS");
+            put(STATUS_FINISH, "FINISH");
+        }
+    };
 
     @Getter
     @Setter
@@ -54,11 +115,11 @@ public abstract class ServiceOrder  implements Serializable {
 
     @Getter
     @Setter
-    private Integer type;              //服务单类型：0-上门服务，1-寄件服务
+    private Byte type;              //服务单类型：0-上门服务，1-寄件服务
 
     @Getter
     @Setter
-    private String status;            //服务单状态
+    private Byte status;            //服务单状态
 
     @Getter
     @Setter
@@ -108,27 +169,35 @@ public abstract class ServiceOrder  implements Serializable {
     /**
      * @param serviceProviderId    接单的服务商
      */
-    public void acceptByProvider(Long serviceProviderId) {
-        if (!"NEW".equals(this.status)) {
-            throw new BusinessException(ReturnNo.STATENOTALLOW,"当前状态不可接受");
+    void acceptByProvider(Long serviceProviderId) {
+        if (!STATUS_NEW.equals(this.status)) {
+            throw new BusinessException("当前状态不可接受");
         }
         this.servicproviderId = serviceProviderId;
-        this.status = "ASSIGN";
+        this.status = STATUS_ASSIGN;
         serviceOrderDao.update(this);
         log.info("【ServiceOrder】服务商接单 - serviceOrderId={}, providerId={}", this.id, serviceProviderId);
     }
 
-
-
+    /**
+     * 获取类型名称
+     * @return 类型名称，如 "ONSITE"、"DELIVERY"
+     */
+    public String getTypeName() {
+        return TYPE_NAMES.get(this.type);
+    }
 
     /**
-     * 生成唯一服务单号（业务规则封装）
+     * 获取状态名称
+     * @return 状态名称，如 "NEW"、"ASSIGN" 等
      */
-    private String generateServiceSn(Long shopId, Long aftersalesId) {
-        String timestamp = String.valueOf(System.currentTimeMillis() / 1000); // 秒级时间戳，缩短单号长度
-        String random = UUID.randomUUID().toString().replace("-", "").substring(0, 6); // 6位随机字符串
-        return String.format("SERV_%s_%s_%s_%s", shopId, aftersalesId, timestamp, random);
+    public String getStatusName() {
+        return STATUS_NAMES.get(this.status);
     }
+
+
+
+
 
     /**
      * 校验必填信息（业务规则封装）
@@ -144,11 +213,7 @@ public abstract class ServiceOrder  implements Serializable {
 
     }
 
-    //完成服务单
-    public void finish(Long workerId) {
 
-    }
-    //服务商接收到顾客寄件
-    public void doReceive(Long providerId) {
-    }
+
+
 }

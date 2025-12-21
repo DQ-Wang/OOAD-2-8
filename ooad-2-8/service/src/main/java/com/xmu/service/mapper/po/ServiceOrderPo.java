@@ -22,8 +22,7 @@ import lombok.Setter;
 public class ServiceOrderPo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     /**
      * 服务单编号

@@ -15,7 +15,7 @@ import java.util.Optional;
  * 服务单持久化对象 Mapper
  */
 @Repository
-public interface ServiceOrderPoMapper extends JpaRepository<ServiceOrderPo, Long> {
+public interface ServiceOrderPoMapper extends JpaRepository<ServiceOrderPo, String> {
 
     /**
      * 根据员工ID查询服务单列表

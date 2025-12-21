@@ -1,9 +1,7 @@
 package com.xmu.service.Dao.assembler;
 
-import cn.edu.xmu.javaee.core.clonefactory.CloneFactory;
 import com.xmu.service.Dao.ServiceOrderDao;
 import com.xmu.service.Dao.bo.DeliveryServiceOrder;
-import com.xmu.service.Dao.bo.OnSiteServiceOrder;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.mapper.po.ServiceOrderPo;
 import org.springframework.beans.BeanUtils;
@@ -22,7 +20,8 @@ public class DeliveryServiceOrderBuilder implements ServiceOrderBuilder {
 
     @Override
     public ServiceOrder build(ServiceOrderPo po, ServiceOrderDao dao) {
-        DeliveryServiceOrder bo = BeanUtils.copyProperties( po,new DeliveryServiceOrder());
+        DeliveryServiceOrder bo = new DeliveryServiceOrder();
+        BeanUtils.copyProperties(po, bo);
         bo.setServiceOrderDao(dao);
         return bo;
     }

@@ -1,6 +1,5 @@
 package com.xmu.service.Dao.assembler;
 
-import cn.edu.xmu.javaee.core.clonefactory.CloneFactory;
 import com.xmu.service.Dao.ServiceOrderDao;
 import com.xmu.service.Dao.bo.OnSiteServiceOrder;
 import com.xmu.service.Dao.bo.ServiceOrder;
@@ -22,7 +21,8 @@ public class OnsiteServiceOrderBuilder implements ServiceOrderBuilder {
 
     @Override
     public ServiceOrder build(ServiceOrderPo po, ServiceOrderDao dao) {
-        OnSiteServiceOrder bo =BeanUtils.copyProperties( po,new OnSiteServiceOrder());
+        OnSiteServiceOrder bo = new OnSiteServiceOrder();
+        BeanUtils.copyProperties(po, bo);
         bo.setServiceOrderDao(dao);
         return bo;
     }

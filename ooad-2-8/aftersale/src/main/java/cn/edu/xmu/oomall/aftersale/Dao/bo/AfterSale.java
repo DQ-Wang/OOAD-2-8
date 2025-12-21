@@ -69,4 +69,8 @@ public abstract class AfterSale {
         this.setStatus(confirm ? (byte) 1 : (byte) 2);
         log.debug("saveAftersale:aftersaleId={}",aftersaleId);
     }
+
+
+
+
 }

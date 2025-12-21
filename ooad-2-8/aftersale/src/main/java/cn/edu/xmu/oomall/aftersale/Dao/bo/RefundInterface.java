@@ -9,7 +9,7 @@ public interface RefundInterface
     default void refund(AfterSale afterSale)
     {
         Logger log = LoggerFactory.getLogger(RefundInterface.class);
-        log.info("【Refund BO已退款】 - aftersaleId={}",afterSale.getServiceOrderId());
+        log.info("【{} BO已退款】 - aftersaleId={}",afterSale.getClass().getSimpleName(),afterSale.getServiceOrderId());
     }
 
 }

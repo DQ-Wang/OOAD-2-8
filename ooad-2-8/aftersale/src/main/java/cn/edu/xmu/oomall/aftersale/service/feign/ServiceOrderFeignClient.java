@@ -1,6 +1,7 @@
 package cn.edu.xmu.oomall.aftersale.service.feign;
 
 import cn.edu.xmu.oomall.aftersale.Dao.bo.Maintenance;
+import cn.edu.xmu.oomall.aftersale.controller.dto.CreateExpressDto;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,7 @@ public interface ServiceOrderFeignClient {
             // 路径占位符{shopId} → @PathVariable("shopId") 绑定
             @PathVariable("shopId") Long shopId,
             // 请求体参数
-            @RequestBody CreateServiceOrderDto createServiceOrderDto
+            @RequestBody CreateExpressDto createExpressDto
     );
 
 
@@ -58,9 +59,7 @@ public interface ServiceOrderFeignClient {
             // 路径占位符{shopId} → @PathVariable("shopId") 绑定
             @PathVariable("shopId") Long shopId,
             // 路径占位符{id} → @PathVariable("id") 绑定（参数名可仍为expressId，注解内指定"id"即可）
-            @PathVariable("id") Long expressId,
-            // 请求体参数
-            @RequestBody CreateServiceOrderDto createServiceOrderDto
+            @PathVariable("id") Long expressId
     );
 
 

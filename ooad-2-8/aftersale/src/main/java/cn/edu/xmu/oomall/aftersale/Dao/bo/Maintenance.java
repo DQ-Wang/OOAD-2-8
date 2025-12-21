@@ -110,8 +110,8 @@ public class Maintenance extends AfterSale {
     }
 
     @Override
-    public String CancleAftersale(String reason) {
-        return "";
+    public boolean CancleAftersale(String reason) {
+        return true;
     }
 
 

@@ -66,16 +66,10 @@ public class ExchangeProduct extends AfterSale{
                     shopId, aftersaleId, this.getCustomerId(), this.getProductId());
 
             // 调用Feign客户端创建服务单（返回服务单ID）
-            CreateServiceOrderDto createServiceOrderDto = new CreateServiceOrderDto();
-            createServiceOrderDto.setCustomerId(this.getCustomerId());
-            createServiceOrderDto.setProductId(this.getProductId());
-            createServiceOrderDto.setAddress(this.getAddress());
-            createServiceOrderDto.setMobile(this.getMobile());
-            log.info("【ExchangeProduct BO】Feign调用参数构造完成 - DTO={}", createServiceOrderDto);
 
             log.info("【ExchangeProduct BO】开始Feign调用服务订单模块 - URL将通过service.order.base-url配置, shopId={}, aftersaleId={}",
                     shopId, aftersaleId);
-            ResponseEntity<String> serviceId = afterSaleDao.serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
+            ResponseEntity<String> serviceId = afterSaleDao.serviceOrderFeignClient.createExpress(shopId)
 
             String serviceOrderSn = serviceId.getBody();
             log.info("【ExchangeProduct BO】Feign调用成功，收到服务单号 - aftersaleId={}, serviceOrderSn={}",
@@ -108,8 +102,8 @@ public class ExchangeProduct extends AfterSale{
     }
 
     @Override
-    public String CancleAftersale(String reason) {
-        return "";
+    public boolean CancleAftersale(String reason) {
+        return true;
     }
 
 

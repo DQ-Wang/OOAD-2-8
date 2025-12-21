@@ -1,10 +1,10 @@
 ###
-PUT http://localhost:8080/shops/1001/aftersales/1/confirm
+PUT http://1.94.217.88:8080/shops/1005/aftersales/24/confirm
 Content-Type: application/json
 
 {
   "confirm": true,
-  "conclusion": "审核通过",
+  "conclusion": "approve",
   "type": 1
 }
 

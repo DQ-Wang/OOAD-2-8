@@ -3,6 +3,7 @@ import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
+import cn.edu.xmu.oomall.aftersale.service.vo.AftersaleProductVo;
 import cn.edu.xmu.oomall.aftersale.service.vo.AftersaleVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,51 @@ public class AftersaleController {
         AftersaleVo aftersaleVo = aftersaleService.reviewAftersale(id,dto);
 
         log.info("【审核售后API完成】审核成功 - shopId={}, aftersaleId={}, 返回结果={}", shopId, id, aftersaleVo);
+        return new ReturnObject(ReturnNo.OK,"成功",aftersaleVo);
+    }
+
+
+    /**
+     * 商户验收售后商品（对应API：/shops/{shopId}/aftersales/{aftersaleId}/receive）
+     *
+     * @param shopId 路径参数：店铺id
+     * @param aftersaleId 路径参数：售后单id
+     * @param confirm 是否确认验收
+     * @param reason 拒绝验收理由
+     * @return 统一返回对象（包含操作结果）
+     */
+    @Audit(departName = "shops")
+    @PutMapping("/{aftersaleId}/receive")
+    public ReturnObject confirmProduct(@PathVariable Long shopId, @PathVariable Long aftersaleId, @RequestBody boolean confirm,@RequestBody String reason)
+    {
+        log.info("【验收售后商品API入口】收到审核请求 - shopId={}, aftersaleId={}, confirm={}, conclusion={}",
+                shopId, aftersaleId, confirm, reason);
+        log.debug("ReturnProduct(Controller): aftersaleId = {}", aftersaleId);
+
+        AftersaleProductVo aftersaleProductVo = aftersaleService.confirmProduct(aftersaleId,confirm,reason);
+
+        log.info("【验收售后商品API完成】审核成功 - shopId={}, aftersaleId={}, 返回结果={}", shopId, aftersaleId, aftersaleProductVo);
+        return new ReturnObject(ReturnNo.OK,"成功",aftersaleProductVo);
+    }
+
+    /**
+     * 商户取消售后（对应API：/shops/{shopId}/aftersales/{aftersaleId}/cancle)
+     *
+     * @param shopId 路径参数：店铺id
+     * @param aftersaleId 路径参数：售后单id
+     * @return 统一返回对象（包含操作结果）
+     */
+    @Audit(departName = "shops")
+    @PutMapping("/{aftersaleId}/cancle")
+    public ReturnObject cancelAftersale(@PathVariable Long shopId, @PathVariable Long aftersaleId)
+    {
+        log.info("【取消售后单API入口】收到审核请求 - shopId={}, aftersaleId={}",
+                shopId, aftersaleId);
+        log.debug("ReturnProduct(Controller): aftersaleId = {}", aftersaleId);
+
+        AftersaleVo aftersaleVo = aftersaleService.cancelAftersale(aftersaleId);
+
+        log.info("【取消售后单API完成】审核成功 - shopId={}, aftersaleId={}, 返回结果={}", shopId, aftersaleId, aftersaleVo);
         return new ReturnObject(ReturnNo.OK,"成功",aftersaleVo);
     }
 }

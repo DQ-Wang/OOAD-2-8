@@ -60,7 +60,7 @@ spring:
 
 service:
   order:
-    # 本地开发时，服务订单模块运行在本机 8081 端口
+    # Docker Swarm部署时，使用服务名访问服务订单模块（服务名与docker.yml中的service服务名一致）
     base-url: http://localhost:8081
 
 server:

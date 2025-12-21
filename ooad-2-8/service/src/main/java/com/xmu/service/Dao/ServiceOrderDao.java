@@ -1,41 +1,75 @@
 package com.xmu.service.Dao;
 
-import com.xmu.service.Dao.bo.ServiceOrderBo;
-import com.xmu.service.mapper.ServiceOrderMapper ;
+import cn.edu.xmu.javaee.core.exception.BusinessException;
+import cn.edu.xmu.javaee.core.model.ReturnNo;
+import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
+import com.xmu.service.Dao.bo.ServiceOrder;
+import com.xmu.service.mapper.ServiceOrderPoMapper ;
 import com.xmu.service.mapper.po.ServiceOrderPo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 /**
  * 服务单Dao（封装数据操作）
  */
+@Slf4j
 @Repository
 public class ServiceOrderDao {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceOrderDao.class);
-    
-    @Autowired
-    private ServiceOrderMapper serviceOrderMapper;
 
-    /**
-     * 保存服务单（调用Mapper持久化）
-     */
-    public void save(ServiceOrderBo bo) {
-        LOGGER.info("【ServiceOrder Dao】开始保存服务单到数据库 - serviceSn={}, aftersalesId={}", 
-                bo.getServiceSn(), bo.getAftersalesId());
-        LOGGER.debug("【ServiceOrder Dao】BO转PO前 - BO={}", bo);
-        
-        ServiceOrderPo po = bo.toPo();
-        LOGGER.debug("【ServiceOrder Dao】BO转PO完成，准备执行INSERT - PO={}", po);
-        
-        serviceOrderMapper.insert(po);
-        LOGGER.info("【ServiceOrder Dao】INSERT执行完成，准备回写主键ID到BO");
-        
-        // 回写主键ID（MyBatis的@Options会自动填充po.id）
-        bo.setId(po.getId()); 
-        LOGGER.info("【ServiceOrder Dao】服务单保存完成 - serviceOrderId={}, serviceSn={}", 
-                bo.getId(), bo.getServiceSn());
+
+    private final ServiceOrderPoMapper mapper;
+    private final Map<String, ServiceOrderBuilder> builders;
+
+    @Autowired
+    public ServiceOrderDao(ServiceOrderPoMapper mapper, List<ServiceOrderBuilder> builders) {
+        this.mapper = mapper;
+        // 将所有构建器按 type 建立映射，避免在 Dao 中写 switch / if-else
+        this.builders = builders.stream()
+                .collect(Collectors.toMap(ServiceOrderBuilder::getType, Function.identity()));
     }
+
+    public ServiceOrder findById(Long id) {
+        ServiceOrderPo po = mapper.findById(id)
+                .orElseThrow(() -> new BusinessException(
+                        ReturnNo.RESOURCE_ID_NOTEXIST,
+                        String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "服务单", id)
+                ));
+        return build(po);
+    }
+
+    /* ================= 构建 BO ================= */
+
+    private ServiceOrder build(ServiceOrderPo po) {
+        if (po.getType() == null) {
+            throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
+                    "ServiceOrderDao.build: po.type is null");
+        }
+        ServiceOrderBuilder builder = builders.get(po.getType());
+        if (builder == null) {
+            throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
+                    "ServiceOrderDao.build: unknown type " + po.getType());
+        }
+        // 具体子类的创建与属性拷贝交给对应的构建器完成
+        return builder.build(po, this);
+    }
+
+
+    public void update(ServiceOrder bo)
+    {
+
+    }
+
+    public ServiceOrder insert(ServiceOrder bo)
+    {
+
+    }
+
+
 }

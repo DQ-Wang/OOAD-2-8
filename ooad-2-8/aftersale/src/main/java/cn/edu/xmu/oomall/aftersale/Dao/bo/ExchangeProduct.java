@@ -50,7 +50,7 @@ public class ExchangeProduct extends AfterSale{
         // 1. 审核拒绝：仅更新状态，无额外逻辑
         if (!confirm) {
             log.info("【ExchangeProduct BO】审核拒绝，仅更新售后状态 - aftersaleId={}", this.getAftersaleId());
-            super.SetStatus(false, reason); // 调用父类普通虚方法更新状态
+            super.ConfirmAftersale(false, reason); // 调用父类普通虚方法更新状态
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
             log.info("【ExchangeProduct BO】审核拒绝处理完成 - aftersaleId={}", this.getAftersaleId());
             result="NULL";
@@ -87,7 +87,7 @@ public class ExchangeProduct extends AfterSale{
             log.info("【ExchangeProduct BO】已绑定服务单号到售后单 - aftersaleId={}, serviceOrderId={}",
                     this.getAftersaleId(), serviceOrderSn);
 
-            super.SetStatus(true, reason); // 调用父类方法更新状态
+            super.ConfirmAftersale(true, reason); // 调用父类方法更新状态
             log.info("【ExchangeProduct BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
 
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）

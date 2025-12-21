@@ -24,7 +24,7 @@ public class RefundOnly extends AfterSale implements RefundInterface{
         // 1. 审核拒绝：仅更新状态，无额外逻辑
         if (!confirm) {
             log.info("【Refund BO】审核拒绝，仅更新售后状态 - aftersaleId={}", this.getAftersaleId());
-            super.SetStatus(false, reason); // 调用父类普通虚方法更新状态
+            super.ConfirmAftersale(false, reason); // 调用父类普通虚方法更新状态
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
             this.afterSaleDao.saveAftersale(this.getAftersalePo());
             log.info("【Refund BO】审核拒绝处理完成 - aftersaleId={}", this.getAftersaleId());
@@ -34,7 +34,7 @@ public class RefundOnly extends AfterSale implements RefundInterface{
         // 2. 审核同意：日志打印退款信息
         log.info("【Refund BO】审核同意，准备退款 - aftersaleId={}", this.getAftersaleId());
         try {
-            super.SetStatus(true, reason); // 调用父类方法更新状态
+            super.ConfirmAftersale(true, reason); // 调用父类方法更新状态
             log.info("【Refund BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
 
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
@@ -52,5 +52,20 @@ public class RefundOnly extends AfterSale implements RefundInterface{
         }
     }
 
+    @Override
+    public boolean CancleAftersale(String reason) {
+        throw new IllegalArgumentException("仅退款类型不能取消！");
+    }
 
+    @Override
+    public void ConfirmAftersale(boolean confirm, String reason) {
+        if(confirm)
+        {
+            setStatus((byte)6); //设为已完成
+        }
+        else
+        {
+            setStatus((byte)2); //设为已拒绝
+        }
+    }
 }

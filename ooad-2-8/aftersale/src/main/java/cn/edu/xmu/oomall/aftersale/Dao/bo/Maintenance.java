@@ -53,7 +53,7 @@ public class Maintenance extends AfterSale {
         // 1. 审核拒绝：仅更新状态，无额外逻辑
         if (!confirm) {
             log.info("【Maintenance BO】审核拒绝，仅更新售后状态 - aftersaleId={}", this.getAftersaleId());
-            super.SetStatus(false, reason); // 调用父类普通虚方法更新状态
+            super.ConfirmAftersale(false, reason); // 调用父类普通虚方法更新状态
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
             this.afterSaleDao.saveAftersale(this.getAftersalePo());
             log.info("【Maintenance BO】审核拒绝处理完成 - aftersaleId={}", this.getAftersaleId());
@@ -91,7 +91,7 @@ public class Maintenance extends AfterSale {
             log.info("【Maintenance BO】已绑定服务单号到售后单 - aftersaleId={}, serviceOrderId={}", 
                     this.getAftersaleId(), serviceOrderSn);
             
-            super.SetStatus(true, reason); // 调用父类方法更新状态
+            super.ConfirmAftersale(true, reason); // 调用父类方法更新状态
             log.info("【Maintenance BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
             
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）

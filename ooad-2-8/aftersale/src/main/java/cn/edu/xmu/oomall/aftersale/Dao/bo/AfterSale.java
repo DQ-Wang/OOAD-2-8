@@ -4,11 +4,8 @@ package cn.edu.xmu.oomall.aftersale.Dao.bo;
 import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
-import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 对应类图中的`aftersale`：售后业务抽象父类
@@ -68,7 +65,7 @@ public abstract class AfterSale {
 
 
     // 类图中定义的通用方法：设置售后状态
-    public void SetStatus(boolean confirm, String reason) {
+    public void ConfirmAftersale(boolean confirm, String reason) {
         log.debug("SetStatus:aftersaleId={},confirm={}",
                 aftersaleId, confirm);
         // 通用逻辑：更新售后状态（子类可重写扩展）

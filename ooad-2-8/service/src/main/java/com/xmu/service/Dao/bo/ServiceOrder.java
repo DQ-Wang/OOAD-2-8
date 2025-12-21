@@ -53,7 +53,7 @@ public abstract class ServiceOrder  implements Serializable {
 
     @Getter
     @Setter
-    private Integer type;              //服务单类型：0-上门服务，1-寄件服务
+    private String type;              //服务单类型：0-上门服务，1-寄件服务
 
     @Getter
     @Setter
@@ -120,14 +120,6 @@ public abstract class ServiceOrder  implements Serializable {
 
 
 
-    /**
-     * 生成唯一服务单号（业务规则封装）
-     */
-    private String generateServiceSn(Long shopId, Long aftersalesId) {
-        String timestamp = String.valueOf(System.currentTimeMillis() / 1000); // 秒级时间戳，缩短单号长度
-        String random = UUID.randomUUID().toString().replace("-", "").substring(0, 6); // 6位随机字符串
-        return String.format("SERV_%s_%s_%s_%s", shopId, aftersalesId, timestamp, random);
-    }
 
     /**
      * 校验必填信息（业务规则封装）

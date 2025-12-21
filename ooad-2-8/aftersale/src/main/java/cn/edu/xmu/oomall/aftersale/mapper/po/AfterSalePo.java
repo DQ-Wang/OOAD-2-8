@@ -58,7 +58,6 @@ public class AfterSalePo {
      * 1=维修 2=仅退款 3=退货退款 4=换货
      */
     private Byte type;
-    private String beanName;
 
     /**
      * 售后状态

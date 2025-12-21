@@ -27,7 +27,7 @@ public class AfterSaleFactory {
         AfterSale bo;
         switch (aftersalePo.getType()) {
             case 1:
-                bo=new Maintenance(afterSaleDao,serviceOrderFeignClient);
+                bo=new Maintenance(afterSaleDao);
                 break;
 
             default:bo=null;

@@ -36,9 +36,9 @@ public class Maintenance extends AfterSale {
     private ServiceOrderFeignClient serviceOrderFeignClient;
 
 
-    public Maintenance(AfterSaleDao afterSaleDao,ServiceOrderFeignClient serviceOrderFeignClient) {
+    public Maintenance(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
-        this.serviceOrderFeignClient = serviceOrderFeignClient;
+        this.serviceOrderFeignClient = this.afterSaleDao.serviceOrderFeignClient;
     }
 
 
@@ -83,7 +83,7 @@ public class Maintenance extends AfterSale {
 
             log.info("【Maintenance BO】开始Feign调用服务订单模块 - URL将通过service.order.base-url配置, shopId={}, aftersaleId={}", 
                     shopId, aftersaleId);
-            ResponseEntity<String> serviceId = serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
+            ResponseEntity<String> serviceId = afterSaleDao.serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
             
             String serviceOrderSn = serviceId.getBody();
             log.info("【Maintenance BO】Feign调用成功，收到服务单号 - aftersaleId={}, serviceOrderSn={}", 

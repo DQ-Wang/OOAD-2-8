@@ -17,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReturnAndRefund extends AfterSale implements RefundInterface
 {
 
-    // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
-    @Resource
-    @JsonIgnore
-    private ServiceOrderFeignClient serviceOrderFeignClient;
+
 
     @Override
     public String HandleAftersale(boolean confirm, String reason) {

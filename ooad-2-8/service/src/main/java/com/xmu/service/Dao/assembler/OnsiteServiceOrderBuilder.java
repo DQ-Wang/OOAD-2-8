@@ -5,6 +5,7 @@ import com.xmu.service.Dao.ServiceOrderDao;
 import com.xmu.service.Dao.bo.OnSiteServiceOrder;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.mapper.po.ServiceOrderPo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,7 +22,7 @@ public class OnsiteServiceOrderBuilder implements ServiceOrderBuilder {
 
     @Override
     public ServiceOrder build(ServiceOrderPo po, ServiceOrderDao dao) {
-        OnSiteServiceOrder bo = CloneFactory.copy(new OnSiteServiceOrder(), po);
+        OnSiteServiceOrder bo =BeanUtils.copyProperties( po,new OnSiteServiceOrder());
         bo.setServiceOrderDao(dao);
         return bo;
     }

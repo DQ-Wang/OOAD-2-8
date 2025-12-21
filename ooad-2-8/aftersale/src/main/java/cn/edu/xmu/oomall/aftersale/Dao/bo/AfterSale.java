@@ -27,15 +27,18 @@ public abstract class AfterSale {
     private long productId;      // 商品ID
     private Long regionId;       // 地区ID（关联region模块的RegionPo）
     private long orderId;        // 订单ID
-    protected String serviceOrderId;      // 服务单ID
     private Long customerId;     // 顾客ID
     private Byte type;           // 售后类型：1=维修 2=仅退款 3=退货退款 4=换货
-    private Byte status;         // 售后状态：0=待审核 1=已同意 2=已拒绝 3=已完成
-    protected String reason;       // 审核原因
+    private Byte status;         // 售后状态：0=待审核 1=已同意 2=已拒绝 3=商家待收货 4=待分配服务商 5=服务待完成 6=已完成 7=已取消
+    protected String reason;     // 审核原因
     protected String beanName;
     protected String mobile;
     protected String address;
     protected int quantity;
+    protected String serviceOrderId;      // 服务单ID
+    protected String returnExpress;       //退货运单
+    protected String deliverExpress;      //发货运单
+
 
 
     protected AfterSalePo aftersalePo;
@@ -59,6 +62,10 @@ public abstract class AfterSale {
     // 审核售后
     public abstract String HandleAftersale(boolean confirm, String reason);
 
+    // 取消售后
+    public abstract String CancleAftersale(String reason);
+
+
 
     // 类图中定义的通用方法：设置售后状态
     public void SetStatus(boolean confirm, String reason) {
@@ -69,4 +76,8 @@ public abstract class AfterSale {
         this.setStatus(confirm ? (byte) 1 : (byte) 2);
         log.debug("saveAftersale:aftersaleId={}",aftersaleId);
     }
+
+
+
+
 }

@@ -42,4 +42,26 @@ public interface ServiceOrderFeignClient {
             // 请求体参数
             @RequestBody CreateServiceOrderDto createServiceOrderDto
     );
+
+
+    @PostMapping("/internal/shops/{shopId}/packages")
+    ResponseEntity<String> createExpress(
+            // 路径占位符{shopId} → @PathVariable("shopId") 绑定
+            @PathVariable("shopId") Long shopId,
+            // 请求体参数
+            @RequestBody CreateServiceOrderDto createServiceOrderDto
+    );
+
+
+    @PostMapping("/internal/shops/{shopId}/packages/{id}/cancel")
+    ResponseEntity<String> cancleExpress(
+            // 路径占位符{shopId} → @PathVariable("shopId") 绑定
+            @PathVariable("shopId") Long shopId,
+            // 路径占位符{id} → @PathVariable("id") 绑定（参数名可仍为expressId，注解内指定"id"即可）
+            @PathVariable("id") Long expressId,
+            // 请求体参数
+            @RequestBody CreateServiceOrderDto createServiceOrderDto
+    );
+
+
 }

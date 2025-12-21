@@ -1,5 +1,4 @@
 package com.xmu.service.mapper;
-
 import com.xmu.service.mapper.po.ServiceOrderPo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,10 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * 员工持久化对象（对应worker表）
- */
-public interface WorkerPoMapper extends JpaRepository<ServiceOrderPo, Long>{
-
-
+public interface ServiceProviderPoMapper extends JpaRepository<ServiceOrderPo, Long>{
 }

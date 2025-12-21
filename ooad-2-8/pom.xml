@@ -18,6 +18,7 @@
         <module>aftersale</module>
         <module>core</module>
         <module>service</module>
+        <module>Express</module>
     </modules>
     <url/>
     <licenses>

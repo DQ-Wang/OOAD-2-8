@@ -1,6 +1,7 @@
 package com.xmu.service.Dao.bo;
 
 import cn.edu.xmu.javaee.core.exception.BusinessException;
+import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.ServiceOrderDao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -53,7 +54,7 @@ public abstract class ServiceOrder  implements Serializable {
 
     @Getter
     @Setter
-    private String type;              //服务单类型：0-上门服务，1-寄件服务
+    private Integer type;              //服务单类型：0-上门服务，1-寄件服务
 
     @Getter
     @Setter
@@ -107,9 +108,9 @@ public abstract class ServiceOrder  implements Serializable {
     /**
      * @param serviceProviderId    接单的服务商
      */
-    void acceptByProvider(Long serviceProviderId) {
+    public void acceptByProvider(Long serviceProviderId) {
         if (!"NEW".equals(this.status)) {
-            throw new BusinessException("当前状态不可接受");
+            throw new BusinessException(ReturnNo.STATENOTALLOW,"当前状态不可接受");
         }
         this.servicproviderId = serviceProviderId;
         this.status = "ASSIGN";
@@ -120,6 +121,14 @@ public abstract class ServiceOrder  implements Serializable {
 
 
 
+    /**
+     * 生成唯一服务单号（业务规则封装）
+     */
+    private String generateServiceSn(Long shopId, Long aftersalesId) {
+        String timestamp = String.valueOf(System.currentTimeMillis() / 1000); // 秒级时间戳，缩短单号长度
+        String random = UUID.randomUUID().toString().replace("-", "").substring(0, 6); // 6位随机字符串
+        return String.format("SERV_%s_%s_%s_%s", shopId, aftersalesId, timestamp, random);
+    }
 
     /**
      * 校验必填信息（业务规则封装）
@@ -135,7 +144,11 @@ public abstract class ServiceOrder  implements Serializable {
 
     }
 
+    //完成服务单
+    public void finish(Long workerId) {
 
-
-
+    }
+    //服务商接收到顾客寄件
+    public void doReceive(Long providerId) {
+    }
 }

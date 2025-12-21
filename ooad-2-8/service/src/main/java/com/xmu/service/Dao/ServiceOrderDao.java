@@ -1,6 +1,5 @@
 package com.xmu.service.Dao;
 
-import cn.edu.xmu.javaee.core.clonefactory.CloneFactory;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
@@ -8,14 +7,9 @@ import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.mapper.ServiceOrderPoMapper ;
 import com.xmu.service.mapper.po.ServiceOrderPo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -50,13 +44,6 @@ public class ServiceOrderDao {
         return build(po);
     }
 
-    public List<ServiceOrder> retrieveByWorkerId(Long workerId) {
-        return mapper.findByWorkerId(workerId, Pageable.unpaged()).stream()
-                .map(this::build)
-                .toList();
-    }
-
-
     /* ================= 构建 BO ================= */
 
     private ServiceOrder build(ServiceOrderPo po) {
@@ -64,6 +51,7 @@ public class ServiceOrderDao {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
                     "ServiceOrderDao.build: po.type is null");
         }
+
         // 使用 type 的 Byte 值查找对应的 builder
         // 需要将 Byte 转换为 String 作为 Map 的 key
         String typeName = ServiceOrder.TYPE_NAMES.get(po.getType());
@@ -72,11 +60,13 @@ public class ServiceOrderDao {
                     "ServiceOrderDao.build: unknown type " + po.getType());
         }
         ServiceOrderBuilder builder = builders.get(typeName);
+
         if (builder == null) {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
                     "ServiceOrderDao.build: unknown type " + po.getType());
         }
         // 具体子类的创建与属性拷贝交给对应的构建器完成
+
         ServiceOrder bo = builder.build(po, this);
 
         
@@ -125,21 +115,15 @@ public class ServiceOrderDao {
 
 
 
-    /**
-     * 将Date转换为LocalDateTime
-     */
-    private LocalDateTime convertDateToLocalDateTime(Date date) {
-        if (date == null) {
-            return null;
-        }
-        Instant instant = date.toInstant();
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+    public void update(ServiceOrder bo)
+    {
+
     }
 
     public ServiceOrder insert(ServiceOrder bo)
     {
-        // TODO: 实现插入逻辑
-        return null;
+
+        return bo;
     }
 
 

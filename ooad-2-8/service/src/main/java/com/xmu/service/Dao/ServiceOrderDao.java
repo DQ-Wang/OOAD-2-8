@@ -5,7 +5,6 @@ import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
 import com.xmu.service.Dao.bo.ServiceOrder;
-import com.xmu.service.Dao.converter.ServiceOrderConverter;
 import com.xmu.service.mapper.ServiceOrderPoMapper ;
 import com.xmu.service.mapper.po.ServiceOrderPo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,18 +32,16 @@ public class ServiceOrderDao {
 
     private final ServiceOrderPoMapper mapper;
     private final Map<String, ServiceOrderBuilder> builders;
-    private final ServiceOrderConverter converter;
 
     @Autowired
-    public ServiceOrderDao(ServiceOrderPoMapper mapper, List<ServiceOrderBuilder> builders, ServiceOrderConverter converter) {
+    public ServiceOrderDao(ServiceOrderPoMapper mapper, List<ServiceOrderBuilder> builders) {
         this.mapper = mapper;
-        this.converter = converter;
         // 将所有构建器按 type 建立映射，避免在 Dao 中写 switch / if-else
         this.builders = builders.stream()
                 .collect(Collectors.toMap(ServiceOrderBuilder::getType, Function.identity()));
     }
 
-    public ServiceOrder findById(Long id) {
+    public ServiceOrder findById(String id) {
         ServiceOrderPo po = mapper.findById(id)
                 .orElseThrow(() -> new BusinessException(
                         ReturnNo.RESOURCE_ID_NOTEXIST,
@@ -67,18 +64,21 @@ public class ServiceOrderDao {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
                     "ServiceOrderDao.build: po.type is null");
         }
-        // 将Byte类型的type转换为String，用于查找对应的builder
-        String typeStr = converter.convertTypeByteToString(po.getType());
-        ServiceOrderBuilder builder = builders.get(typeStr);
+        // 使用 type 的 Byte 值查找对应的 builder
+        // 需要将 Byte 转换为 String 作为 Map 的 key
+        String typeName = ServiceOrder.TYPE_NAMES.get(po.getType());
+        if (typeName == null) {
+            throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
+                    "ServiceOrderDao.build: unknown type " + po.getType());
+        }
+        ServiceOrderBuilder builder = builders.get(typeName);
         if (builder == null) {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
                     "ServiceOrderDao.build: unknown type " + po.getType());
         }
         // 具体子类的创建与属性拷贝交给对应的构建器完成
         ServiceOrder bo = builder.build(po, this);
-        
-        // 使用转换器处理需要类型转换的字段（id, type, status）
-        converter.convertPoToBo(po, bo);
+
         
         return bo;
     }
@@ -102,33 +102,22 @@ public class ServiceOrderDao {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, "服务单ID不能为空");
         }
 
-        // 2. 将 String id 转换为 Long id（转换器会在 convertBoToPo 中处理，这里先转换用于查询）
-        Long id;
-        try {
-            id = Long.parseLong(bo.getId());
-        } catch (NumberFormatException e) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, 
-                    String.format("服务单ID格式错误: %s", bo.getId()));
-        }
-
-        // 3. 查询现有数据（用于合并更新，保留未修改的字段）
-        ServiceOrderPo oldPo = mapper.findById(id)
+        // 2. 查询现有数据（用于合并更新，保留未修改的字段）
+        ServiceOrderPo oldPo = mapper.findById(bo.getId())
                 .orElseThrow(() -> new BusinessException(
                         ReturnNo.RESOURCE_ID_NOTEXIST,
-                        String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "服务单", id)
+                        String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "服务单", bo.getId())
                 ));
 
-        // 4. 使用 CloneFactory.copyNotNull 自动拷贝所有匹配字段
+        // 3. 使用 CloneFactory.copyNotNull 自动拷贝所有匹配字段
         // 拷贝：serviceSn, serviceConsignee, serviceMobile, address,
-        //            description, expressId, workerId, serviceProviderId 等所有匹配字段
+        //            description, expressId, workerId, serviceProviderId, type, status 等所有匹配字段
         ServiceOrderPo po = CloneFactory.copyNotNull(oldPo, bo);
 
-        // 5. 使用转换器处理需要类型转换的字段（id, type, status）
-        converter.convertBoToPo(bo, po);
 
-        // 6. 保存更新
+        // 4. 保存更新
         mapper.save(po);
-        log.info("【ServiceOrderDao】更新服务单成功 - id={}", id);
+        log.info("【ServiceOrderDao】更新服务单成功 - id={}", bo.getId());
     }
 
 

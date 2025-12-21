@@ -1,53 +1,124 @@
 package com.xmu.service.Dao.bo;
 
+import cn.edu.xmu.javaee.core.exception.BusinessException;
+import com.xmu.service.Dao.ServiceOrderDao;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
-import com.xmu.service.controller.dto.CreateServiceOrderDto;
-import com.xmu.service.mapper.po.ServiceOrderPo;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
+
 /**
- * 服务单领域业务对象（充血模型）
+ * 抽象服务单
  */
-public class ServiceOrder {
-    private Long id;
-    private String serviceSn;
-    private String serviceConsignee;
-    private String serviceMobile;
-    private String address;
-    private Integer type;
-    private Integer status;
-    private Date createTime;
-    private String problemImageUrl;
-    private String description;
-    private Long productId;
-    private Long expressId;
-    private Long customerId;
-    private Long shopId;       // 对应API路径中的{shopId}，关联商铺
-    private Long aftersalesId;
+@Slf4j
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public abstract class ServiceOrder  implements Serializable {
 
     /**
-     * 用请求DTO初始化BO
+     * 服务单类型：上门服务
      */
-    public ServiceOrder(CreateServiceOrderDto dto, Long shopId, Long aftersalesId) {
-        // 初始化属性
-        this.serviceConsignee = dto.getName();
-        this.serviceMobile = dto.getMobile();
-        this.address = dto.getAddress();
-        this.type = dto.getType();
-        this.problemImageUrl = dto.getProblemImageUrl();
-        this.description = dto.getDescription();
-        this.productId = dto.getProductId();
-        this.customerId = dto.getCustomerId();
-        this.expressId = dto.getExpressId();
-        this.shopId = shopId;
-        this.aftersalesId = aftersalesId;
+    public static final String TYPE_ON_SITE = "ONSITE";
 
-        // 业务规则：默认状态+生成服务单号
-        this.status = 0; // 0-待处理
-        this.createTime = new Date();
-        this.serviceSn = generateServiceSn(shopId, aftersalesId);
+    /**
+     * 服务单类型：寄件服务
+     */
+    public static final String TYPE_DELIVERY = "DELIVERY";
+
+    @Getter
+    @Setter
+    private String id;
+
+    @Getter
+    @Setter
+    private String serviceSn;      //服务单编号，唯一
+
+    @Getter
+    @Setter
+    private String serviceConsignee;  //联系人
+
+    @Getter
+    @Setter
+    private String serviceMobile;    //联系电话
+
+    @Getter
+    @Setter
+    private String address;            //地址
+
+    @Getter
+    @Setter
+    private Integer type;              //服务单类型：0-上门服务，1-寄件服务
+
+    @Getter
+    @Setter
+    private String status;            //服务单状态
+
+    @Getter
+    @Setter
+    private Date createTime;
+
+    @Getter
+    @Setter
+    private String description;
+
+    @Getter
+    @Setter
+    private Long productId;
+
+    @Getter
+    @Setter
+    private Long expressId;
+
+    @Getter
+    @Setter
+    private Long customerId;
+
+    @Getter
+    @Setter
+    private Long shopId;       // 对应API路径中的{shopId}，关联商铺
+
+    @Getter
+    @Setter
+    private Long aftersalesId;
+
+    @Getter
+    @Setter
+    protected Long servicproviderId; // 服务提供商ID
+
+    @Getter
+    @Setter
+    protected Long workerId; // 维修师傅ID
+
+    /**
+     * 持久化访问对象（Dao），由 Dao 在 build 时注入
+     */
+    @JsonIgnore
+    @ToString.Exclude
+    @Setter
+    protected transient ServiceOrderDao serviceOrderDao;
+
+
+    /**
+     * @param serviceProviderId    接单的服务商
+     */
+    void acceptByProvider(Long serviceProviderId) {
+        if (!"NEW".equals(this.status)) {
+            throw new BusinessException("当前状态不可接受");
+        }
+        this.servicproviderId = serviceProviderId;
+        this.status = "ASSIGN";
+        serviceOrderDao.update(this);
+        log.info("【ServiceOrder】服务商接单 - serviceOrderId={}, providerId={}", this.id, serviceProviderId);
     }
+
+
+
 
     /**
      * 生成唯一服务单号（业务规则封装）
@@ -73,44 +144,6 @@ public class ServiceOrder {
     }
 
 
-    /**
-     * BO转PO（数据持久化准备）
-     */
-    public ServiceOrderPo toPo() {
-        ServiceOrderPo po = new ServiceOrderPo();
-        po.setId(this.id);
-        po.setServiceSn(this.serviceSn);
-        po.setServiceConsignee(this.serviceConsignee);
-        po.setServiceMobile(this.serviceMobile);
-        po.setAddress(this.address);
-        po.setType(this.type);
-        po.setStatus(this.status);
-        po.setCreateTime(this.createTime);
-        po.setProblemImageUrl(this.problemImageUrl);
-        po.setDescription(this.description);
-        po.setProductId(this.productId);
-        po.setExpressId(this.expressId);
-        po.setCustomerId(this.customerId);
 
-        po.setShopId(this.shopId);
-        po.setAftersalesId(this.aftersalesId);
-        return po;
-    }
 
-    // 必要的Getter/Setter
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getServiceSn() {
-        return serviceSn;
-    }
-
-    public Long getAftersalesId() {
-        return aftersalesId; // 暴露售后单ID，便于Service层日志打印关联关系
-    }
 }

@@ -16,16 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReturnAndRefund extends AfterSale implements RefundInterface
 {
-
-
-
     @Override
     public String HandleAftersale(boolean confirm, String reason) {
         return "";
     }
 
-    @Override
-    public void refund() {
-        
-    }
+
+
 }

@@ -63,7 +63,7 @@ public abstract class AfterSale {
     public abstract String HandleAftersale(boolean confirm, String reason);
 
     // 取消售后
-    public abstract String CancleAftersale(boolean confirm, String reason);
+    public abstract String CancleAftersale(String reason);
 
 
 

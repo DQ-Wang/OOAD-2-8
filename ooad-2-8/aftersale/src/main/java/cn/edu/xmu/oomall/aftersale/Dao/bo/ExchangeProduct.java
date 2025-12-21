@@ -107,9 +107,10 @@ public class ExchangeProduct extends AfterSale{
 
     }
 
-    
-    
-    
-    
-    
+    @Override
+    public String CancleAftersale(String reason) {
+        return "";
+    }
+
+
 }

@@ -18,6 +18,7 @@ public class ReturnAndRefundbuilder implements AfterSaleBuilder {
     public AfterSale build(AfterSalePo po, AfterSaleDao dao) {
         ReturnAndRefund bo=new ReturnAndRefund(dao);
         BeanUtils.copyProperties(po,bo);
+        bo.setAftersalePo(po);
         return bo;
     }
 }

@@ -47,7 +47,12 @@ public interface AfterSaleFeignClient {
 
 
 
-    //创建运单
+    /**
+     * 创建运单
+     * @param shopId 门店ID（路径参数）
+     * @param createExpressDto 运单创建参数（请求体）
+     * @return 运单信息
+     */
     @PostMapping("/internal/shops/{shopId}/packages")
     ResponseEntity<String> createExpress(
             // 路径占位符{shopId} → @PathVariable("shopId") 绑定
@@ -79,15 +84,15 @@ public interface AfterSaleFeignClient {
 
     /**
      * 取消服务单
-     * @param did 服务商ID（路径参数）
+     * @param shopId 商户ID（路径参数）
      * @param id 服务单ID（路径参数）
      * @param reason 取消原因参数（请求体）
      * @return 取消结果
      */
-    @PutMapping("/serviceproviders/{did}/service/{id}/cancel")
+    @PutMapping("/internal/shops/{shopId}/service/{id}/cancel")
     Boolean cancelServiceOrder(
-            @PathVariable("did") Long did,
-            @PathVariable("id") Long id,
+            @PathVariable("shopId") Long shopId,
+            @PathVariable("id") String id,
             // 请求体参数
             @RequestBody String reason
     );

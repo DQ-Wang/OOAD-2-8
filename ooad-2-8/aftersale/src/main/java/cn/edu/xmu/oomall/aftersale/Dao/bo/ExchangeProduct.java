@@ -1,7 +1,6 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
-import cn.edu.xmu.oomall.aftersale.controller.dto.CreateExpressDto;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Resource;
@@ -20,18 +19,18 @@ import org.springframework.http.ResponseEntity;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
-public class ExchangeProduct extends AfterSale{
+public class ExchangeProduct extends AfterSale implements CreateWayBillInterface{
     
 
     // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
     @Resource
     @JsonIgnore
-    private AfterSaleFeignClient serviceOrderFeignClient;
+    private AfterSaleFeignClient afterSaleFeignClient;
 
 
     public ExchangeProduct(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
-        this.serviceOrderFeignClient = this.afterSaleDao.afterSaleFeignClient;
+        this.afterSaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
     }
 
 
@@ -44,6 +43,9 @@ public class ExchangeProduct extends AfterSale{
         // 通用逻辑：更新售后状态（子类重写扩展）
         this.setReason(reason);
         this.setStatus(confirm ? (byte) 3 : (byte) 2);
+        this.aftersalePo.setReason(reason);
+        this.aftersalePo.setStatus(this.getStatus());
+        this.afterSaleDao.saveAftersale(this.aftersalePo);
         log.debug("saveAftersale:aftersaleId={}",this.getAftersaleId());
     }
 
@@ -85,24 +87,13 @@ public class ExchangeProduct extends AfterSale{
             log.info("【ExchangeProduct BO】开始Feign调用物流模块 - URL将通过service.order.base-url配置, shopId={}, aftersaleId={}",
                     shopId, aftersaleId);
 
-            CreateExpressDto createExpressDto = new CreateExpressDto();
-            BeanUtils.copyProperties(this,createExpressDto.getAddress());
-            BeanUtils.copyProperties(this,createExpressDto.getCargoDetails());
-            BeanUtils.copyProperties(this,createExpressDto);
-            ResponseEntity<String> expressId = afterSaleDao.afterSaleFeignClient.createExpress(shopId,createExpressDto);
-
-            String returnExpress = expressId.getBody();
+            this.setReturnExpress(createWayBill(this,this.afterSaleFeignClient));
             log.info("【ExchangeProduct BO】Feign调用成功，收到退货运单号 - aftersaleId={}, returnExpress={}",
                     aftersaleId, returnExpress);
-            log.debug("服务单号: {}", returnExpress);
 
             // 3. 更新换货类专属属性+售后状态
-            this.setReturnExpress(returnExpress); // 绑定运单ID
-            log.info("【ExchangeProduct BO】已绑定运单号到售后单 - aftersaleId={}, returnExpress={}",
-                    this.getAftersaleId(), returnExpress);
-
             ConfirmAftersale(true, reason); // 调用父类方法更新状态
-            log.info("【ExchangeProduct BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
+            log.info("【ExchangeProduct BO】已更新售后状态为商家待收货 - aftersaleId={}", this.getAftersaleId());
 
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
             log.info("【ExchangeProduct BO】审核同意处理完成，已保存到数据库 - aftersaleId={}, returnExpress={}",
@@ -123,8 +114,26 @@ public class ExchangeProduct extends AfterSale{
 
     @Override
     public boolean CancleAftersale(String reason) {
-
-        return true;
+        if(this.getStatus()==3)
+        {
+            setStatus((byte) 7);
+            setReason(reason);
+            this.aftersalePo.setStatus((byte) 7);
+            this.aftersalePo.setReason(reason);
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ExchangeProduct BO】取消售后处理完成，已保存到数据库 - aftersaleId={}, status={}, reason={}",
+                    this.getAftersaleId(), this.getStatus(),reason);
+            return true;
+        }
+        else
+        {
+            setReason("当前状态不可取消售后");
+            this.aftersalePo.setReason(reason);
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ExchangeProduct BO】取消售后处理失败，已保存到数据库 - reason={}",
+                    reason);
+            return false;
+        }
     }
 
 

@@ -100,8 +100,17 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
     {
           if(confirm)
           {
-              setStatus((byte)1);
-              
+              log.info("【ReturnAndRefund BO】确认验收售后商品，售后单状态设为已完成 - aftersaleId={}", this.getAftersaleId());
+              setStatus((byte)6);
           }
+          else
+          {
+              setStatus((byte)8);
+              this.setDeliverExpress(createWayBill(this,aftersaleFeignClient));
+              log.info("【ReturnAndRefund BO】确认验收售后商品，售后单状态设为顾客待收货，售后单添加对应的运单号 - aftersaleId={}，DeliverExpressId={}", this.getAftersaleId(), this.getDeliverExpress());
+          }
+          BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
+          this.afterSaleDao.saveAftersale(this.getAftersalePo());
+          log.info("【ReturnAndRefund BO】已保存到数据库 - aftersaleId={}", this.getAftersaleId());
     }
 }

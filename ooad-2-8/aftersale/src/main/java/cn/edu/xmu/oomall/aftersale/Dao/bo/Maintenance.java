@@ -46,6 +46,9 @@ public class Maintenance extends AfterSale {
         // 通用逻辑：更新售后状态（子类重写扩展）
         this.setReason(reason);
         this.setStatus(confirm ? (byte) 4 : (byte) 2);
+        this.aftersalePo.setStatus(this.getStatus());
+        this.aftersalePo.setReason(this.getReason());
+        this.afterSaleDao.saveAftersale(this.aftersalePo);
         log.debug("saveAftersale:aftersaleId={}",this.getAftersaleId());
     }
 
@@ -123,6 +126,37 @@ public class Maintenance extends AfterSale {
 
     @Override
     public boolean CancleAftersale(String reason) {
+        if(this.getStatus()==4)
+        {
+            this.setStatus((byte) 7);
+            log.info("【Maintenance BO】已更新售后状态为已取消 - aftersaleId={}", this.getAftersaleId());
+            setReason(reason);
+            this.aftersalePo.setStatus(this.getStatus());
+            this.aftersalePo.setReason(this.getReason());
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【Maintenance BO】取消售后处理完成，已保存到数据库 - aftersaleId={}, status={},reason={}",
+                    this.getAftersaleId(), this.getStatus(),reason);
+        }
+        else
+        {
+            if(this.getServiceOrderFeignClient().cancelServiceOrder(this.getShopId(),this.serviceOrderId,reason))
+            {
+                this.setStatus((byte) 7);
+                log.info("【Maintenance BO】已更新售后状态为已取消 - aftersaleId={}", this.getAftersaleId());
+                setReason(reason);
+                this.aftersalePo.setStatus(this.getStatus());
+                this.aftersalePo.setReason(this.getReason());
+                this.afterSaleDao.saveAftersale(this.getAftersalePo());
+                log.info("【Maintenance BO】取消售后处理完成，已保存到数据库 - aftersaleId={}, status={},reason={}",
+                        this.getAftersaleId(), this.getStatus(),reason);
+            }
+            else
+            {
+                log.info("【Maintenance BO】调用FeignClient取消售后失败，售后状态未发生改变 - aftersaleId={}", this.getAftersaleId());
+                return false;
+            }
+        }
+
         return true;
     }
 

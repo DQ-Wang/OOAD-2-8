@@ -1,5 +1,6 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
+import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Resource;
@@ -20,6 +21,13 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
     @Resource
     @JsonIgnore
     private AfterSaleFeignClient aftersaleFeignClient;
+
+
+    public ReturnAndRefund(AfterSaleDao afterSaleDao) {
+        this.afterSaleDao = afterSaleDao;
+        this.aftersaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
+    }
+
 
     @Override
     public String HandleAftersale(boolean confirm, String reason)

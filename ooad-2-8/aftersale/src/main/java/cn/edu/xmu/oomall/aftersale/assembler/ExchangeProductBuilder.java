@@ -18,6 +18,7 @@ public class ExchangeProductBuilder implements AfterSaleBuilder {
     public AfterSale build(AfterSalePo po, AfterSaleDao dao) {
         ExchangeProduct bo=new ExchangeProduct(dao);
         BeanUtils.copyProperties(po,bo);
+        bo.setAftersalePo(po);
         return bo;
     }
 }

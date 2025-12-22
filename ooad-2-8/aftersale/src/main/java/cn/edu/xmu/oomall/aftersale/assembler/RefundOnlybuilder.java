@@ -19,6 +19,7 @@ public class RefundOnlybuilder implements AfterSaleBuilder {
     public AfterSale build(AfterSalePo po, AfterSaleDao dao) {
         Maintenance bo=new Maintenance(dao);
         BeanUtils.copyProperties(po,bo);
+        bo.setAftersalePo(po);
         return bo;
     }
 }

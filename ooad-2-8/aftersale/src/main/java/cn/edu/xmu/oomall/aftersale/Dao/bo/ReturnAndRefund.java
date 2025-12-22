@@ -41,8 +41,13 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
     @Override
     public boolean CancleAftersale(String reason) {
 
+        log.info("【ReturnAndRefund BO】取消，准备取消寄回运单 - aftersaleId={}", this.getAftersaleId());
         setStatus((byte) 7);
-
+        aftersaleFeignClient.cancleExpress(getShopId(),Long.parseLong(getReturnExpress()),reason);
+        setReason(reason);
+        BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
+        this.afterSaleDao.saveAftersale(this.getAftersalePo());
+        log.info("【ReturnAndRefund BO】状态更新为已取消，已保存到数据库 - aftersaleId={}", this.getAftersaleId());
         return true;
     }
 

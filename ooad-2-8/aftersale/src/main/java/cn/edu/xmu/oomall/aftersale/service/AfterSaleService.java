@@ -82,7 +82,7 @@ public class AfterSaleService {
      * 取消售后单
      * @param aftersaleId   售后单id
      */
-    public AftersaleVo cancelAftersale(@PathVariable Long aftersaleId)
+    public AftersaleVo cancelAftersale(@PathVariable Long aftersaleId,String reason)
     {
         log.info("【Service层】开始取消售后单 - aftersaleId={}",
                 aftersaleId);
@@ -94,7 +94,7 @@ public class AfterSaleService {
 
 
         log.info("【Service层】开始执行售后单取消逻辑 - aftersaleId={}", aftersaleId);
-        String handleResult = aftersale.cancel();        //返回handleResult
+        boolean handleResult= aftersale.CancleAftersale(reason);        //返回handleResult
         log.info("【Service层】售后单取消处理完成 - aftersaleId={}, 处理结果={}",aftersaleId, handleResult);
 
         //IdNameTypeVo vo = IdNameTypeVo.builder().id(aftersale.getAftersaleId()).name("").build();

@@ -1,7 +1,5 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
-import cn.edu.xmu.oomall.Dao.ExpressDao;
-import cn.edu.xmu.oomall.mapper.po.ExpressPo;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -13,7 +11,7 @@ import org.springframework.beans.BeanUtils;
 @Slf4j
 public class ReturnAndRefund extends AfterSale implements RefundInterface,CreateWayBillInterface
 {
-    private  final ExpressDao expressDao;       //TODO:改成openfeign调用
+    //private  final ExpressDao expressDao;       //TODO:改成openfeign调用
 
     @Override
     public String HandleAftersale(boolean confirm, String reason)
@@ -57,19 +55,15 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
 
     @Override
     public boolean CancleAftersale(String reason) {
-        ConfirmAftersale(false, reason);
+
         return true;
     }
 
     @Override
     public void ConfirmAftersale(boolean confirm, String reason)
     {
-        switch(getStatus())
-        {
-            case (byte)0:
-
-                break;
-        }
+        
+        //TODO:重写
     }
 
     @Override
@@ -77,9 +71,10 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
         log.info("【ReturnAndRefund BO】创建运单，已保存到数据库 - aftersaleId={}",
                 this.getAftersaleId());
 
-        ExpressPo expressPo = new ExpressPo();          //TODO:改成openfeign
+      //  ExpressPo expressPo = new ExpressPo();          //TODO:改成openfeign
 
-        ExpressPo returnPo= expressDao.insertExpress(expressPo);
-        return returnPo.getExpressId();
+       // ExpressPo returnPo= expressDao.insertExpress(expressPo);
+       // return returnPo.getExpressId();
+        return "";
     }
 }

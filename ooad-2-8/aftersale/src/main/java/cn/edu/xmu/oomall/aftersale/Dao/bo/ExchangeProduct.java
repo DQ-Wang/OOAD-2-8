@@ -35,6 +35,21 @@ public class ExchangeProduct extends AfterSale{
     }
 
 
+
+    @Override
+    public void ConfirmAftersale(boolean confirm, String reason)
+    {
+        log.debug("ConfirmAftersale:aftersaleId={},confirm={}",
+                this.getAftersaleId(), confirm);
+        // 通用逻辑：更新售后状态（子类重写扩展）
+        this.setReason(reason);
+        this.setStatus(confirm ? (byte) 3 : (byte) 2);
+        log.debug("saveAftersale:aftersaleId={}",this.getAftersaleId());
+    }
+
+
+
+
     /**
      * 重写父类抽象方法（纯虚函数）：实现换货类售后审核逻辑
      * 核心逻辑：同意审核→调用服务模块创建服务单→更新状态；拒绝审核→仅更新状态
@@ -50,7 +65,7 @@ public class ExchangeProduct extends AfterSale{
         // 1. 审核拒绝：仅更新状态，无额外逻辑
         if (!confirm) {
             log.info("【ExchangeProduct BO】审核拒绝，仅更新售后状态 - aftersaleId={}", this.getAftersaleId());
-            super.ConfirmAftersale(false, reason); // 调用父类普通虚方法更新状态
+            ConfirmAftersale(false, reason); // 调用父类普通虚方法更新状态
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
             log.info("【ExchangeProduct BO】审核拒绝处理完成 - aftersaleId={}", this.getAftersaleId());
             result="NULL";
@@ -86,7 +101,7 @@ public class ExchangeProduct extends AfterSale{
             log.info("【ExchangeProduct BO】已绑定运单号到售后单 - aftersaleId={}, returnExpress={}",
                     this.getAftersaleId(), returnExpress);
 
-            super.ConfirmAftersale(true, reason); // 调用父类方法更新状态
+            ConfirmAftersale(true, reason); // 调用父类方法更新状态
             log.info("【ExchangeProduct BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
 
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
@@ -108,6 +123,7 @@ public class ExchangeProduct extends AfterSale{
 
     @Override
     public boolean CancleAftersale(String reason) {
+
         return true;
     }
 

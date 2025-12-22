@@ -66,7 +66,7 @@ public abstract class AfterSale {
 
     // 类图中定义的通用方法：设置售后状态
     public void ConfirmAftersale(boolean confirm, String reason) {
-        log.debug("SetStatus:aftersaleId={},confirm={}",
+        log.debug("ConfirmAftersale:aftersaleId={},confirm={}",
                 aftersaleId, confirm);
         // 通用逻辑：更新售后状态（子类可重写扩展）
         this.setReason(reason);

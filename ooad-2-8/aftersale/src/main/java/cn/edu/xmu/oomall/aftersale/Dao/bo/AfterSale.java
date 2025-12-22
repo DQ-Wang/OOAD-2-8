@@ -26,7 +26,8 @@ public abstract class AfterSale {
     private long orderId;        // 订单ID
     private Long customerId;     // 顾客ID
     private Byte type;           // 售后类型：1=维修 2=仅退款 3=退货退款 4=换货
-    private Byte status;         // 售后状态：0=待审核 1=已同意 2=已拒绝 3=商家待收货 4=待分配服务商 5=服务待完成 6=已完成 7=已取消
+    private Byte status;
+    // 售后状态：0=待审核 1=已同意 2=已拒绝 3=商家待收货 4=待分配服务商 5=服务待完成 6=已完成 7=已取消 8=顾客待收货
     protected String reason;     // 审核原因
     protected String beanName;
     protected String mobile;

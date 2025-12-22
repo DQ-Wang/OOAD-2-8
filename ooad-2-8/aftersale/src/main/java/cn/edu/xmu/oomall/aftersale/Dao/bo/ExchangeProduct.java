@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
-public class ExchangeProduct extends AfterSale implements CreateWayBillInterface{
+public class ExchangeProduct extends AfterSale implements CreateWayBillInterface,ConfirmProductInterface{
     
 
     // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
@@ -135,6 +135,11 @@ public class ExchangeProduct extends AfterSale implements CreateWayBillInterface
             return false;
         }
     }
+
+
+
+
+
 
 
 }

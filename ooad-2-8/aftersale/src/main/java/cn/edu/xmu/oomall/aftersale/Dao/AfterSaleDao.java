@@ -59,6 +59,7 @@ public class AfterSaleDao {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
                     "ServiceOrderDao.build: po.type is null");
         }
+        log.info("【AfterSale DAO】调用builder创造子售后类型 ");
         AfterSaleBuilder builder = builders.get(po.getType());
         if (builder == null) {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,

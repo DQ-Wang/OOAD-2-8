@@ -1,6 +1,7 @@
 package cn.edu.xmu.oomall.aftersale.service;
 
 
+import cn.edu.xmu.oomall.aftersale.Dao.bo.ConfirmProductInterface;
 import cn.edu.xmu.oomall.aftersale.Dao.bo.RefundOnly;
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
 import cn.edu.xmu.oomall.aftersale.service.vo.AftersaleProductVo;
@@ -65,20 +66,19 @@ public class AfterSaleService {
         log.info("【Service层】查询到售后商品对应的售后单 - aftersaleId={}, type={}, status={}",
                 aftersale.getAftersaleId(), aftersale.getType(), aftersale.getStatus());
 
-        if(aftersale instanceof RefundOnly)
+        if(aftersale instanceof ConfirmProductInterface)
         {
-            RefundOnly refundOnly = (RefundOnly) aftersale;
-            refundOnly.refund(aftersale);
+            log.info("【Service层】开始执行验收售后商品处理逻辑 - aftersaleId={}", aftersaleId);
+            ConfirmProductInterface confirmProductInterface = (ConfirmProductInterface) aftersale;
+            confirmProductInterface.confirmProduct(confirm,reason);
         }
         else
         {
-            throw new ClassCastException("该售后类型不支持验收售后商品");
             log.error("【Service层】该售后类型不支持验收售后商品 - aftersaleId={}, type={}", aftersaleId, aftersale.getClass().getSimpleName());
+            throw new ClassCastException("该售后类型不支持验收售后商品");
         }
 
-        log.info("【Service层】开始执行售后商品处理逻辑 - aftersaleId={}", aftersaleId);
-        String handleResult = aftersale.confirmProduct(confirm, reason);        //返回handleResult
-        log.info("【Service层】售后商品处理完成 - aftersaleId={}, 处理结果={}",aftersaleId, handleResult);
+
 
         //IdNameTypeVo vo = IdNameTypeVo.builder().id(aftersale.getAftersaleId()).name("").build();
 

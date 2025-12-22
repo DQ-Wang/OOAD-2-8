@@ -1,6 +1,5 @@
 package cn.edu.xmu.oomall.aftersale.service.feign;
 
-import cn.edu.xmu.oomall.aftersale.Dao.bo.Maintenance;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateExpressDto;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         // 通过配置指定服务地址，本地和云上可分别配置
         url = "${service.order.base-url}"
 )
-public interface ServiceOrderFeignClient {
+public interface AfterSaleFeignClient {
 
     /**
      * 创建维修服务单（核心方法：维修类售后审核同意时调用）

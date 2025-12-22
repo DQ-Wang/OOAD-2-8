@@ -32,7 +32,7 @@ public abstract class AfterSale {
     protected String mobile;
     protected String address;
     protected int quantity;
-    protected String serviceOrderId;      // 服务单ID
+    protected String serviceOrderId;      //服务单ID
     protected String returnExpress;       //退货运单
     protected String deliverExpress;      //发货运单
 

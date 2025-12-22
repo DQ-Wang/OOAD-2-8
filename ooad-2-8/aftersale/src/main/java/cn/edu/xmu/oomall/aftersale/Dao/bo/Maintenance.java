@@ -2,7 +2,7 @@ package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
-import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Resource;
 import lombok.*;
@@ -29,12 +29,12 @@ public class Maintenance extends AfterSale {
     // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
     @Resource
     @JsonIgnore
-    private ServiceOrderFeignClient serviceOrderFeignClient;
+    private AfterSaleFeignClient serviceOrderFeignClient;
 
 
     public Maintenance(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
-        this.serviceOrderFeignClient = this.afterSaleDao.serviceOrderFeignClient;
+        this.serviceOrderFeignClient = this.afterSaleDao.afterSaleFeignClient;
     }
 
 
@@ -79,7 +79,7 @@ public class Maintenance extends AfterSale {
 
             log.info("【Maintenance BO】开始Feign调用服务订单模块 - URL将通过service.order.base-url配置, shopId={}, aftersaleId={}", 
                     shopId, aftersaleId);
-            ResponseEntity<String> serviceId = afterSaleDao.serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
+            ResponseEntity<String> serviceId = afterSaleDao.afterSaleFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
             
             String serviceOrderSn = serviceId.getBody();
             log.info("【Maintenance BO】Feign调用成功，收到服务单号 - aftersaleId={}, serviceOrderSn={}", 

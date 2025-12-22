@@ -96,4 +96,10 @@ public class AfterSalePo {
      */
     private String serviceOrderId;
 
+    //退货运单号
+    private String returnExpress;
+    //发货运单号
+    private String deliverExpress;
+
+
 }

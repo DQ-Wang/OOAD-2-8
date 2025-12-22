@@ -13,7 +13,7 @@ import org.springframework.beans.BeanUtils;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
-public class ReturnAndRefund extends AfterSale implements RefundInterface,CreateWayBillInterface
+public class ReturnAndRefund extends AfterSale implements RefundInterface,CreateWayBillInterface,ConfirmProductInterface
 {
     //private  final ExpressDao expressDao;       //TODO:改成openfeign调用
 
@@ -71,7 +71,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
             log.info("【ReturnAndRefund BO】审核同意，准备产生运单并退款 - aftersaleId={}", this.getAftersaleId());
 
             setStatus((byte)3);
-            log.info("【ReturnAndRefund BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
+            log.info("【ReturnAndRefund BO】已更新售后状态为商家待收货 - aftersaleId={}", this.getAftersaleId());
             //调用接口的默认方法
             refund(this);
             //创建运单
@@ -81,7 +81,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
         }
         else
         {
-            log.info("【ReturnAndRefund BO】审核拒绝，仅更新售后状态 - aftersaleId={}", this.getAftersaleId());
+            log.info("【ReturnAndRefund BO】审核拒绝，仅更新售后状态为已拒绝 - aftersaleId={}", this.getAftersaleId());
             setStatus((byte)2);
 
             this.setReturnExpress("");
@@ -95,4 +95,13 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
     }
 
 
+    @Override
+    public void confirmProduct(boolean confirm ,String reason)
+    {
+          if(confirm)
+          {
+              setStatus((byte)1);
+              
+          }
+    }
 }

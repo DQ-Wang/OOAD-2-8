@@ -137,9 +137,37 @@ public class ExchangeProduct extends AfterSale implements CreateWayBillInterface
     }
 
 
-
-
-
+    public void confirmProduct(boolean confirm,String reason)
+    {
+        if(confirm)
+        {
+            this.setStatus((byte) 8);
+            this.setReason(reason);
+            this.aftersalePo.setStatus((byte) 8);
+            this.aftersalePo.setReason(reason);
+            log.info("【ExchangeProduct BO】验收售后商品完成，将调用CreateWayBill接口创建发货运单 - aftersaleId={}, status={}, reason={}",
+                    this.getAftersaleId(), this.getStatus(),reason);
+            this.setDeliverExpress(createWayBill(this,this.afterSaleFeignClient));
+            this.aftersalePo.setDeliverExpress(this.getDeliverExpress());
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ExchangeProduct BO】成功生成发货运单，并保存至数据库 - aftersaleId={}, deliverExpress={}",
+                    this.getAftersaleId(), this.getDeliverExpress());
+        }
+        else
+        {
+            this.setStatus((byte)8);
+            this.setReason(reason);
+            this.aftersalePo.setStatus((byte) 8);
+            this.aftersalePo.setReason(reason);
+            log.info("【ExchangeProduct BO】拒绝验收售后商品完成，将调用CreateWayBill接口创建发货运单 - aftersaleId={}, status={}, reason={}",
+                    this.getAftersaleId(), this.getStatus(),reason);
+            this.setDeliverExpress(createWayBill(this,this.afterSaleFeignClient));
+            this.aftersalePo.setDeliverExpress(this.getDeliverExpress());
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ExchangeProduct BO】成功生成拒收发货运单，并保存至数据库 - aftersaleId={}, deliverExpress={}",
+                    this.getAftersaleId(), this.getDeliverExpress());
+        }
+    }
 
 
 }

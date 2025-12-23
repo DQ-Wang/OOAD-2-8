@@ -75,7 +75,4 @@ public abstract class AfterSale {
         log.debug("saveAftersale:aftersaleId={}",aftersaleId);
     }
 
-
-
-
 }

@@ -1,12 +1,14 @@
 package com.xmu.service.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.xmu.service.Dao.ServiceOrderDao;
-import com.xmu.service.controller.dto.CreateServiceOrderDto;
+import com.xmu.service.Dao.bo.Worker;
+import com.xmu.service.controller.dto.AppointmentDto;
 import com.xmu.service.Dao.bo.ServiceOrder;
+import com.xmu.service.Dao.WorkerDao;
+import com.xmu.service.controller.dto.ServiceOrderDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 
 /**
@@ -17,49 +19,87 @@ public class ServiceOrderService {
     @Autowired
     private ServiceOrderDao serviceOrderDao;
 
-    private ServiceOrder serviceOrder;
-    /**
-     * 创建服务单核心流程
+    @Autowired
+    private WorkerDao workerDao;
+
+/**
+     * 创建服务单
+     * @param shopId 店铺ID
+     * @param afterSaleId 售后单ID
+     * @param dto 创建服务单请求体参数
+     * @return 创建后的服务单对象
      */
+    public ServiceOrder createServiceOrder(String shopId, String afterSaleId, ServiceOrderDto dto) {
+        ServiceOrder serviceOrder = ServiceOrder.create(shopId, afterSaleId, dto);
+        serviceOrderDao.insert(serviceOrder);
+        return serviceOrder;
+    }
+
 
     /**
      * 接收服务单
+     * @param providerId 服务提供商ID
+     * @param serviceOrderId 服务单ID
+     * @return 接受后的服务单对象
      */
-    public void acceptServiceOrder(Long providerId,Long serviceOrderId) {
-
-        serviceOrder =  serviceOrderDao.findById(serviceOrderId);
-
+    public ServiceOrder acceptServiceOrder(String providerId, String serviceOrderId) {
+        ServiceOrder serviceOrder = serviceOrderDao.findById(serviceOrderId);
         serviceOrder.acceptByProvider(providerId);
+        serviceOrderDao.update(serviceOrder);
+        return serviceOrder ;
     }
+
+
+    /**
+     * 指派服务单给维修师傅
+     */
+    public ServiceOrder assignToWorker(String providerId, String workerId, String serviceOrderId) {
+        ServiceOrder serviceOrder = serviceOrderDao.findById(serviceOrderId);
+        serviceOrder.assign(providerId, workerId);
+        serviceOrderDao.update(serviceOrder);
+        return serviceOrder ;
+    }
+
     /**
      * 完成服务单
      */
-    public void finishServiceOrder(Long workerId,Long serviceOrderId) {
-        serviceOrder = serviceOrderDao.findById(serviceOrderId);
-
+    public ServiceOrder finishServiceOrder(String workerId, String serviceOrderId) {
+        ServiceOrder serviceOrder = serviceOrderDao.findById(serviceOrderId);
         serviceOrder.finish(workerId);
+        serviceOrderDao.update(serviceOrder);
+        return serviceOrder ;
     }
     /**
      * 取消服务单
      */
-    //public void cancelServiceOrder(Long serviceOrderId) {
-    //    serviceOrderDao.findById(serviceOrderId);
-    //}
+    public ServiceOrder cancelServiceOrder(String serviceOrderId) {
+        ServiceOrder serviceOrder =serviceOrderDao.findById(serviceOrderId);
+        serviceOrder.cancel();
+        serviceOrderDao.update(serviceOrder);
+        return serviceOrder ;
+
+    }
     /**
      * 服务商收到顾客寄件
      */
-    public void receiveDeliveryreceive(Long providerId,Long serviceOrderId) {
-        serviceOrder = serviceOrderDao.findById(serviceOrderId);
+    public ServiceOrder receiveDelivery(String providerId, String serviceOrderId) {
+        ServiceOrder serviceOrder = serviceOrderDao.findById(serviceOrderId);
         serviceOrder.doReceive(providerId);
+        serviceOrderDao.update(serviceOrder);
+        return serviceOrder ;
     }
 
     /**
      * 维修师傅预约上门
      */
-    //public void appointment(Long workerId,Long serviceOrderId,appointment_dto) {
-    //   serviceOrder = serviceOrderDao.findById(serviceOrderId);
-    //    onSiteServiceOrder doAppoint(workerId,appointment_dto);
-    //}
+    public ServiceOrder appointment(String workerId, String serviceOrderId, AppointmentDto appointmentDto) {
+        ServiceOrder serviceOrder = serviceOrderDao.findById(serviceOrderId);
+        // 解析预约日期（yyyy-MM-dd），存为 LocalDateTime 00:00:00
+        LocalDateTime time = java.time.LocalDate.parse(appointmentDto.getAppointmentDate()).atStartOfDay();
+        serviceOrder.doAppoint(workerId, time);
+        serviceOrderDao.update(serviceOrder);
+        return serviceOrder ;
+    }
 
 
 }

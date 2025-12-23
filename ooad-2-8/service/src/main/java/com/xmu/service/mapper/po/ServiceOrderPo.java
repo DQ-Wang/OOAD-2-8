@@ -24,11 +24,7 @@ public class ServiceOrderPo {
     @Id
     private String id;
 
-    /**
-     * 服务单编号
-     */
-    @Column(name = "service_sn", nullable = false, length = 50)
-    private String serviceSn;
+
 
     /**
      * 收货人
@@ -76,19 +72,33 @@ public class ServiceOrderPo {
      * 快递单号
      */
     @Column(name = "express_id")
-    private Long expressId;
+    private String expressId;
 
     /**
      * 所属员工
      */
     @Column(name = "worker_id")
-    private Long workerId;
+    private String workerId;
 
     /**
      * 服务提供商ID
      */
     @Column(name = "service_provider_id")
-    private Long serviceProviderId;
+    private String serviceProviderId;
+
+    /**
+     * 预约上门时间
+     */
+    @Column(name = "appointment_time")
+    private LocalDateTime appointmentTime;
+
+    @Column(name = "aftersales_id")
+    private String aftersalesId;
+    /**
+     * 所属商铺ID
+     */
+    @Column(name = "shop_id")
+    private String shopId;       // 对应API路径中的{shopId}，关联商铺
 }
 
 

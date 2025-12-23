@@ -23,7 +23,7 @@ public class ServiceProviderPo {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 自增主键策略
-    private Long id; // 对应表中id字段
+    private String id; // 对应表中id字段
 
     /**
      * 服务提供商名称

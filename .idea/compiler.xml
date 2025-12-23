@@ -18,6 +18,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
         <module name="aftersale" />
+        <module name="service" />
       </profile>
     </annotationProcessing>
   </component>

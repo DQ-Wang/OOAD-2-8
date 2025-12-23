@@ -32,7 +32,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
     @Override
     public String HandleAftersale(boolean confirm, String reason)
     {
-            log.info("【ReturnAndRefund BO】开始处理仅退款类售后审核 - aftersaleId={}, confirm={}, reason={}",
+            log.info("【ReturnAndRefund BO】开始处理退货退款类售后审核 - aftersaleId={}, confirm={}, reason={}",
                     this.getAftersaleId(), confirm, reason);
 
             try

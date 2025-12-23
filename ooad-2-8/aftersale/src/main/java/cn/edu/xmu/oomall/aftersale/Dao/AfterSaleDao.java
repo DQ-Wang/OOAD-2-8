@@ -7,7 +7,6 @@ import cn.edu.xmu.oomall.aftersale.assembler.AfterSaleBuilder;
 import cn.edu.xmu.oomall.aftersale.mapper.AfterSaleMapper;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import java.util.List;
  */
 @Repository
 @RefreshScope
-@RequiredArgsConstructor
 @Slf4j
 public class AfterSaleDao {
 

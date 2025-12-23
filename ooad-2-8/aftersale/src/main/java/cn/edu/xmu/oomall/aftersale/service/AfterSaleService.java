@@ -2,12 +2,11 @@ package cn.edu.xmu.oomall.aftersale.service;
 
 
 import cn.edu.xmu.oomall.aftersale.Dao.bo.ConfirmProductInterface;
-import cn.edu.xmu.oomall.aftersale.Dao.bo.RefundOnly;
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
 import cn.edu.xmu.oomall.aftersale.service.vo.AftersaleProductVo;
 import cn.edu.xmu.oomall.aftersale.service.vo.AftersaleVo;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +17,20 @@ import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Slf4j
 public class AfterSaleService {
 
     private final AfterSaleDao aftersaleDao;
+
+
+    // Service层构造函数注入AfterSaleDao（Spring自动注入）
+    @Autowired
+    public AfterSaleService(AfterSaleDao aftersaleDao) {
+        this.aftersaleDao = aftersaleDao;
+        log.info("【AfterSaleService】注入AfterSaleDao成功");
+    }
+
 
     /**
      * 审核售后单
@@ -112,9 +120,5 @@ public class AfterSaleService {
         return aftersaleVo;
     }
 
-    public void confirmProduct(@PathVariable Long aftersaleId)
-    {
 
-
-    }
 }

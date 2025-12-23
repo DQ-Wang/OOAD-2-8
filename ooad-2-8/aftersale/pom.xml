@@ -12,7 +12,7 @@
     <groupId>cn.edu.xmu.oomall</groupId>
     <artifactId>aftersale</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <consigenee>aftersale</consigenee>
+    <name>aftersale</name>
     <description>aftersale</description>
     <url/>
     <licenses>
@@ -111,7 +111,7 @@
                             <executable>sh</executable>
                             <arguments>
                                 <argument>clear_image.sh</argument>
-                                <argument>xmu-javaee/${project.consigenee}:${project.version}</argument>
+                                <argument>xmu-javaee/${project.name}:${project.version}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -134,7 +134,7 @@
                 </executions>
                 <configuration>
                     <!-- 镜像仓库名，可以按需修改 -->
-                    <repository>xmu-javaee/${project.consigenee}</repository>
+                    <repository>xmu-javaee/${project.name}</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
                         <!-- 打包生成的 jar 名称 -->

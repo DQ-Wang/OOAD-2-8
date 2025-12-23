@@ -90,9 +90,6 @@ public class Maintenance extends AfterSale {
             createServiceOrderDto.setProductId(this.getProductId());
             createServiceOrderDto.setAddress(this.getAddress());
             createServiceOrderDto.setMobile(this.getMobile());
-            createServiceOrderDto.setConsignee(this.getConsignee());
-            createServiceOrderDto.setAfterSaleId(this.getAftersaleId());
-            createServiceOrderDto.setType(this.getServiceType());
             log.info("【Maintenance BO】Feign调用参数构造完成 - DTO={}", createServiceOrderDto);
 
             log.info("【Maintenance BO】开始Feign调用服务订单模块 - URL将通过service.order.base-url配置, shopId={}, aftersaleId={}", 

@@ -12,7 +12,7 @@
     <groupId>com.xmu</groupId>
     <artifactId>service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>service</name>
+    <consigenee>service</consigenee>
     <description>service</description>
     <url/>
     <licenses>
@@ -159,7 +159,7 @@
                             <executable>sh</executable>
                             <arguments>
                                 <argument>clear_image.sh</argument>
-                                <argument>xmu-javaee/${project.name}:${project.version}</argument>
+                                <argument>xmu-javaee/${project.consigenee}:${project.version}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -181,7 +181,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <repository>xmu-javaee/${project.name}</repository>
+                    <repository>xmu-javaee/${project.consigenee}</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
                         <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>

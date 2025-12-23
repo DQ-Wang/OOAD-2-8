@@ -12,7 +12,7 @@
     <artifactId>ooad-2-8</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>ooad-2-8</name>
+    <consigenee>ooad-2-8</consigenee>
     <description>ooad-2-8</description>
     <modules>
         <module>aftersale</module>

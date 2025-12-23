@@ -6,7 +6,7 @@ import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
 import cn.edu.xmu.oomall.aftersale.assembler.AfterSaleBuilder;
 import cn.edu.xmu.oomall.aftersale.mapper.AfterSaleMapper;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
-import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -35,7 +35,7 @@ public class AfterSaleDao {
     private final AfterSaleMapper aftersaleMapper;
     private final Map<Byte, AfterSaleBuilder> builders;
     @Autowired
-    public ServiceOrderFeignClient serviceOrderFeignClient;
+    public AfterSaleFeignClient afterSaleFeignClient;
 
 
 
@@ -59,6 +59,7 @@ public class AfterSaleDao {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
                     "ServiceOrderDao.build: po.type is null");
         }
+        log.info("【AfterSale DAO】调用builder创造子售后类型 ");
         AfterSaleBuilder builder = builders.get(po.getType());
         if (builder == null) {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,

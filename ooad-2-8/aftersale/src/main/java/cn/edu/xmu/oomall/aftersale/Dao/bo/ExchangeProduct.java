@@ -1,8 +1,7 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
-import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
-import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Resource;
 import lombok.Data;
@@ -11,8 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.ResponseEntity;
-
 
 
 @Data
@@ -20,19 +17,37 @@ import org.springframework.http.ResponseEntity;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
-public class ExchangeProduct extends AfterSale{
+public class ExchangeProduct extends AfterSale implements CreateWayBillInterface,ConfirmProductInterface{
     
 
     // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
     @Resource
     @JsonIgnore
-    private ServiceOrderFeignClient serviceOrderFeignClient;
+    private AfterSaleFeignClient afterSaleFeignClient;
 
 
     public ExchangeProduct(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
-        this.serviceOrderFeignClient = this.afterSaleDao.serviceOrderFeignClient;
+        this.afterSaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
     }
+
+
+
+    @Override
+    public void ConfirmAftersale(boolean confirm, String reason)
+    {
+        log.debug("ConfirmAftersale:aftersaleId={},confirm={}",
+                this.getAftersaleId(), confirm);
+        // 通用逻辑：更新售后状态（子类重写扩展）
+        this.setReason(reason);
+        this.setStatus(confirm ? (byte) 3 : (byte) 2);
+        this.aftersalePo.setReason(reason);
+        this.aftersalePo.setStatus(this.getStatus());
+        this.afterSaleDao.saveAftersale(this.aftersalePo);
+        log.debug("saveAftersale:aftersaleId={}",this.getAftersaleId());
+    }
+
+
 
 
     /**
@@ -50,7 +65,7 @@ public class ExchangeProduct extends AfterSale{
         // 1. 审核拒绝：仅更新状态，无额外逻辑
         if (!confirm) {
             log.info("【ExchangeProduct BO】审核拒绝，仅更新售后状态 - aftersaleId={}", this.getAftersaleId());
-            super.ConfirmAftersale(false, reason); // 调用父类普通虚方法更新状态
+            ConfirmAftersale(false, reason); // 调用父类普通虚方法更新状态
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
             log.info("【ExchangeProduct BO】审核拒绝处理完成 - aftersaleId={}", this.getAftersaleId());
             result="NULL";
@@ -65,32 +80,26 @@ public class ExchangeProduct extends AfterSale{
             log.info("【ExchangeProduct BO】准备Feign调用参数 - shopId={}, aftersaleId={}, customerId={}, productId={}",
                     shopId, aftersaleId, this.getCustomerId(), this.getProductId());
 
-            // 调用Feign客户端创建服务单（返回服务单ID）
+            // 调用Feign客户端创建运单（返回运单ID）
 
-            log.info("【ExchangeProduct BO】开始Feign调用服务订单模块 - URL将通过service.order.base-url配置, shopId={}, aftersaleId={}",
+            log.info("【ExchangeProduct BO】开始Feign调用物流模块 - URL将通过service.order.base-url配置, shopId={}, aftersaleId={}",
                     shopId, aftersaleId);
-            ResponseEntity<String> serviceId = afterSaleDao.serviceOrderFeignClient.createExpress(shopId)
 
-            String serviceOrderSn = serviceId.getBody();
-            log.info("【ExchangeProduct BO】Feign调用成功，收到服务单号 - aftersaleId={}, serviceOrderSn={}",
-                    aftersaleId, serviceOrderSn);
-            log.debug("服务单号: {}", serviceOrderSn);
+            this.setReturnExpress(createWayBill(this,this.afterSaleFeignClient));
+            log.info("【ExchangeProduct BO】Feign调用成功，收到退货运单号 - aftersaleId={}, returnExpress={}",
+                    aftersaleId, returnExpress);
 
-            // 3. 更新维修类专属属性+售后状态
-            this.setServiceOrderId(serviceOrderSn); // 绑定服务单ID
-            log.info("【ExchangeProduct BO】已绑定服务单号到售后单 - aftersaleId={}, serviceOrderId={}",
-                    this.getAftersaleId(), serviceOrderSn);
-
-            super.ConfirmAftersale(true, reason); // 调用父类方法更新状态
-            log.info("【ExchangeProduct BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
+            // 3. 更新换货类专属属性+售后状态
+            ConfirmAftersale(true, reason); // 调用父类方法更新状态
+            log.info("【ExchangeProduct BO】已更新售后状态为商家待收货 - aftersaleId={}", this.getAftersaleId());
 
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
-            log.info("【ExchangeProduct BO】审核同意处理完成，已保存到数据库 - aftersaleId={}, serviceOrderSn={}",
-                    this.getAftersaleId(), serviceOrderSn);
+            log.info("【ExchangeProduct BO】审核同意处理完成，已保存到数据库 - aftersaleId={}, returnExpress={}",
+                    this.getAftersaleId(), returnExpress);
 
-            result=serviceOrderSn;
+            result= returnExpress;
         } catch (Exception e) {
-            log.error("【ExchangeProduct BO】Feign调用服务订单模块异常 - aftersaleId={}, 异常类型={}, 异常信息={}",
+            log.error("【ExchangeProduct BO】Feign调用物流模块异常 - aftersaleId={}, 异常类型={}, 异常信息={}",
                     this.getAftersaleId(), e.getClass().getName(), e.getMessage(), e);
             log.error("【ExchangeProduct BO】审核同意流程失败，返回ERROR - aftersaleId={}", this.getAftersaleId());
             result="ERROR";
@@ -103,7 +112,59 @@ public class ExchangeProduct extends AfterSale{
 
     @Override
     public boolean CancleAftersale(String reason) {
-        return true;
+        if(this.getStatus()==3)
+        {
+            setStatus((byte) 7);
+            setReason(reason);
+            this.aftersalePo.setStatus((byte) 7);
+            this.aftersalePo.setReason(reason);
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ExchangeProduct BO】取消售后处理完成，已保存到数据库 - aftersaleId={}, status={}, reason={}",
+                    this.getAftersaleId(), this.getStatus(),reason);
+            return true;
+        }
+        else
+        {
+            setReason("当前状态不可取消售后");
+            this.aftersalePo.setReason(reason);
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ExchangeProduct BO】取消售后处理失败，已保存到数据库 - reason={}",
+                    reason);
+            return false;
+        }
+    }
+
+
+    public void confirmProduct(boolean confirm,String reason)
+    {
+        if(confirm)
+        {
+            this.setStatus((byte) 8);
+            this.setReason(reason);
+            this.aftersalePo.setStatus((byte) 8);
+            this.aftersalePo.setReason(reason);
+            log.info("【ExchangeProduct BO】验收售后商品完成，将调用CreateWayBill接口创建发货运单 - aftersaleId={}, status={}, reason={}",
+                    this.getAftersaleId(), this.getStatus(),reason);
+            this.setDeliverExpress(createWayBill(this,this.afterSaleFeignClient));
+            this.aftersalePo.setDeliverExpress(this.getDeliverExpress());
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ExchangeProduct BO】成功生成发货运单，并保存至数据库 - aftersaleId={}, deliverExpress={}",
+                    this.getAftersaleId(), this.getDeliverExpress());
+        }
+        else
+        {
+            this.setStatus((byte)8);
+            this.setReason(reason);
+            this.aftersalePo.setStatus((byte) 8);
+            this.aftersalePo.setReason(reason);
+            log.info("【ExchangeProduct BO】拒绝验收售后商品完成，将调用CreateWayBill接口创建发货运单 - aftersaleId={}, status={}, reason={}",
+                    this.getAftersaleId(), this.getStatus(),reason);
+            this.setDeliverExpress(createWayBill(this,this.afterSaleFeignClient));
+            this.aftersalePo.setDeliverExpress(this.getDeliverExpress());
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ExchangeProduct BO】成功生成拒收发货运单，并保存至数据库 - aftersaleId={}, deliverExpress={}",
+                    this.getAftersaleId(), this.getDeliverExpress());
+        }
     }
 
 

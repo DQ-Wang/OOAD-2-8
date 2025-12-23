@@ -1,7 +1,9 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
-import cn.edu.xmu.oomall.Dao.ExpressDao;
-import cn.edu.xmu.oomall.mapper.po.ExpressPo;
+import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
+import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Resource;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -11,75 +13,104 @@ import org.springframework.beans.BeanUtils;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
-public class ReturnAndRefund extends AfterSale implements RefundInterface,CreateWayBillInterface
+public class ReturnAndRefund extends AfterSale implements RefundInterface,CreateWayBillInterface,ConfirmProductInterface
 {
-    private  final ExpressDao expressDao;       //TODO:改成openfeign调用
+    //private  final ExpressDao expressDao;       //TODO:改成openfeign调用
+
+    // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
+    @Resource
+    @JsonIgnore
+    private AfterSaleFeignClient aftersaleFeignClient;
+
+
+    public ReturnAndRefund(AfterSaleDao afterSaleDao) {
+        this.afterSaleDao = afterSaleDao;
+        this.aftersaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
+    }
+
 
     @Override
     public String HandleAftersale(boolean confirm, String reason)
     {
             log.info("【ReturnAndRefund BO】开始处理仅退款类售后审核 - aftersaleId={}, confirm={}, reason={}",
                     this.getAftersaleId(), confirm, reason);
-            log.debug("HandleAftersale:aftersaleId={}", this.getAftersaleId());
 
-            // 1. 审核拒绝：仅更新状态，无额外逻辑
-            if (!confirm) {
-                log.info("【ReturnAndRefund BO】审核拒绝，仅更新售后状态 - aftersaleId={}", this.getAftersaleId());
-                super.ConfirmAftersale(false, reason); // 调用父类普通虚方法更新状态
-                BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
-                this.afterSaleDao.saveAftersale(this.getAftersalePo());
-                log.info("【ReturnAndRefund BO】审核拒绝处理完成 - aftersaleId={}", this.getAftersaleId());
-                return "NULL";
+            try
+            {
+                ConfirmAftersale(confirm, reason);
             }
-
-            // 2. 审核同意：日志打印退款信息并产生运单
-            log.info("【ReturnAndRefund BO】审核同意，准备产生运单并退款 - aftersaleId={}", this.getAftersaleId());
-            try {
-                super.ConfirmAftersale(true, reason); // 调用父类方法更新状态
-                log.info("【ReturnAndRefund BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
-
-                BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
-                this.afterSaleDao.saveAftersale(this.getAftersalePo());
-                log.info("【ReturnAndRefund BO】审核同意处理完成，已保存到数据库 - aftersaleId={}",
-                        this.getAftersaleId());
-
-                //调用接口的默认方法
-                refund(this);
-                //创建运单
-                createWayBill(this);
-
-                return "NULL";
-            } catch (Exception e) {
+            catch (Exception e) {
                 log.error("【ReturnAndRefund BO】审核同意流程失败- aftersaleId={}", this.getAftersaleId());
                 return "NULL";
             }
+            return aftersalePo.getReturnExpress();
     }
 
     @Override
     public boolean CancleAftersale(String reason) {
-        ConfirmAftersale(false, reason);
+
+        log.info("【ReturnAndRefund BO】取消，准备取消寄回运单 - aftersaleId={}", this.getAftersaleId());
+        setStatus((byte) 7);
+        aftersaleFeignClient.cancleExpress(getShopId(),Long.parseLong(getReturnExpress()),reason);
+        setReason(reason);
+        BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
+        this.afterSaleDao.saveAftersale(this.getAftersalePo());
+        log.info("【ReturnAndRefund BO】状态更新为已取消，已保存到数据库 - aftersaleId={}", this.getAftersaleId());
         return true;
     }
 
+    /**
+     * 重写父类方法，设置售后单状态
+     * 核心逻辑：同意审核→调用服务模块创建服务单→更新状态；拒绝审核→仅更新状态
+     */
     @Override
     public void ConfirmAftersale(boolean confirm, String reason)
     {
-        switch(getStatus())
+        if(confirm)
         {
-            case (byte)0:
+            log.info("【ReturnAndRefund BO】审核同意，准备产生运单并退款 - aftersaleId={}", this.getAftersaleId());
 
-                break;
+            setStatus((byte)3);
+            log.info("【ReturnAndRefund BO】已更新售后状态为商家待收货 - aftersaleId={}", this.getAftersaleId());
+            //调用接口的默认方法
+            refund(this);
+            //创建运单
+            this.setReturnExpress(createWayBill(this,aftersaleFeignClient));
+
+            log.info("【ReturnAndRefund BO】审核同意处理完成 - aftersaleId={}",this.getAftersaleId());
         }
+        else
+        {
+            log.info("【ReturnAndRefund BO】审核拒绝，仅更新售后状态为已拒绝 - aftersaleId={}", this.getAftersaleId());
+            setStatus((byte)2);
+
+            this.setReturnExpress("");
+
+            log.info("【ReturnAndRefund BO】审核拒绝处理完成 - aftersaleId={}", this.getAftersaleId());
+        }
+
+        BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
+        this.afterSaleDao.saveAftersale(this.getAftersalePo());
+        log.info("【ReturnAndRefund BO】已保存到数据库 - aftersaleId={}", this.getAftersaleId());
     }
 
+
     @Override
-    public String createWayBill(AfterSale afterSale) {
-        log.info("【ReturnAndRefund BO】创建运单，已保存到数据库 - aftersaleId={}",
-                this.getAftersaleId());
-
-        ExpressPo expressPo = new ExpressPo();          //TODO:改成openfeign
-
-        ExpressPo returnPo= expressDao.insertExpress(expressPo);
-        return returnPo.getExpressId();
+    public void confirmProduct(boolean confirm ,String reason)
+    {
+          if(confirm)
+          {
+              log.info("【ReturnAndRefund BO】确认验收售后商品，售后单状态设为已完成 - aftersaleId={}", this.getAftersaleId());
+              setStatus((byte)6);
+          }
+          else
+          {
+              setStatus((byte)8);
+              this.setDeliverExpress(createWayBill(this,aftersaleFeignClient));
+              log.info("【ReturnAndRefund BO】确认验收售后商品，售后单状态设为顾客待收货，售后单添加对应的运单号 - aftersaleId={}，DeliverExpressId={}", this.getAftersaleId(), this.getDeliverExpress());
+          }
+          BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
+          this.afterSaleDao.saveAftersale(this.getAftersalePo());
+          log.info("【ReturnAndRefund BO】已保存到数据库 - aftersaleId={}", this.getAftersaleId());
     }
 }

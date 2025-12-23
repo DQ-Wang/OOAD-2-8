@@ -1,12 +1,12 @@
 package cn.edu.xmu.oomall.aftersale.service.feign;
 
-import cn.edu.xmu.oomall.aftersale.Dao.bo.Maintenance;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateExpressDto;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         // 通过配置指定服务地址，本地和云上可分别配置
         url = "${service.order.base-url}"
 )
-public interface ServiceOrderFeignClient {
+public interface AfterSaleFeignClient {
 
     /**
      * 创建维修服务单（核心方法：维修类售后审核同意时调用）
@@ -45,6 +45,14 @@ public interface ServiceOrderFeignClient {
     );
 
 
+
+
+    /**
+     * 创建运单
+     * @param shopId 门店ID（路径参数）
+     * @param createExpressDto 运单创建参数（请求体）
+     * @return 运单信息
+     */
     @PostMapping("/internal/shops/{shopId}/packages")
     ResponseEntity<String> createExpress(
             // 路径占位符{shopId} → @PathVariable("shopId") 绑定
@@ -54,13 +62,39 @@ public interface ServiceOrderFeignClient {
     );
 
 
-    @PostMapping("/internal/shops/{shopId}/packages/{id}/cancel")
+    /**
+     * 取消运单
+     * @param shopId 门店ID（路径参数）
+     * @param expressId 运单ID（路径参数）
+     * @param reason 取消原因参数（请求体）
+     * @return 取消结果
+     */
+    @PutMapping("/internal/shops/{shopId}/packages/{id}/cancel")
     ResponseEntity<String> cancleExpress(
             // 路径占位符{shopId} → @PathVariable("shopId") 绑定
             @PathVariable("shopId") Long shopId,
             // 路径占位符{id} → @PathVariable("id") 绑定（参数名可仍为expressId，注解内指定"id"即可）
-            @PathVariable("id") Long expressId
+            @PathVariable("id") Long expressId,
+            // 请求体参数
+            @RequestBody String reason
     );
 
+
+
+
+    /**
+     * 取消服务单
+     * @param shopId 商户ID（路径参数）
+     * @param id 服务单ID（路径参数）
+     * @param reason 取消原因参数（请求体）
+     * @return 取消结果
+     */
+    @PutMapping("/internal/shops/{shopId}/service/{id}/cancel")
+    Boolean cancelServiceOrder(
+            @PathVariable("shopId") Long shopId,
+            @PathVariable("id") String id,
+            // 请求体参数
+            @RequestBody String reason
+    );
 
 }

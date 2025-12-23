@@ -62,10 +62,16 @@ public class RefundOnly extends AfterSale implements RefundInterface{
         if(confirm)
         {
             setStatus((byte)6); //设为已完成
+            this.aftersalePo.setStatus((byte)6);
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ReturnONly BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
         }
         else
         {
             setStatus((byte)2); //设为已拒绝
+            this.aftersalePo.setStatus((byte)2);
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【ReturnONly BO】已更新售后状态为已拒绝 - aftersaleId={}", this.getAftersaleId());
         }
     }
 }

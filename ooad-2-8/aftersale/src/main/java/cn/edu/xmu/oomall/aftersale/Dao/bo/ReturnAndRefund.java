@@ -7,12 +7,14 @@ import jakarta.annotation.Resource;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
 
 @Data
 @RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Slf4j
+@Component
 public class ReturnAndRefund extends AfterSale implements RefundInterface,CreateWayBillInterface,ConfirmProductInterface
 {
     //private  final ExpressDao expressDao;       //TODO:改成openfeign调用
@@ -26,6 +28,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
     public ReturnAndRefund(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
         this.aftersaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
+
     }
 
 
@@ -61,7 +64,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
 
     /**
      * 重写父类方法，设置售后单状态
-     * 核心逻辑：同意审核→调用服务模块创建服务单→更新状态；拒绝审核→仅更新状态
+     * 核心逻辑：同意审核→调用物流模块创建运单→更新状态；拒绝审核→仅更新状态
      */
     @Override
     public void ConfirmAftersale(boolean confirm, String reason)

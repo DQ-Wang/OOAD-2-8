@@ -6,6 +6,7 @@ import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 对应类图中的`aftersale`：售后业务抽象父类
@@ -41,9 +42,9 @@ public abstract class AfterSale {
 
 
 
-    protected AfterSalePo aftersalePo;
+    protected AfterSalePo aftersalePo = new AfterSalePo();
 
-
+    @Autowired
     protected AfterSaleDao afterSaleDao;
 
     public AfterSale(AfterSaleDao afterSaleDao) {

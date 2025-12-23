@@ -35,6 +35,10 @@ public class AfterSalePo {
      */
     private Long shopId;
 
+
+    private String consignee;//姓名
+
+
     /**
      * 订单ID
      * 关联订单表，售后归属的订单

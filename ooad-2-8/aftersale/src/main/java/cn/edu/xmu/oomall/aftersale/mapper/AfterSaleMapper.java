@@ -1,12 +1,11 @@
 package cn.edu.xmu.oomall.aftersale.mapper;
 
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,6 +14,8 @@ import java.util.Optional;
  * 适配业务场景：按店铺/类型/状态/订单ID/顾客ID等维度查询售后单
  */
 @Repository
+@SpringBootApplication
+@MapperScan("cn.edu.xmu.oomall.aftersale.mapper") // 指定Mapper所在包
 public interface AfterSaleMapper extends JpaRepository<AfterSalePo, Long> {
 
 

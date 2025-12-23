@@ -23,7 +23,7 @@ public class WorkerPo {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 自增主键策略
-    private Long id; // 对应表中id字段
+    private String id; // 对应表中id字段
 
     /**
      * 员工姓名
@@ -47,5 +47,5 @@ public class WorkerPo {
      * 所属服务提供商ID（关联service_provider表的主键）
      */
     @Column(name = "ServiceProvider_id") // 对应表中ServiceProvider_id字段（int类型）
-    private Integer serviceProviderId;
+    private String serviceProviderId;
 }

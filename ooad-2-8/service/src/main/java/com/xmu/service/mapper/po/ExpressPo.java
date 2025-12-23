@@ -23,7 +23,7 @@ public class ExpressPo {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 自增主键策略（适配MySQL等数据库）
-    private Long id; // 对应表中id字段
+    private String id; // 对应表中id字段
 
     /**
      * 快递单号（物流单号）

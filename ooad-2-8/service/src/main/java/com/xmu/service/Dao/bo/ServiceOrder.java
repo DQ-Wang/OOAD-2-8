@@ -1,6 +1,7 @@
 package com.xmu.service.Dao.bo;
 
 import cn.edu.xmu.javaee.core.exception.BusinessException;
+import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.ServiceOrderDao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,12 +11,12 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-
+import com.xmu.service.controller.dto.ServiceOrderDto;
+import com.xmu.service.Dao.factory.ServiceOrderFactory;
 /**
  * 抽象服务单
  */
@@ -95,67 +96,65 @@ public abstract class ServiceOrder  implements Serializable {
 
     @Getter
     @Setter
-    private String id;
+    protected String id;
+
+
 
     @Getter
     @Setter
-    private String serviceSn;      //服务单编号，唯一
+    protected String serviceConsignee;  //联系人
 
     @Getter
     @Setter
-    private String serviceConsignee;  //联系人
+    protected String serviceMobile;    //联系电话
 
     @Getter
     @Setter
-    private String serviceMobile;    //联系电话
+    protected String address;            //地址
 
     @Getter
     @Setter
-    private String address;            //地址
+    protected Byte type;              //服务单类型：0-上门服务，1-寄件服务
 
     @Getter
     @Setter
-    private Byte type;              //服务单类型：0-上门服务，1-寄件服务
+    protected Byte status;            //服务单状态
 
     @Getter
     @Setter
-    private Byte status;            //服务单状态
+    protected LocalDateTime createTime;
 
     @Getter
     @Setter
-    private Date createTime;
+    protected String description;
+
+
 
     @Getter
     @Setter
-    private String description;
+    protected String expressId;
+
+
 
     @Getter
     @Setter
-    private Long productId;
+    protected String shopId;       // 对应API路径中的{shopId}，关联商铺
 
     @Getter
     @Setter
-    private Long expressId;
+    protected String aftersalesId;
 
     @Getter
     @Setter
-    private Long customerId;
+    protected String servicproviderId; // 服务提供商ID
 
     @Getter
     @Setter
-    private Long shopId;       // 对应API路径中的{shopId}，关联商铺
+    protected String workerId; // 维修师傅ID
 
     @Getter
     @Setter
-    private Long aftersalesId;
-
-    @Getter
-    @Setter
-    protected Long servicproviderId; // 服务提供商ID
-
-    @Getter
-    @Setter
-    protected Long workerId; // 维修师傅ID
+    protected LocalDateTime appointmentTime; // 预约上门时间
 
     /**
      * 持久化访问对象（Dao），由 Dao 在 build 时注入
@@ -165,18 +164,33 @@ public abstract class ServiceOrder  implements Serializable {
     @Setter
     protected transient ServiceOrderDao serviceOrderDao;
 
+    /**
+     * 工厂方法：根据类型创建具体服务单
+     */
+    public static ServiceOrder create(String shopId, String afterSaleId, ServiceOrderDto dto) {
+        return ServiceOrderFactory.create(shopId, afterSaleId, dto);
+    }
 
     /**
      * @param serviceProviderId    接单的服务商
      */
-    void acceptByProvider(Long serviceProviderId) {
+    public void acceptByProvider(String serviceProviderId) {
         if (!STATUS_NEW.equals(this.status)) {
-            throw new BusinessException("当前状态不可接受");
+            throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可接受");
         }
         this.servicproviderId = serviceProviderId;
         this.status = STATUS_ASSIGN;
-        serviceOrderDao.update(this);
-        log.info("【ServiceOrder】服务商接单 - serviceOrderId={}, providerId={}", this.id, serviceProviderId);
+    }
+
+    public void assign(String providerId, String workerId) {
+        if (!providerId.equals(this.servicproviderId)) {
+            throw new BusinessException(ReturnNo.STATENOTALLOW, "服务商ID不匹配");
+        }
+        if (!STATUS_ASSIGN.equals(this.status)) {
+            throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可指派");
+        }
+        this.workerId = workerId;
+        this.status = STATUS_PROGRESS;
     }
 
     /**
@@ -196,22 +210,28 @@ public abstract class ServiceOrder  implements Serializable {
     }
 
 
-
-
-
-    /**
-     * 校验必填信息（业务规则封装）
-     */
-    public void validate() {
-        // 1. 校验关联字段（shopId、aftersalesId）
-        if (this.shopId == null || this.shopId <= 0) {
-            throw new IllegalArgumentException("关联商铺ID无效（不可为空或负数），无法创建服务单");
+    public void finish(String workerId) {
+        if (!STATUS_PROGRESS.equals(this.status)) {
+            throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可完成");
         }
-        if (this.aftersalesId == null || this.aftersalesId <= 0) {
-            throw new IllegalArgumentException("关联售后单ID无效（不可为空或负数），无法创建服务单");
+        if (!this.workerId.equals(workerId)) {
+            throw new BusinessException(ReturnNo.STATENOTALLOW, "无权限操作该服务单");
         }
-
+        this.status = STATUS_FINISH;
     }
+
+    public void cancel() {
+        if (STATUS_FINISH.equals(this.status)) {
+            throw new BusinessException(ReturnNo.STATENOTALLOW, "已完成的服务单不可取消");
+        }
+        this.status = STATUS_CANCEL;
+    }
+
+    public abstract void doAppoint(String workerId, LocalDateTime time);
+
+    public abstract void doReceive(String providerId);
+
+
 
 
 

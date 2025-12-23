@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.beans.BeanUtils;
+import java.time.ZoneId;
+import java.time.LocalDateTime;
 
 
 /**
@@ -103,7 +106,10 @@ public class ServiceOrderDao {
         // 3. 使用 CloneFactory.copyNotNull 自动拷贝所有匹配字段
         // 拷贝：serviceSn, serviceConsignee, serviceMobile, address,
         //            description, expressId, workerId, serviceProviderId, type, status 等所有匹配字段
-        ServiceOrderPo po = CloneFactory.copyNotNull(oldPo, bo);
+//        ServiceOrderPo po = CloneFactory.copy(oldPo, bo);
+        ServiceOrderPo po=new ServiceOrderPo();
+                BeanUtils.copyProperties(bo, oldPo);
+
 
 
         // 4. 保存更新
@@ -113,10 +119,23 @@ public class ServiceOrderDao {
 
 
 
-    public ServiceOrder insert(ServiceOrder bo)
+    /**
+     * 插入服务单
+     */
+    public void insert(ServiceOrder bo)
     {
-
-        return bo;
+        ServiceOrderPo po = new ServiceOrderPo();
+        BeanUtils.copyProperties(bo, po);
+        po.setStatus(bo.getStatus());
+        po.setType(bo.getType());
+        LocalDateTime createTime = bo.getCreateTime();
+        if (createTime == null) {
+            createTime = java.time.LocalDate.now().atStartOfDay();
+        }
+        po.setCreateTime(createTime);
+        mapper.save(po);
+        bo.setServiceOrderDao(this);
+        log.info("【ServiceOrderDao】插入服务单成功 - id={}", bo.getId());
     }
 
 

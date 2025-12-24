@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import com.xmu.service.controller.dto.ServiceOrderDto;
@@ -96,7 +95,7 @@ public abstract class ServiceOrder  implements Serializable {
 
     @Getter
     @Setter
-    protected String id;
+    protected Long id;
 
 
 
@@ -132,25 +131,25 @@ public abstract class ServiceOrder  implements Serializable {
 
     @Getter
     @Setter
-    protected String expressId;
+    protected Long expressId;
 
 
 
     @Getter
     @Setter
-    protected String shopId;       // 对应API路径中的{shopId}，关联商铺
+    protected Long shopId;       // 对应API路径中的{shopId}，关联商铺
 
     @Getter
     @Setter
-    protected String aftersalesId;
+    protected Long aftersalesId;
 
     @Getter
     @Setter
-    protected String servicproviderId; // 服务提供商ID
+    protected Long serviceProviderId; // 服务提供商ID
 
     @Getter
     @Setter
-    protected String workerId; // 维修师傅ID
+    protected Long workerId; // 维修师傅ID
 
     @Getter
     @Setter
@@ -167,30 +166,30 @@ public abstract class ServiceOrder  implements Serializable {
     /**
      * 工厂方法：根据类型创建具体服务单
      */
-    public static ServiceOrder create(String shopId, String afterSaleId, ServiceOrderDto dto) {
+    public static ServiceOrder create(Long shopId, Long afterSaleId, ServiceOrderDto dto) {
         return ServiceOrderFactory.create(shopId, afterSaleId, dto);
     }
 
     /**
      * @param serviceProviderId    接单的服务商
      */
-    public void acceptByProvider(String serviceProviderId) {
+    public void acceptByProvider(Long serviceProviderId) {
         if (!STATUS_NEW.equals(this.status)) {
             throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可接受");
         }
-        this.servicproviderId = serviceProviderId;
+        this.serviceProviderId = serviceProviderId;
         this.status = STATUS_ASSIGN;
     }
 
-    public void assign(String providerId, String workerId) {
-        if (!providerId.equals(this.servicproviderId)) {
+    public void assign(Long providerId, Long workerId) {
+        if (!providerId.equals(this.serviceProviderId)) {
             throw new BusinessException(ReturnNo.STATENOTALLOW, "服务商ID不匹配");
         }
         if (!STATUS_ASSIGN.equals(this.status)) {
             throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可指派");
         }
         this.workerId = workerId;
-        this.status = STATUS_PROGRESS;
+
     }
 
     /**
@@ -210,7 +209,7 @@ public abstract class ServiceOrder  implements Serializable {
     }
 
 
-    public void finish(String workerId) {
+    public void finish(Long workerId) {
         if (!STATUS_PROGRESS.equals(this.status)) {
             throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可完成");
         }
@@ -227,9 +226,9 @@ public abstract class ServiceOrder  implements Serializable {
         this.status = STATUS_CANCEL;
     }
 
-    public abstract void doAppoint(String workerId, LocalDateTime time);
+    public abstract void doAppoint(Long workerId, LocalDateTime time);
 
-    public abstract void doReceive(String providerId);
+    public abstract void doReceive(Long providerId);
 
 
 

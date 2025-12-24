@@ -11,11 +11,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ServiceOrderDto {
-    private String afterSaleId;
-    private String consignee;
-    private String mobile;
+    private String serviceConsignee;
+    private String serviceMobile;
     private String address;
+    private String description;
     private Byte type;
-
-
 }

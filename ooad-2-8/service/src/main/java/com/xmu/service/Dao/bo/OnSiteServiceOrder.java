@@ -7,7 +7,6 @@ package com.xmu.service.Dao.bo;
  */
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
-import com.xmu.service.Dao.bo.ServiceOrder;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 @ToString(callSuper = true, doNotUseGetters = true)
 public class OnSiteServiceOrder extends ServiceOrder {
     @Override
-    public void acceptByProvider(String serviceProviderId){
+    public void acceptByProvider(Long serviceProviderId){
         super.acceptByProvider(serviceProviderId);
 
         log.info("【ServiceOrder】服务商接单 - serviceOrderId={}, providerId={}", this.id, serviceProviderId);
@@ -25,7 +24,14 @@ public class OnSiteServiceOrder extends ServiceOrder {
     }
 
     @Override
-    public void finish(String workerId){
+    public void assign(Long providerId, Long workerId){
+        super.assign(providerId,workerId);
+        this.status=STATUS_ONDOOR;
+        log.info("【ServiceOrder】服务单分配工人 - serviceOrderId={}, workerId={}", this.id, workerId);
+    }
+
+    @Override
+    public void finish(Long workerId){
         super.finish(workerId);
 
         log.info("【ServiceOrder】服务单完成 - serviceOrderId={}, workerId={}", this.id, workerId);
@@ -40,17 +46,20 @@ public class OnSiteServiceOrder extends ServiceOrder {
 
     /** 上门预约 */
     @Override
-    public void doAppoint(String workerId, LocalDateTime time) {
-        if (!STATUS_ASSIGN.equals(this.status)) {
+    public void doAppoint(Long workerId, LocalDateTime time) {
+        if (!this.workerId.equals(workerId)){
+            throw new BusinessException(ReturnNo.STATENOTALLOW, "工人ID与服务单工人ID不一致");
+        }
+        if (!STATUS_ONDOOR.equals(this.status)) {
             throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可预约");
         }
         this.appointmentTime = time;
-        this.status = STATUS_ONDOOR;
+        this.status = STATUS_PROGRESS;
         log.info("【ServiceOrder】上门预约 - serviceOrderId={}, workerId={}, appointmentTime={}", this.id, workerId, time);
     }
 
     @Override
-    public void doReceive(String providerId) {
+    public void doReceive(Long providerId) {
         throw new BusinessException(ReturnNo.STATENOTALLOW, "上门服务不支持收件操作");
     }
 }

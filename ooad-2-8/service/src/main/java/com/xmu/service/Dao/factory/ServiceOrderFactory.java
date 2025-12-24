@@ -1,15 +1,14 @@
 package com.xmu.service.Dao.factory;
 
-import cn.edu.xmu.javaee.core.clonefactory.CloneFactory;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.bo.DeliveryServiceOrder;
 import com.xmu.service.Dao.bo.OnSiteServiceOrder;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.controller.dto.ServiceOrderDto;
+import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -25,7 +24,7 @@ public class ServiceOrderFactory {
         put(ServiceOrder.TYPE_DELIVERY, DeliveryServiceOrder::new);
     }};
 
-    public static ServiceOrder create(String shopId, String afterSaleId, ServiceOrderDto dto) {
+    public static ServiceOrder create(Long shopId, Long afterSaleId, ServiceOrderDto dto) {
         if (dto == null || dto.getType() == null) {
             throw new BusinessException(ReturnNo.FIELD_NOTVALID, "服务单类型不能为空");
         }
@@ -34,15 +33,12 @@ public class ServiceOrderFactory {
             throw new BusinessException(ReturnNo.FIELD_NOTVALID, "未知的服务单类型");
         }
         ServiceOrder bo = supplier.get();
-        // 填充基础字段
-        bo.setId(java.util.UUID.randomUUID().toString());
-        
+        // 先拷贝 DTO 中同名字段，忽略主键和系统字段
+        BeanUtils.copyProperties(dto, bo, "id", "status", "shopId", "aftersalesId", "createTime");
+        // 填充系统字段
         bo.setStatus(ServiceOrder.STATUS_NEW);
-        
         bo.setShopId(shopId);
         bo.setAftersalesId(afterSaleId);
-        
-        // 创建时间使用日期格式 yyyy-MM-dd -> 存为 LocalDateTime 00:00:00
         bo.setCreateTime(LocalDate.now().atStartOfDay());
         return bo;
     }

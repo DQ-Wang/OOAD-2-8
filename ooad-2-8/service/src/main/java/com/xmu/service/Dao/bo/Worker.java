@@ -11,10 +11,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Worker {
-    private String id;
+    private Long id;
     private String name;
     private String mobile;
-    private String serviceProviderId;
+    private Long serviceProviderId;
 
 
 }

@@ -1,6 +1,5 @@
 package com.xmu.service.Dao;
 
-import cn.edu.xmu.javaee.core.clonefactory.CloneFactory;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
@@ -16,7 +15,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
-import java.time.ZoneId;
 import java.time.LocalDateTime;
 
 
@@ -39,7 +37,7 @@ public class ServiceOrderDao {
                 .collect(Collectors.toMap(ServiceOrderBuilder::getType, Function.identity()));
     }
 
-    public ServiceOrder findById(String id) {
+    public ServiceOrder findById(Long id) {
         ServiceOrderPo po = mapper.findById(id)
                 .orElseThrow(() -> new BusinessException(
                         ReturnNo.RESOURCE_ID_NOTEXIST,
@@ -96,24 +94,21 @@ public class ServiceOrderDao {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, "服务单ID不能为空");
         }
 
-        // 2. 查询现有数据（用于合并更新，保留未修改的字段）
+        // 2. 查询现有数据（此时 oldPo 被持久化上下文管理）
         ServiceOrderPo oldPo = mapper.findById(bo.getId())
                 .orElseThrow(() -> new BusinessException(
                         ReturnNo.RESOURCE_ID_NOTEXIST,
                         String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "服务单", bo.getId())
                 ));
 
-        // 3. 使用 CloneFactory.copyNotNull 自动拷贝所有匹配字段
-        // 拷贝：serviceSn, serviceConsignee, serviceMobile, address,
-        //            description, expressId, workerId, serviceProviderId, type, status 等所有匹配字段
-//        ServiceOrderPo po = CloneFactory.copy(oldPo, bo);
-        ServiceOrderPo po=new ServiceOrderPo();
-                BeanUtils.copyProperties(bo, oldPo);
+         // 3. 直接在 oldPo 上修改（不要 new）
+         // 注意：这里要把 bo 的值覆盖到 oldPo 上
+         // 第三个参数是“忽略字段”
+         BeanUtils.copyProperties(bo, oldPo, "id");
 
-
-
-        // 4. 保存更新
-        mapper.save(po);
+        // 4. 保存
+        // 此时 save 会触发 UPDATE 语句，因为 oldPo 已经有 ID 且在 Session 中
+        mapper.save(oldPo);
         log.info("【ServiceOrderDao】更新服务单成功 - id={}", bo.getId());
     }
 
@@ -134,6 +129,8 @@ public class ServiceOrderDao {
         }
         po.setCreateTime(createTime);
         mapper.save(po);
+        // 回填生成的主键到 BO，便于返回 VO 时带出 id
+        bo.setId(po.getId());
         bo.setServiceOrderDao(this);
         log.info("【ServiceOrderDao】插入服务单成功 - id={}", bo.getId());
     }

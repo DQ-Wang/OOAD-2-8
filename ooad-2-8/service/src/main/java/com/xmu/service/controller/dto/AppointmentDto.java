@@ -1,7 +1,9 @@
 package com.xmu.service.controller.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.time.LocalDateTime;
 
 /**
  * Function:
@@ -10,6 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class AppointmentDto {
-    private String appointmentDate;
+    private LocalDateTime appointmentTime;
 }

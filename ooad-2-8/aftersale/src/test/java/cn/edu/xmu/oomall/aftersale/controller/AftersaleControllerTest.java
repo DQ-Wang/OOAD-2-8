@@ -108,7 +108,7 @@ public class AftersaleControllerTest
     void reviewRefundOnlyTest_reject() {
 
         // ========== 2. 执行测试方法 ==========
-        Long aftersaleId = 3L;
+        Long aftersaleId = 4L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"仅退款理由不充分");
 
         afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
@@ -123,13 +123,44 @@ public class AftersaleControllerTest
                 .thenReturn(ResponseEntity.ok(randomWaybillId));
 
         // ========== 2. 执行测试方法 ==========
-        Long aftersaleId = 3L;
-        AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"仅退款理由不充分");
+        Long aftersaleId = 5L;
+        AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(true,"");
 
         afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
     }
 
+    @Test
+    void reviewReturnAndRefundTest_reject() {
+        // ========== 2. 执行测试方法 ==========
+        Long aftersaleId = 6L;
+        AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"退货退款理由不充分");
 
+        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+    }
+
+    @Test
+    void reviewExchangeTest_confirm() {
+        // ========== 2. 执行测试方法 ==========
+
+        Random random = new Random();
+        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+        when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
+                .thenReturn(ResponseEntity.ok(randomWaybillId));
+
+        Long aftersaleId = 7L;
+        AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(true,"");
+
+        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+    }
+
+    @Test
+    void reviewExchangeTest_reject() {
+        // ========== 2. 执行测试方法 ==========
+        Long aftersaleId = 8L;
+        AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"已过换货售后期");
+
+        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+    }
 
     /**
      * 测试场景2：商户验收售商品

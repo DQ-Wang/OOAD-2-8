@@ -35,6 +35,9 @@ public class AftersaleControllerTest
     private AfterSaleService afterSaleService;
 
     @Autowired
+    private AftersaleController aftersaleController;
+
+    @Autowired
     private AfterSaleMapper afterSaleMapper;
     @Autowired
     private List<AfterSaleBuilder> builderList;
@@ -75,7 +78,7 @@ public class AftersaleControllerTest
         Long aftersaleId = 1L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(true,"");
 
-        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+        aftersaleController.reviewAftersale(1001L,aftersaleId,aftersaleConfirmDto);
 
     }
 
@@ -92,7 +95,8 @@ public class AftersaleControllerTest
         Long aftersaleId = 2L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"已过维修售后期");
 
-        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+
+        aftersaleController.reviewAftersale(1001L,aftersaleId,aftersaleConfirmDto);
     }
 
     @Test
@@ -101,7 +105,7 @@ public class AftersaleControllerTest
         Long aftersaleId = 3L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(true,"");
 
-        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+        aftersaleController.reviewAftersale(1002L,aftersaleId,aftersaleConfirmDto);
 
     }
 
@@ -112,7 +116,7 @@ public class AftersaleControllerTest
         Long aftersaleId = 4L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"仅退款理由不充分");
 
-        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+        aftersaleController.reviewAftersale(1002L,aftersaleId,aftersaleConfirmDto);
     }
 
     @Test
@@ -127,7 +131,7 @@ public class AftersaleControllerTest
         Long aftersaleId = 5L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(true,"");
 
-        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+        aftersaleController.reviewAftersale(1003L,aftersaleId,aftersaleConfirmDto);
     }
 
     @Test
@@ -136,7 +140,7 @@ public class AftersaleControllerTest
         Long aftersaleId = 6L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"退货退款理由不充分");
 
-        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+        aftersaleController.reviewAftersale(1003L,aftersaleId,aftersaleConfirmDto);
     }
 
     @Test
@@ -151,7 +155,7 @@ public class AftersaleControllerTest
         Long aftersaleId = 7L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(true,"");
 
-        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+        aftersaleController.reviewAftersale(1004L,aftersaleId,aftersaleConfirmDto);
     }
 
     @Test
@@ -160,7 +164,7 @@ public class AftersaleControllerTest
         Long aftersaleId = 8L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"已过换货售后期");
 
-        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+        aftersaleController.reviewAftersale(1004L,aftersaleId,aftersaleConfirmDto);
     }
 
     /**
@@ -178,7 +182,7 @@ public class AftersaleControllerTest
         // ========== 2. 执行测试方法 ==========
         Long aftersaleId = 10L;
 
-        afterSaleService.confirmProduct(aftersaleId,true,"符合验收标准");
+        aftersaleController.confirmProduct(1005L,aftersaleId,true,"符合验收标准");
     }
 
 
@@ -193,7 +197,7 @@ public class AftersaleControllerTest
         // ========== 2. 执行测试方法 ==========
         Long aftersaleId = 11L;
 
-        afterSaleService.confirmProduct(aftersaleId,false,"商品破损");
+        aftersaleController.confirmProduct(1002L,aftersaleId,false,"商品破损");
     }
 
 
@@ -209,7 +213,7 @@ public class AftersaleControllerTest
         // ========== 2. 执行测试方法 ==========
         Long aftersaleId = 12L;
 
-        afterSaleService.confirmProduct(aftersaleId,true,"符合验收标准");
+        aftersaleController.confirmProduct(1003L,aftersaleId,true,"符合验收标准");
     }
 
 
@@ -225,7 +229,7 @@ public class AftersaleControllerTest
         // ========== 2. 执行测试方法 ==========
         Long aftersaleId = 13L;
 
-        afterSaleService.confirmProduct(aftersaleId,false,"商品破损");
+        aftersaleController.confirmProduct(1003L,aftersaleId,false,"商品破损");
     }
 
 
@@ -247,7 +251,7 @@ public class AftersaleControllerTest
         // ========== 2. 执行测试方法 ==========
         Long aftersaleId = 14L;
 
-        afterSaleService.cancelAftersale(aftersaleId,"");
+        aftersaleController.cancelAftersale(1004L,aftersaleId,"");
     }
 
 

@@ -40,6 +40,7 @@ public class OnSiteServiceOrder extends ServiceOrder {
     @Override
     public void cancel(){
         super.cancel();
+        this.status = STATUS_CANCEL;
 
         log.info("【ServiceOrder】服务单取消 - serviceOrderId={}", this.id);
     }

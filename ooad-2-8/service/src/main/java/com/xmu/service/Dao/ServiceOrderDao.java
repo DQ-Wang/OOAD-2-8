@@ -6,6 +6,7 @@ import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.mapper.ServiceOrderPoMapper ;
 import com.xmu.service.mapper.po.ServiceOrderPo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +30,16 @@ public class ServiceOrderDao {
     private final ServiceOrderPoMapper mapper;
     private final Map<String, ServiceOrderBuilder> builders;
 
+
     @Autowired
     public ServiceOrderDao(ServiceOrderPoMapper mapper, List<ServiceOrderBuilder> builders) {
         this.mapper = mapper;
-        // 将所有构建器按 type 建立映射，避免在 Dao 中写 switch / if-else
+        // 将所有构建器按 typeName 建立映射（供本类使用）
         this.builders = builders.stream()
-                .collect(Collectors.toMap(ServiceOrderBuilder::getType, Function.identity()));
+                .collect(Collectors.toMap(ServiceOrderBuilder::getTypeName, Function.identity()));
+        // 初始化 ServiceOrder 的构建器映射表（按 type）
+        ServiceOrder.initBuilders(builders);
+
     }
 
     public ServiceOrder findById(Long id) {
@@ -68,8 +73,8 @@ public class ServiceOrderDao {
                     "ServiceOrderDao.build: unknown type " + po.getType());
         }
         // 具体子类的创建与属性拷贝交给对应的构建器完成
-
         ServiceOrder bo = builder.build(po, this);
+        // 注入 ExpressClient（可选，测试时通过 @MockBean 提供）
 
         
         return bo;
@@ -80,8 +85,8 @@ public class ServiceOrderDao {
     /**
      * 更新服务单
      *
-     * 优化说明：
-     * 1. 使用 CloneFactory.copyNotNull 自动拷贝所有匹配字段（替代手动设置8个字段）
+     *
+     * 
      * 2. status 和 type 以数字（Byte）方式存入数据库
      * 3. 支持部分字段更新（只更新非空字段）
      *
@@ -132,6 +137,8 @@ public class ServiceOrderDao {
         // 回填生成的主键到 BO，便于返回 VO 时带出 id
         bo.setId(po.getId());
         bo.setServiceOrderDao(this);
+        // 注入 ExpressClient（可选，测试时通过 @MockBean 提供）
+
         log.info("【ServiceOrderDao】插入服务单成功 - id={}", bo.getId());
     }
 

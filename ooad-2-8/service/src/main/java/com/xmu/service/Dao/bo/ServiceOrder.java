@@ -5,6 +5,7 @@ import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.ServiceOrderDao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,9 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import com.xmu.service.controller.dto.ServiceOrderDto;
-import com.xmu.service.Dao.factory.ServiceOrderFactory;
 /**
  * 抽象服务单
  */
@@ -93,6 +96,21 @@ public abstract class ServiceOrder  implements Serializable {
         }
     };
 
+    /**
+     * 构建器映射表：Byte -> ServiceOrderBuilder
+     * 由 ServiceOrderDao 在初始化时设置
+     */
+    private static Map<Byte, ServiceOrderBuilder> builders;
+
+    /**
+     * 初始化构建器映射表
+     * @param builderList 构建器列表
+     */
+    public static void initBuilders(List<ServiceOrderBuilder> builderList) {
+        builders = builderList.stream()
+                .collect(Collectors.toMap(ServiceOrderBuilder::getType, Function.identity()));
+    }
+
     @Getter
     @Setter
     protected Long id;
@@ -163,11 +181,26 @@ public abstract class ServiceOrder  implements Serializable {
     @Setter
     protected transient ServiceOrderDao serviceOrderDao;
 
+
     /**
-     * 工厂方法：根据类型创建具体服务单
+     * 根据类型创建具体服务单
+     * @param shopId 店铺ID
+     * @param afterSaleId 售后单ID
+     * @param dto 创建服务单请求DTO
+     * @return 服务单领域对象
      */
     public static ServiceOrder create(Long shopId, Long afterSaleId, ServiceOrderDto dto) {
-        return ServiceOrderFactory.create(shopId, afterSaleId, dto);
+        if (builders == null) {
+            throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR, "构建器未初始化，请先调用 initBuilders()");
+        }
+        if (dto == null || dto.getType() == null) {
+            throw new BusinessException(ReturnNo.FIELD_NOTVALID, "服务单类型不能为空");
+        }
+        ServiceOrderBuilder builder = builders.get(dto.getType());
+        if (builder == null) {
+            throw new BusinessException(ReturnNo.FIELD_NOTVALID, "未知的服务单类型: " + dto.getType());
+        }
+        return builder.createFromDto(dto, shopId, afterSaleId);
     }
 
     /**
@@ -223,7 +256,7 @@ public abstract class ServiceOrder  implements Serializable {
         if (STATUS_FINISH.equals(this.status)) {
             throw new BusinessException(ReturnNo.STATENOTALLOW, "已完成的服务单不可取消");
         }
-        this.status = STATUS_CANCEL;
+        
     }
 
     public abstract void doAppoint(Long workerId, LocalDateTime time);

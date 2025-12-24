@@ -2,6 +2,8 @@ package com.xmu.service.Dao.bo;
 
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.xmu.service.openfeign.ExpressClient;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -11,11 +13,20 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class DeliveryServiceOrder extends ServiceOrder {
+    @JsonIgnore
+    private ExpressClient expressClient;
+
+    public void setExpressClient(ExpressClient expressClient) {
+        this.expressClient = expressClient;
+    }
    @Override
     public void acceptByProvider(Long serviceProviderId){
        super.acceptByProvider(serviceProviderId);
-       CreateWaybill();
-       log.info("【ServiceOrder】服务商接单 - serviceOrderId={}, providerId={}", this.id, serviceProviderId);
+       // 服务商接受服务单后，生成顾客寄件运单
+       if (expressClient != null) {
+           Long waybillId = expressClient.createSendWaybill(this.id);
+           this.expressId = waybillId;
+       }
 
    }
 
@@ -51,33 +62,35 @@ public class DeliveryServiceOrder extends ServiceOrder {
             throw new BusinessException(ReturnNo.STATENOTALLOW, "无权限操作该服务单");
         }
         this.status = STATUS_FINISH;
-        CreateWaybill();
-        log.info("【ServiceOrder】服务单完成 - serviceOrderId={}, workerId={}", this.id, workerId);
+        // 维修工人完成后，生成反件运单
+        if (expressClient != null) {
+            Long waybillId = expressClient.createReturnWaybill(this.id);
+            this.expressId = waybillId;
+        }
+
     }
 
     @Override
     public void cancel(){
-        super.cancel();
         Byte prevStatus = this.status;
+        super.cancel();
         
-        if(STATUS_ASSIGN.equals(prevStatus)){
-            CancelWaybill();
-        }
-        else if(STATUS_RECEIVE.equals(prevStatus)){
-            CreateWaybill();
+        if (expressClient != null) {
+            if(STATUS_ASSIGN.equals(prevStatus)){
+                // 在服务商接受服务单之后取消，取消生成的寄件运单
+                if (this.expressId != null) {
+                    expressClient.cancelWaybill(this.expressId);
+                }
+            }
+            else if(STATUS_RECEIVE.equals(prevStatus)){
+                // 在 RECEIVE 之后取消，生成反件运单
+                Long waybillId = expressClient.createReturnWaybill(this.id);
+                this.expressId = waybillId;
+            }
         }
         this.status = STATUS_CANCEL;
 
-        log.info("【ServiceOrder】服务单取消 - serviceOrderId={}", this.id);
-    }
-
-    public  void CreateWaybill(){
-       log.info("【ServiceOrder】创建运单 - serviceOrderId={}", this.id);
-
-    }
-
-    public  void CancelWaybill(){
-        log.info("【ServiceOrder】取消运单 - serviceOrderId={}", this.id);
+     
     }
 
     @Override

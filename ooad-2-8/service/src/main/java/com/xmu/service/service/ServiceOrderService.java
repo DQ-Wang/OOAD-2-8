@@ -12,13 +12,16 @@ import java.time.LocalDateTime;
 
 
 /**
- * 服务单领域服务（统筹业务流程）
+ * 服务单领域服务
  */
 @Service
 public class ServiceOrderService {
-    @Autowired
-    private ServiceOrderDao serviceOrderDao;
+    private final ServiceOrderDao serviceOrderDao;
 
+    @Autowired
+    public ServiceOrderService(ServiceOrderDao serviceOrderDao) {
+        this.serviceOrderDao = serviceOrderDao;
+    }
 
 /**
      * 创建服务单

@@ -61,6 +61,22 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.24</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
@@ -95,52 +111,52 @@
             </plugin>
 
             <!-- 编译前先删除旧的 Docker 镜像（可选，根据你是否有 clear_image.sh 脚本） -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.4.1</version>
-                <executions>
-                    <execution>
-                        <id>remove-docker-image</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>sh</executable>
-                            <arguments>
-                                <argument>clear_image.sh</argument>
-                                <argument>xmu-javaee/${project.name}:${project.version}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>exec-maven-plugin</artifactId>-->
+<!--                <version>3.4.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>remove-docker-image</id>-->
+<!--                        <phase>pre-integration-test</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>exec</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <executable>sh</executable>-->
+<!--                            <arguments>-->
+<!--                                <argument>clear_image.sh</argument>-->
+<!--                                <argument>xmu-javaee/${project.name}:${project.version}</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <!-- 使用 Dockerfile 构建镜像的插件 -->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.4.13</version>
-                <executions>
-                    <execution>
-                        <id>build-image</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- 镜像仓库名，可以按需修改 -->
-                    <repository>xmu-javaee/${project.name}</repository>
-                    <tag>${project.version}</tag>
-                    <buildArgs>
-                        <!-- 打包生成的 jar 名称 -->
-                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
-                    </buildArgs>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.spotify</groupId>-->
+<!--                <artifactId>dockerfile-maven-plugin</artifactId>-->
+<!--                <version>1.4.13</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>build-image</id>-->
+<!--                        <phase>pre-integration-test</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>build</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; 镜像仓库名，可以按需修改 &ndash;&gt;-->
+<!--                    <repository>xmu-javaee/${project.name}</repository>-->
+<!--                    <tag>${project.version}</tag>-->
+<!--                    <buildArgs>-->
+<!--                        &lt;!&ndash; 打包生成的 jar 名称 &ndash;&gt;-->
+<!--                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>-->
+<!--                    </buildArgs>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
         </plugins>
     </build>

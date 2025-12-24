@@ -144,50 +144,50 @@
             </plugin>
 
             <!-- 可选：先删除旧的 Docker 镜像（需要有 clear_image.sh） -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.4.1</version>
-                <executions>
-                    <execution>
-                        <id>remove-docker-image</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>sh</executable>
-                            <arguments>
-                                <argument>clear_image.sh</argument>
-                                <argument>xmu-javaee/${project.name}:${project.version}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>exec-maven-plugin</artifactId>-->
+<!--                <version>3.4.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>remove-docker-image</id>-->
+<!--                        <phase>pre-integration-test</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>exec</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <executable>sh</executable>-->
+<!--                            <arguments>-->
+<!--                                <argument>clear_image.sh</argument>-->
+<!--                                <argument>xmu-javaee/${project.name}:${project.version}</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <!-- 使用 Dockerfile 构建镜像 -->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.4.13</version>
-                <executions>
-                    <execution>
-                        <id>build-image</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <repository>xmu-javaee/${project.name}</repository>
-                    <tag>${project.version}</tag>
-                    <buildArgs>
-                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
-                    </buildArgs>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.spotify</groupId>-->
+<!--                <artifactId>dockerfile-maven-plugin</artifactId>-->
+<!--                <version>1.4.13</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>build-image</id>-->
+<!--                        <phase>pre-integration-test</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>build</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <repository>xmu-javaee/${project.name}</repository>-->
+<!--                    <tag>${project.version}</tag>-->
+<!--                    <buildArgs>-->
+<!--                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>-->
+<!--                    </buildArgs>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
         </plugins>
     </build>

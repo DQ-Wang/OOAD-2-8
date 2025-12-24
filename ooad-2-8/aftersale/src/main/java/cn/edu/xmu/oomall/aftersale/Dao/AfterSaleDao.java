@@ -1,17 +1,23 @@
 package cn.edu.xmu.oomall.aftersale.Dao;
 
+import cn.edu.xmu.javaee.core.exception.BusinessException;
+import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
+import cn.edu.xmu.oomall.aftersale.assembler.AfterSaleBuilder;
 import cn.edu.xmu.oomall.aftersale.mapper.AfterSaleMapper;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
-import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
-import lombok.RequiredArgsConstructor;
+import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * 售后单DAO层实现类
@@ -20,15 +26,50 @@ import java.util.Optional;
  */
 @Repository
 @RefreshScope
-@RequiredArgsConstructor
 @Slf4j
 public class AfterSaleDao {
 
     // 注入JPA Mapper接口（Spring自动生成代理类）
     private final AfterSaleMapper aftersaleMapper;
-    private final AfterSaleFactory aftersaleFactory;
+    private final Map<Byte, AfterSaleBuilder> builders;
     @Autowired
-    ServiceOrderFeignClient serviceOrderFeignClient;
+    public AfterSaleFeignClient afterSaleFeignClient;
+
+
+
+
+
+    @Autowired
+    public AfterSaleDao(AfterSaleMapper mapper, List<AfterSaleBuilder> Builders) {
+        this.aftersaleMapper = mapper;
+        // 将所有构建器按 type 建立映射，避免在 Dao 中写 switch / if-else
+        this.builders = Builders.stream()
+                .collect(Collectors.toMap(AfterSaleBuilder::getType, Function.identity()));
+    }
+
+
+
+
+    /* ================= 构建 BO ================= */
+
+    private AfterSale build(AfterSalePo po) {
+        if (po.getType() == null) {
+            throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
+                    "ServiceOrderDao.build: po.type is null");
+        }
+        log.info("【AfterSale DAO】调用builder创造子售后类型 ");
+        AfterSaleBuilder builder = builders.get(po.getType());
+        if (builder == null) {
+            throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
+                    "ServiceOrderDao.build: unknown type " + po.getType());
+        }
+        // 具体子类的创建与属性拷贝交给对应的构建器完成
+        return builder.build(po, this);
+    }
+
+
+
+
 
 
     /**
@@ -64,15 +105,12 @@ public class AfterSaleDao {
             return new IllegalArgumentException("售后单不存在:"+ ", aftersaleId=" + aftersaleId);
         });
 
-        //ApplicationContext context = new ClassPathXmlApplicationContext("classpath:aftersale.xml");
-        //AfterSaleFactory aftersaleFactory=new AfterSaleFactory();
-
 
 
 
         // 2. PO对象转换为BO对象（属性拷贝）
         log.debug("【DAO层】开始将PO转换为BO - aftersaleId={}", aftersaleId);
-        AfterSale bo = aftersaleFactory.creatAfterSale(po,this,serviceOrderFeignClient);
+        AfterSale bo = build(po);
         BeanUtils.copyProperties(po, bo); // 拷贝同名属性（驼峰命名需一致）
         log.info("【DAO层】PO转BO完成 - aftersaleId={}, BO类型={}", aftersaleId, bo.getClass().getSimpleName());
 

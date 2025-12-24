@@ -1,18 +1,14 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
-import cn.edu.xmu.javaee.core.clonefactory.CopyFrom;
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
-import cn.edu.xmu.oomall.aftersale.service.feign.ServiceOrderFeignClient;
-import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
+import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Resource;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 /**
  * 对应类图中的maintenance（维修类售后子类）
@@ -33,12 +29,27 @@ public class Maintenance extends AfterSale {
     // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
     @Resource
     @JsonIgnore
-    private ServiceOrderFeignClient serviceOrderFeignClient;
+    private AfterSaleFeignClient serviceOrderFeignClient;
 
 
-    public Maintenance(AfterSaleDao afterSaleDao,ServiceOrderFeignClient serviceOrderFeignClient) {
+    public Maintenance(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
-        this.serviceOrderFeignClient = serviceOrderFeignClient;
+        this.serviceOrderFeignClient = this.afterSaleDao.afterSaleFeignClient;
+    }
+
+
+    @Override
+    public void ConfirmAftersale(boolean confirm, String reason)
+    {
+        log.debug("ConfirmAftersale:aftersaleId={},confirm={}",
+                this.getAftersaleId(), confirm);
+        // 通用逻辑：更新售后状态（子类重写扩展）
+        this.setReason(reason);
+        this.setStatus(confirm ? (byte) 4 : (byte) 2);
+        this.aftersalePo.setStatus(this.getStatus());
+        this.aftersalePo.setReason(this.getReason());
+        this.afterSaleDao.saveAftersale(this.aftersalePo);
+        log.debug("saveAftersale:aftersaleId={}",this.getAftersaleId());
     }
 
 
@@ -57,7 +68,7 @@ public class Maintenance extends AfterSale {
         // 1. 审核拒绝：仅更新状态，无额外逻辑
         if (!confirm) {
             log.info("【Maintenance BO】审核拒绝，仅更新售后状态 - aftersaleId={}", this.getAftersaleId());
-            super.SetStatus(false, reason); // 调用父类普通虚方法更新状态
+            ConfirmAftersale(false, reason); // 调用父类普通虚方法更新状态
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
             this.afterSaleDao.saveAftersale(this.getAftersalePo());
             log.info("【Maintenance BO】审核拒绝处理完成 - aftersaleId={}", this.getAftersaleId());
@@ -79,11 +90,15 @@ public class Maintenance extends AfterSale {
             createServiceOrderDto.setProductId(this.getProductId());
             createServiceOrderDto.setAddress(this.getAddress());
             createServiceOrderDto.setMobile(this.getMobile());
+            createServiceOrderDto.setConsignee(this.getConsignee());
+            createServiceOrderDto.setAfterSaleId(this.getAftersaleId());
+            createServiceOrderDto.setType(this.getServiceType());
+            createServiceOrderDto.setConsignee(this.getConsignee());
             log.info("【Maintenance BO】Feign调用参数构造完成 - DTO={}", createServiceOrderDto);
 
             log.info("【Maintenance BO】开始Feign调用服务订单模块 - URL将通过service.order.base-url配置, shopId={}, aftersaleId={}", 
                     shopId, aftersaleId);
-            ResponseEntity<String> serviceId = serviceOrderFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
+            ResponseEntity<String> serviceId = afterSaleDao.afterSaleFeignClient.createServiceOrder(shopId, aftersaleId, createServiceOrderDto);
             
             String serviceOrderSn = serviceId.getBody();
             log.info("【Maintenance BO】Feign调用成功，收到服务单号 - aftersaleId={}, serviceOrderSn={}", 
@@ -95,7 +110,7 @@ public class Maintenance extends AfterSale {
             log.info("【Maintenance BO】已绑定服务单号到售后单 - aftersaleId={}, serviceOrderId={}", 
                     this.getAftersaleId(), serviceOrderSn);
             
-            super.SetStatus(true, reason); // 调用父类方法更新状态
+            ConfirmAftersale(true, reason); // 调用父类方法更新状态
             log.info("【Maintenance BO】已更新售后状态为已同意 - aftersaleId={}", this.getAftersaleId());
             
             BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
@@ -111,6 +126,42 @@ public class Maintenance extends AfterSale {
             return "ERROR";
         }
 
+    }
+
+    @Override
+    public boolean CancleAftersale(String reason) {
+        if(this.getStatus()==4)
+        {
+            this.setStatus((byte) 7);
+            log.info("【Maintenance BO】已更新售后状态为已取消 - aftersaleId={}", this.getAftersaleId());
+            setReason(reason);
+            this.aftersalePo.setStatus(this.getStatus());
+            this.aftersalePo.setReason(this.getReason());
+            this.afterSaleDao.saveAftersale(this.getAftersalePo());
+            log.info("【Maintenance BO】取消售后处理完成，已保存到数据库 - aftersaleId={}, status={},reason={}",
+                    this.getAftersaleId(), this.getStatus(),reason);
+        }
+        else
+        {
+            if(this.getServiceOrderFeignClient().cancelServiceOrder(this.getShopId(),this.serviceOrderId,reason))
+            {
+                this.setStatus((byte) 7);
+                log.info("【Maintenance BO】已更新售后状态为已取消 - aftersaleId={}", this.getAftersaleId());
+                setReason(reason);
+                this.aftersalePo.setStatus(this.getStatus());
+                this.aftersalePo.setReason(this.getReason());
+                this.afterSaleDao.saveAftersale(this.getAftersalePo());
+                log.info("【Maintenance BO】取消售后处理完成，已保存到数据库 - aftersaleId={}, status={},reason={}",
+                        this.getAftersaleId(), this.getStatus(),reason);
+            }
+            else
+            {
+                log.info("【Maintenance BO】调用FeignClient取消售后失败，售后状态未发生改变 - aftersaleId={}", this.getAftersaleId());
+                return false;
+            }
+        }
+
+        return true;
     }
 
 

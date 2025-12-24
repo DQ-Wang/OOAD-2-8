@@ -1,0 +1,38 @@
+### GET request to example server
+
+POST http://localhost:10026/internal/shops/2/aftersales/6/serviceorders
+Content-Type: application/json
+
+{
+    "type": 1,
+    "description": "描述2",
+    "serviceMobile": "12345678901",
+    "address": "123 Main St, Cityville",
+    "serviceConsignee": "John Doe"
+}
+###
+
+POST http://localhost:10026/serviceproviders/1/services/9/accept
+
+###
+
+POST http://localhost:10026/serviceproviders/1/services/9/dispatch?workerId=2
+
+###
+
+POST http://localhost:10026/serviceproviders/1/services/9/receive
+###
+
+POST http://localhost:10026/workers/2/service/9/appointment
+Content-Type: application/json
+
+{
+    "appointmentTime": "2024-06-30T10:00:00"
+}
+###
+
+POST http://localhost:10026/workers/2/services/1/finish
+
+###
+
+POST http://localhost:10026/services/9/cancel

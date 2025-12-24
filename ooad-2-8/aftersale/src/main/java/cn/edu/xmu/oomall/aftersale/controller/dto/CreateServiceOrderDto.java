@@ -1,97 +1,47 @@
 package cn.edu.xmu.oomall.aftersale.controller.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 创建服务单请求DTO
  */
 public class CreateServiceOrderDto {
 
-    private String name;
+    @Setter
+    @Getter
+    private String consignee;
 
 
+    @Setter
+    @Getter
     private String mobile;
 
 
+    @Setter
+    @Getter
     private String address;
-
-
-    private Integer type;
-
+    @Setter
+    @Getter
+    private Byte type;
+    @Setter
+    @Getter
     private String problemImageUrl;
+    @Setter
+    @Getter
     private String description;
+    @Setter
+    @Getter
     private Long productId;
+    @Setter
+    @Getter
     private Long customerId;
+    @Setter
+    @Getter
     private Long expressId;
+    @Setter
+    @Getter
+    private Long afterSaleId;
 
-    // Getter & Setter
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getProblemImageUrl() {
-        return problemImageUrl;
-    }
-
-    public void setProblemImageUrl(String problemImageUrl) {
-        this.problemImageUrl = problemImageUrl;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public Long getExpressId() {
-        return expressId;
-    }
-
-    public void setExpressId(Long expressId) {
-        this.expressId = expressId;
-    }
 }

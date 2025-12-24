@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 服务单持久化对象 Mapper
@@ -22,15 +21,12 @@ public interface ServiceOrderPoMapper extends JpaRepository<ServiceOrderPo, Long
      */
     List<ServiceOrderPo> findByWorkerId(Long workerId, Pageable pageable);
 
-    /**
-     * 根据员工ID和状态查询服务单列表
-     */
-    List<ServiceOrderPo> findByWorkerIdAndStatus(Long workerId, Byte status, Pageable pageable);
+
 
     /**
      * 根据服务单编号查询
      */
-    Optional<ServiceOrderPo> findByServiceSn(String serviceSn);
+
 
     /**
      * 根据服务提供商ID查询服务单列表

@@ -35,6 +35,10 @@ public class AfterSalePo {
      */
     private Long shopId;
 
+
+    private String consignee;//姓名
+
+
     /**
      * 订单ID
      * 关联订单表，售后归属的订单
@@ -58,7 +62,6 @@ public class AfterSalePo {
      * 1=维修 2=仅退款 3=退货退款 4=换货
      */
     private Byte type;
-    private String beanName;
 
     /**
      * 售后状态
@@ -96,5 +99,11 @@ public class AfterSalePo {
      * 关联服务订单模块的服务单，创建服务单后赋值
      */
     private String serviceOrderId;
+
+    //退货运单号
+    private String returnExpress;
+    //发货运单号
+    private String deliverExpress;
+
 
 }

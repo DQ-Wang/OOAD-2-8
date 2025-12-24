@@ -73,17 +73,18 @@ public class AftersaleController {
      *
      * @param shopId 路径参数：店铺id
      * @param aftersaleId 路径参数：售后单id
+     * @param reason 取消理由
      * @return 统一返回对象（包含操作结果）
      */
     @Audit(departName = "shops")
-    @PutMapping("/{aftersaleId}/cancle")
-    public ReturnObject cancelAftersale(@PathVariable Long shopId, @PathVariable Long aftersaleId)
+    @PutMapping("/{aftersaleId}/cancel")
+    public ReturnObject cancelAftersale(@PathVariable Long shopId, @PathVariable Long aftersaleId,@RequestBody String reason)
     {
         log.info("【取消售后单API入口】收到审核请求 - shopId={}, aftersaleId={}",
                 shopId, aftersaleId);
         log.debug("ReturnProduct(Controller): aftersaleId = {}", aftersaleId);
 
-        AftersaleVo aftersaleVo = aftersaleService.cancelAftersale(aftersaleId);
+        AftersaleVo aftersaleVo = aftersaleService.cancelAftersale(aftersaleId,reason);
 
         log.info("【取消售后单API完成】审核成功 - shopId={}, aftersaleId={}, 返回结果={}", shopId, aftersaleId, aftersaleVo);
         return new ReturnObject(ReturnNo.OK,"成功",aftersaleVo);

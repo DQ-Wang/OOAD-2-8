@@ -22,14 +22,10 @@ import lombok.Setter;
 public class ServiceOrderPo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 自增主键策略
     private Long id;
 
-    /**
-     * 服务单编号
-     */
-    @Column(name = "service_sn", nullable = false, length = 50)
-    private String serviceSn;
+
 
     /**
      * 收货人
@@ -90,6 +86,20 @@ public class ServiceOrderPo {
      */
     @Column(name = "service_provider_id")
     private Long serviceProviderId;
+
+    /**
+     * 预约上门时间
+     */
+    @Column(name = "appointment_time")
+    private LocalDateTime appointmentTime;
+
+    @Column(name = "aftersales_id")
+    private Long aftersalesId;
+    /**
+     * 所属商铺ID
+     */
+    @Column(name = "shop_id")
+    private Long shopId;       // 对应API路径中的{shopId}，关联商铺
 }
 
 

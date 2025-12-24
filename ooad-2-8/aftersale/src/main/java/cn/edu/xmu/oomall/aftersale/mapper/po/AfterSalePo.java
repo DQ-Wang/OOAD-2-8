@@ -43,7 +43,7 @@ public class AfterSalePo {
      * 订单ID
      * 关联订单表，售后归属的订单
      */
-    private Long orderId;
+   // private Long orderId;
 
     /**
      * 商品ID

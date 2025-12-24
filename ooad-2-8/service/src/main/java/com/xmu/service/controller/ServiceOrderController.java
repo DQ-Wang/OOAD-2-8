@@ -4,6 +4,7 @@ import com.xmu.service.controller.dto.AppointmentDto;
 import com.xmu.service.service.ServiceOrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.xmu.service.controller.dto.ServiceOrderDto;
 
@@ -19,7 +20,7 @@ public class ServiceOrderController {
     private ServiceOrderService serviceOrderService;
 
     @PostMapping("/internal/shops/{shopId}/aftersales/{id}/serviceorders")
-    public ReturnObject createServiceOrder(
+    public ResponseEntity<String> createServiceOrder(
             @PathVariable("shopId") Long shopId, // 接收店铺ID路径参数
             @PathVariable("id") Long afterSaleId, // 接收售后单ID路径参数
             @RequestBody ServiceOrderDto dto) // 接收创建服务单请求体参数
@@ -29,7 +30,8 @@ public class ServiceOrderController {
             var serviceOrder = serviceOrderService.createServiceOrder(shopId, afterSaleId, dto);
             log.info("服务单创建成功 - shopId={}, afterSaleId={}, dto={}",
                     shopId, afterSaleId, dto);
-            return new ReturnObject(serviceOrder);
+            ResponseEntity<String> response = ResponseEntity.ok(Long.toString(serviceOrder.getId()));
+            return response;
 
     }
 

@@ -34,6 +34,7 @@ public class ExchangeProduct extends AfterSale implements CreateWayBillInterface
     public ExchangeProduct(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
         this.afterSaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
+        this.expressClient=this.afterSaleDao.expressClient;
     }
 
 

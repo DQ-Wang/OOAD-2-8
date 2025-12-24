@@ -58,6 +58,7 @@ public class AftersaleControllerTest
     void setUp() {
         afterSaleDao=new AfterSaleDao(afterSaleMapper,builderList);
         afterSaleDao.afterSaleFeignClient=afterSaleFeignClient;
+        afterSaleDao.expressClient=expressClient;
         afterSaleService=new AfterSaleService(afterSaleDao);
     }
 

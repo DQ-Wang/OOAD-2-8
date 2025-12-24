@@ -1,5 +1,6 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
+import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,13 @@ import org.springframework.beans.BeanUtils;
 @ToString(callSuper = true)
 @Slf4j
 public class RefundOnly extends AfterSale implements RefundInterface{
+
+    public RefundOnly(AfterSaleDao afterSaleDao) {
+        this.afterSaleDao = afterSaleDao;
+    }
+
+
+
     @Override
     public String HandleAftersale(boolean confirm, String reason)
     {

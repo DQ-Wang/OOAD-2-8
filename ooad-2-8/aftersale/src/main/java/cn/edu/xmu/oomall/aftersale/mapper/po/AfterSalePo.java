@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 
 /**
  * 售后单PO类：映射数据库中售后单表（aftersale）
@@ -43,7 +42,7 @@ public class AfterSalePo {
      * 订单ID
      * 关联订单表，售后归属的订单
      */
-    private Long orderId;
+   // private Long orderId;
 
     /**
      * 商品ID

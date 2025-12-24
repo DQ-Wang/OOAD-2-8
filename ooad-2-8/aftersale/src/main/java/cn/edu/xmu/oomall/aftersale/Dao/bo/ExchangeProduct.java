@@ -2,6 +2,7 @@ package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.ExpressClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Resource;
 import lombok.Data;
@@ -24,6 +25,10 @@ public class ExchangeProduct extends AfterSale implements CreateWayBillInterface
     @Resource
     @JsonIgnore
     private AfterSaleFeignClient afterSaleFeignClient;
+
+    @Resource
+    @JsonIgnore
+    private ExpressClient expressClient;
 
 
     public ExchangeProduct(AfterSaleDao afterSaleDao) {
@@ -85,7 +90,7 @@ public class ExchangeProduct extends AfterSale implements CreateWayBillInterface
             log.info("【ExchangeProduct BO】开始Feign调用物流模块 - URL将通过service.order.base-url配置, shopId={}, aftersaleId={}",
                     shopId, aftersaleId);
 
-            this.setReturnExpress(createWayBill(this,this.afterSaleFeignClient));
+            this.setReturnExpress(createWayBill(this,this.expressClient));
             log.info("【ExchangeProduct BO】Feign调用成功，收到退货运单号 - aftersaleId={}, returnExpress={}",
                     aftersaleId, returnExpress);
 
@@ -145,7 +150,7 @@ public class ExchangeProduct extends AfterSale implements CreateWayBillInterface
             this.aftersalePo.setReason(reason);
             log.info("【ExchangeProduct BO】验收售后商品完成，将调用CreateWayBill接口创建发货运单 - aftersaleId={}, status={}, reason={}",
                     this.getAftersaleId(), this.getStatus(),reason);
-            this.setDeliverExpress(createWayBill(this,this.afterSaleFeignClient));
+            this.setDeliverExpress(createWayBill(this,this.expressClient));
             this.aftersalePo.setDeliverExpress(this.getDeliverExpress());
             this.afterSaleDao.saveAftersale(this.getAftersalePo());
             log.info("【ExchangeProduct BO】成功生成发货运单，并保存至数据库 - aftersaleId={}, deliverExpress={}",
@@ -159,7 +164,7 @@ public class ExchangeProduct extends AfterSale implements CreateWayBillInterface
             this.aftersalePo.setReason(reason);
             log.info("【ExchangeProduct BO】拒绝验收售后商品完成，将调用CreateWayBill接口创建发货运单 - aftersaleId={}, status={}, reason={}",
                     this.getAftersaleId(), this.getStatus(),reason);
-            this.setDeliverExpress(createWayBill(this,this.afterSaleFeignClient));
+            this.setDeliverExpress(createWayBill(this,this.expressClient));
             this.aftersalePo.setDeliverExpress(this.getDeliverExpress());
             this.afterSaleDao.saveAftersale(this.getAftersalePo());
             log.info("【ExchangeProduct BO】成功生成拒收发货运单，并保存至数据库 - aftersaleId={}, deliverExpress={}",

@@ -46,7 +46,7 @@ public class AftersaleControllerTest
     }
 
      @Test
-    void reviewAftersaleTest_Success() {
+    void reviewMaintenanceTest_confirm() {
         // ========== 1. 模拟依赖行为 ==========
         // 模拟物流Feign返回成功的运单号
          Random random = new Random();
@@ -60,6 +60,57 @@ public class AftersaleControllerTest
 
         afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
 
+    }
+
+    @Test
+    void reviewMaintenanceTest_reject() {
+        // ========== 1. 模拟依赖行为 ==========
+        // 模拟物流Feign返回成功的运单号
+//        Random random = new Random();
+//        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+//        when(afterSaleFeignClient.createExpress(anyLong(), any(CreateExpressDto.class)))
+//                .thenReturn(ResponseEntity.ok(randomWaybillId));
+
+        // ========== 2. 执行测试方法 ==========
+        Long aftersaleId = 2L;
+        AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"已过维修售后期");
+
+        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+    }
+
+    @Test
+    void reviewRefundOnlyTest_confirm() {
+        // ========== 2. 执行测试方法 ==========
+        Long aftersaleId = 3L;
+        AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(true,"");
+
+        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+
+    }
+
+    @Test
+    void reviewRefundOnlyTest_reject() {
+
+        // ========== 2. 执行测试方法 ==========
+        Long aftersaleId = 3L;
+        AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"仅退款理由不充分");
+
+        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
+    }
+
+    @Test
+    void reviewReturnAndRefundTest_confirm() {
+
+        Random random = new Random();
+        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+        when(afterSaleFeignClient.createExpress(anyLong(), any(CreateExpressDto.class)))
+                .thenReturn(ResponseEntity.ok(randomWaybillId));
+
+        // ========== 2. 执行测试方法 ==========
+        Long aftersaleId = 3L;
+        AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(false,"仅退款理由不充分");
+
+        afterSaleService.reviewAftersale(aftersaleId,aftersaleConfirmDto);
     }
 
 }

@@ -21,6 +21,7 @@ import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
 @Slf4j
 public class AfterSaleService {
 
+//    @Autowired
     private final AfterSaleDao aftersaleDao;
 
 

@@ -5,6 +5,7 @@ import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateExpressDto;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.ExpressClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,6 +32,8 @@ public class ReturnAndRefundTest {
 
     @MockitoBean
     private AfterSaleFeignClient afterSaleFeignClient;
+    @Autowired
+    private ExpressClient expressClient;
 
     /**
      * 测试场景1：创建退货运单成功
@@ -65,11 +68,11 @@ public class ReturnAndRefundTest {
     void testCreateWayBill_Success() {
         // ========== 1. 模拟依赖行为 ==========
         // 模拟物流Feign返回成功的运单号
-        when(afterSaleFeignClient.createExpress(anyLong(), any(CreateExpressDto.class)))
+        when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok("SF1234567890"));
 
         // ========== 2. 执行测试方法 ==========
-        String waybillId = refundAndReturn.createWayBill(refundAndReturn, afterSaleFeignClient);
+        String waybillId = refundAndReturn.createWayBill(refundAndReturn, expressClient);
 
         // ========== 3. 验证结果 ==========
         // 断言运单号非空且符合预期
@@ -83,7 +86,7 @@ public class ReturnAndRefundTest {
     {
         // ========== 1. 模拟依赖行为 ==========
         // 模拟物流Feign返回成功的运单号
-        when(afterSaleFeignClient.createExpress(anyLong(), any(CreateExpressDto.class)))
+        when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok("SF1234567890"));
 
         // ========== 2. 执行测试方法 ==========
@@ -101,7 +104,7 @@ public class ReturnAndRefundTest {
     {
         // ========== 1. 模拟依赖行为 ==========
         // 模拟物流Feign返回成功的运单号
-        when(afterSaleFeignClient.createExpress(anyLong(), any(CreateExpressDto.class)))
+        when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok("SF1234567890"));
 
         // ========== 2. 执行测试方法 ==========

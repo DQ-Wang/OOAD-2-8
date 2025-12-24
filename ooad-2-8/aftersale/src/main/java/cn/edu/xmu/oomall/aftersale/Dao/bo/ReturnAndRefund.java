@@ -2,6 +2,7 @@ package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.ExpressClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Resource;
 import lombok.*;
@@ -23,6 +24,11 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
     @Resource
     @JsonIgnore
     private AfterSaleFeignClient aftersaleFeignClient;
+
+
+    @Resource
+    @JsonIgnore
+    private ExpressClient expressClient;
 
 
     public ReturnAndRefund(AfterSaleDao afterSaleDao) {
@@ -54,7 +60,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
 
         log.info("【ReturnAndRefund BO】取消，准备取消寄回运单 - aftersaleId={}", this.getAftersaleId());
         setStatus((byte) 7);
-        aftersaleFeignClient.cancleExpress(getShopId(),Long.parseLong(getReturnExpress()),reason);
+        expressClient.cancleExpress(getShopId(),Long.parseLong(getReturnExpress()),reason);
         setReason(reason);
         BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
         this.afterSaleDao.saveAftersale(this.getAftersalePo());
@@ -78,7 +84,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
             //调用接口的默认方法
             refund(this);
             //创建运单
-            this.setReturnExpress(createWayBill(this,aftersaleFeignClient));
+            this.setReturnExpress(createWayBill(this,expressClient));
 
             log.info("【ReturnAndRefund BO】审核同意处理完成 - aftersaleId={}",this.getAftersaleId());
         }
@@ -109,7 +115,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
           else
           {
               setStatus((byte)8);
-              this.setDeliverExpress(createWayBill(this,aftersaleFeignClient));
+              this.setDeliverExpress(createWayBill(this,expressClient));
               log.info("【ReturnAndRefund BO】确认验收售后商品，售后单状态设为顾客待收货，售后单添加对应的运单号 - aftersaleId={}，DeliverExpressId={}", this.getAftersaleId(), this.getDeliverExpress());
           }
           BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）

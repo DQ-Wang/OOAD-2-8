@@ -48,37 +48,37 @@ public interface AfterSaleFeignClient {
 
 
 
-    /**
-     * 创建运单
-     * @param shopId 门店ID（路径参数）
-     * @param createExpressDto 运单创建参数（请求体）
-     * @return 运单信息
-     */
-    @PostMapping("/internal/shops/{shopId}/packages")
-    ResponseEntity<String> createExpress(
-            // 路径占位符{shopId} → @PathVariable("shopId") 绑定
-            @PathVariable("shopId") Long shopId,
-            // 请求体参数
-            @RequestBody CreateExpressDto createExpressDto
-    );
-
-
-    /**
-     * 取消运单
-     * @param shopId 门店ID（路径参数）
-     * @param expressId 运单ID（路径参数）
-     * @param reason 取消原因参数（请求体）
-     * @return 取消结果
-     */
-    @PutMapping("/internal/shops/{shopId}/packages/{id}/cancel")
-    ResponseEntity<String> cancleExpress(
-            // 路径占位符{shopId} → @PathVariable("shopId") 绑定
-            @PathVariable("shopId") Long shopId,
-            // 路径占位符{id} → @PathVariable("id") 绑定（参数名可仍为expressId，注解内指定"id"即可）
-            @PathVariable("id") Long expressId,
-            // 请求体参数
-            @RequestBody String reason
-    );
+//    /**
+//     * 创建运单
+//     * @param shopId 门店ID（路径参数）
+//     * @param createExpressDto 运单创建参数（请求体）
+//     * @return 运单信息
+//     */
+//    @PostMapping("/internal/shops/{shopId}/packages")
+//    ResponseEntity<String> createExpress(
+//            // 路径占位符{shopId} → @PathVariable("shopId") 绑定
+//            @PathVariable("shopId") Long shopId,
+//            // 请求体参数
+//            @RequestBody CreateExpressDto createExpressDto
+//    );
+//
+//
+//    /**
+//     * 取消运单
+//     * @param shopId 门店ID（路径参数）
+//     * @param expressId 运单ID（路径参数）
+//     * @param reason 取消原因参数（请求体）
+//     * @return 取消结果
+//     */
+//    @PutMapping("/internal/shops/{shopId}/packages/{id}/cancel")
+//    ResponseEntity<String> cancleExpress(
+//            // 路径占位符{shopId} → @PathVariable("shopId") 绑定
+//            @PathVariable("shopId") Long shopId,
+//            // 路径占位符{id} → @PathVariable("id") 绑定（参数名可仍为expressId，注解内指定"id"即可）
+//            @PathVariable("id") Long expressId,
+//            // 请求体参数
+//            @RequestBody String reason
+//    );
 
 
 

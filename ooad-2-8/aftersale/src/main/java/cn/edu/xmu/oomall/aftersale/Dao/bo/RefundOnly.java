@@ -62,7 +62,14 @@ public class RefundOnly extends AfterSale implements RefundInterface{
 
     @Override
     public boolean CancleAftersale(String reason) {
-        throw new IllegalArgumentException("仅退款类型不能取消！");
+        try
+        {        throw new IllegalArgumentException("仅退款类型不能取消！");}
+        catch (Exception e)
+        {
+            log.error("仅退款类型触发了取消售后逻辑,属于错误调用，请检查代码逻辑是否有误");
+        }
+
+        return false;
     }
 
     @Override

@@ -8,6 +8,7 @@ import jakarta.annotation.Resource;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Data
@@ -34,7 +35,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
     public ReturnAndRefund(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
         this.aftersaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
-
+        this.expressClient = this.afterSaleDao.expressClient;
     }
 
 

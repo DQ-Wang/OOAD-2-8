@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 
 /**
  * 售后单PO类：映射数据库中售后单表（aftersale）

@@ -1,5 +1,5 @@
 ###
-PUT http://1.94.217.88:8080/shops/1005/aftersales/24/confirm
+PUT http://localhost:8080/shops/1005/aftersales/24/confirm
 Content-Type: application/json
 
 {

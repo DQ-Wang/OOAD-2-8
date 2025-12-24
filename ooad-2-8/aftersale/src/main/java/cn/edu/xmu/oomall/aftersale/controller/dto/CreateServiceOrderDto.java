@@ -42,6 +42,9 @@ public class CreateServiceOrderDto {
     @Setter
     @Getter
     private Long afterSaleId;
+    @Setter
+    @Getter
+    private Byte serviceType;
 
 
 }

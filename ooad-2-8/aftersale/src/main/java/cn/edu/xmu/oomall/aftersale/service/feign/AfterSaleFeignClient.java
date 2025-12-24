@@ -1,5 +1,6 @@
 package cn.edu.xmu.oomall.aftersale.service.feign;
 
+import cn.edu.xmu.javaee.core.model.ReturnObject;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateExpressDto;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -90,7 +91,7 @@ public interface AfterSaleFeignClient {
      * @return 取消结果
      */
     @PutMapping("/internal/shops/{shopId}/service/{id}/cancel")
-    Boolean cancelServiceOrder(
+    ReturnObject cancelServiceOrder(
             @PathVariable("shopId") Long shopId,
             @PathVariable("id") String id,
             // 请求体参数

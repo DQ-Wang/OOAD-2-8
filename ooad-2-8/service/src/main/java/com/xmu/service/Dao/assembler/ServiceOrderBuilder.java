@@ -24,12 +24,6 @@ public interface ServiceOrderBuilder {
     Byte getType();
 
     /**
-     * 获取构建器支持的服务单类型名称（String类型，作为Map的key，用于Dao层）
-     * @return 服务单类型字符串
-     */
-    String getTypeName();
-
-    /**
      * 从PO构建领域对象
      * @param po 持久化对象
      * @param dao 数据访问对象

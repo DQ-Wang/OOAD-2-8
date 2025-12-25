@@ -26,6 +26,9 @@ public class OnSiteServiceOrder extends ServiceOrder {
     @Override
     public void assign(Long providerId, Long workerId){
         super.assign(providerId,workerId);
+        if (!STATUS_ACCEPT.equals(this.status)) {
+            throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可派工");
+        }
         this.status=STATUS_ONDOOR;
         log.info("【ServiceOrder】服务单分配工人 - serviceOrderId={}, workerId={}", this.id, workerId);
     }

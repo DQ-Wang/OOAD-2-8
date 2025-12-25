@@ -29,5 +29,6 @@ public interface ServiceOrderBuilder {
      * @param dao 数据访问对象
      * @return 服务单领域对象
      */
-    ServiceOrder build(ServiceOrderPo po, ServiceOrderDao dao);
+    ServiceOrder
+    build(ServiceOrderPo po, ServiceOrderDao dao);
 }

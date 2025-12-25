@@ -6,11 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="c2397362-8bc6-4176-9346-5b5563294d04" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ooad-2-8/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ooad-2-8/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ooad-2-8/service/src/main/java/com/xmu/service/Dao/assembler/ServiceOrderBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/ooad-2-8/service/src/main/java/com/xmu/service/Dao/assembler/ServiceOrderBuilder.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,6 +72,18 @@
         <option value="SpringBootApplicationConfigurationType" />
       </set>
     </option>
+    <option name="configurationStatuses">
+      <map>
+        <entry key="SpringBootApplicationConfigurationType">
+          <value>
+            <map>
+              <entry key="AftersaleApplication" value="STOPPED" />
+              <entry key="ServiceApplication" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="RunManager" selected="Spring Boot.ServiceApplication">
     <configuration name="AftersaleApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
@@ -132,6 +142,11 @@
       <workItem from="1765762104415" duration="1069000" />
       <workItem from="1765785577596" duration="6290000" />
       <workItem from="1765794301622" duration="441000" />
+      <workItem from="1766480918054" duration="673000" />
+      <workItem from="1766543611093" duration="6019000" />
+      <workItem from="1766604677312" duration="5645000" />
+      <workItem from="1766634661465" duration="637000" />
+      <workItem from="1766663379704" duration="600000" />
     </task>
     <servers />
   </component>

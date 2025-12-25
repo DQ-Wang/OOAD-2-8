@@ -11,9 +11,9 @@ import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import cn.edu.xmu.oomall.aftersale.service.feign.ExpressClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.PaymentClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +48,13 @@ public class AftersaleControllerTest
     private ExpressClient expressClient;
 
 
+    @MockitoBean
+    private PaymentClient  paymentClient;
+
     @Autowired
     private AfterSaleFeignClient afterSaleFeignClient;
+
+
 
     /**
      * 测试场景1：创建退货运单成功
@@ -61,6 +66,7 @@ public class AftersaleControllerTest
         afterSaleDao=new AfterSaleDao(afterSaleMapper,builderList);
         afterSaleDao.afterSaleFeignClient=afterSaleFeignClient;
         afterSaleDao.expressClient=expressClient;
+        afterSaleDao.paymentClient=paymentClient;
         afterSaleService=new AfterSaleService(afterSaleDao);
     }
 
@@ -103,6 +109,9 @@ public class AftersaleControllerTest
         // ========== 2. 执行测试方法 ==========
         Long aftersaleId = 3L;
         AftersaleConfirmDto aftersaleConfirmDto = new AftersaleConfirmDto(true,"");
+
+        when(paymentClient.refund(anyLong(),anyLong()))
+                .thenReturn(ResponseEntity.ok(""));
 
         aftersaleController.reviewAftersale(1002L,aftersaleId,aftersaleConfirmDto);
 
@@ -179,6 +188,9 @@ public class AftersaleControllerTest
 //                .thenReturn(ResponseEntity.ok(randomWaybillId));
 
         // ========== 2. 执行测试方法 ==========
+
+        when(paymentClient.refund(anyLong(),anyLong()))
+                .thenReturn(ResponseEntity.ok(""));
         Long aftersaleId = 10L;
 
         aftersaleController.confirmProduct(1005L,aftersaleId,true,"符合验收标准");
@@ -192,6 +204,7 @@ public class AftersaleControllerTest
         String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
         when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok(randomWaybillId));
+
 
         // ========== 2. 执行测试方法 ==========
         Long aftersaleId = 11L;

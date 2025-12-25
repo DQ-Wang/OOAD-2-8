@@ -12,13 +12,16 @@ import java.time.LocalDateTime;
 
 
 /**
- * 服务单领域服务（统筹业务流程）
+ * 服务单领域服务
  */
 @Service
 public class ServiceOrderService {
-    @Autowired
-    private ServiceOrderDao serviceOrderDao;
+    private final ServiceOrderDao serviceOrderDao;
 
+    @Autowired
+    public ServiceOrderService(ServiceOrderDao serviceOrderDao) {
+        this.serviceOrderDao = serviceOrderDao;
+    }
 
 /**
      * 创建服务单
@@ -71,11 +74,10 @@ public class ServiceOrderService {
      * 取消服务单
      */
     public ServiceOrderVo cancelServiceOrder(Long serviceOrderId) {
-        ServiceOrder serviceOrder =serviceOrderDao.findById(serviceOrderId);
+        ServiceOrder serviceOrder = serviceOrderDao.findById(serviceOrderId);
         serviceOrder.cancel();
         serviceOrderDao.update(serviceOrder);
         return toVo(serviceOrder) ;
-
     }
     /**
      * 服务商收到顾客寄件

@@ -61,7 +61,7 @@ spring:
 service:
   order:
     # Docker Swarm部署时，使用服务名访问服务订单模块（服务名与docker.yml中的service服务名一致）
-    base-url: http://localhost:8081
+    base-url: http://localhost:10026
 
 server:
   port: 8080

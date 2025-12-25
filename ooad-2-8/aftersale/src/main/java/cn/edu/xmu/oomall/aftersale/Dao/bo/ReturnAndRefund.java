@@ -3,11 +3,13 @@ package cn.edu.xmu.oomall.aftersale.Dao.bo;
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import cn.edu.xmu.oomall.aftersale.service.feign.ExpressClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.PaymentClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Resource;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Data
@@ -30,11 +32,16 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
     @JsonIgnore
     private ExpressClient expressClient;
 
+    @Resource
+    @JsonIgnore
+    private PaymentClient paymentClient;
+
 
     public ReturnAndRefund(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
         this.aftersaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
-
+        this.expressClient = this.afterSaleDao.expressClient;
+        this.paymentClient = this.afterSaleDao.paymentClient;
     }
 
 
@@ -81,8 +88,7 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
 
             setStatus((byte)3);
             log.info("【ReturnAndRefund BO】已更新售后状态为商家待收货 - aftersaleId={}", this.getAftersaleId());
-            //调用接口的默认方法
-            refund(this);
+
             //创建运单
             this.setReturnExpress(createWayBill(this,expressClient));
 
@@ -118,6 +124,10 @@ public class ReturnAndRefund extends AfterSale implements RefundInterface,Create
               this.setDeliverExpress(createWayBill(this,expressClient));
               log.info("【ReturnAndRefund BO】确认验收售后商品，售后单状态设为顾客待收货，售后单添加对应的运单号 - aftersaleId={}，DeliverExpressId={}", this.getAftersaleId(), this.getDeliverExpress());
           }
+
+          //确认商品后调用支付模块的退款（mock）
+          refund(this,paymentClient);
+
           BeanUtils.copyProperties(this, this.aftersalePo); // 拷贝同名属性（驼峰命名需一致）
           this.afterSaleDao.saveAftersale(this.getAftersalePo());
           log.info("【ReturnAndRefund BO】已保存到数据库 - aftersaleId={}", this.getAftersaleId());

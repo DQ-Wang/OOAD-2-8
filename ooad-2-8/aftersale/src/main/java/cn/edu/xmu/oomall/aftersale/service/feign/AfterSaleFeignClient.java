@@ -85,15 +85,13 @@ public interface AfterSaleFeignClient {
 
     /**
      * 取消服务单
-     * @param shopId 商户ID（路径参数）
      * @param id 服务单ID（路径参数）
      * @param reason 取消原因参数（请求体）
      * @return 取消结果
      */
-    @PutMapping("/internal/shops/{shopId}/service/{id}/cancel")
+    @PutMapping("services/{id}/cancel")
     ReturnObject cancelServiceOrder(
-            @PathVariable("shopId") Long shopId,
-            @PathVariable("id") String id,
+            @PathVariable("id") Long id,
             // 请求体参数
             @RequestBody String reason
     );

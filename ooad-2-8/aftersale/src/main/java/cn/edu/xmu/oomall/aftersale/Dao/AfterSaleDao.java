@@ -7,6 +7,8 @@ import cn.edu.xmu.oomall.aftersale.assembler.AfterSaleBuilder;
 import cn.edu.xmu.oomall.aftersale.mapper.AfterSaleMapper;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.ExpressClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.PaymentClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,10 @@ public class AfterSaleDao {
     private final Map<Byte, AfterSaleBuilder> builders;
     @Autowired
     public AfterSaleFeignClient afterSaleFeignClient;
+    @Autowired
+    public ExpressClient expressClient;
+    @Autowired
+    public PaymentClient paymentClient;
 
 
 

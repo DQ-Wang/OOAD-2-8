@@ -4,6 +4,7 @@ import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateServiceOrderDto;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
+import cn.edu.xmu.oomall.aftersale.service.feign.ExpressClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Resource;
 import lombok.*;
@@ -30,12 +31,16 @@ public class Maintenance extends AfterSale {
     // 3. Spring自动注入Feign客户端（prototype Bean的依赖会被Spring自动填充）
     @Resource
     @JsonIgnore
-    private AfterSaleFeignClient serviceOrderFeignClient;
+    private AfterSaleFeignClient afterSaleFeignClient;
+    @Resource
+    @JsonIgnore
+    private ExpressClient expressClient;
 
 
     public Maintenance(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
-        this.serviceOrderFeignClient = this.afterSaleDao.afterSaleFeignClient;
+        this.afterSaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
+        this.expressClient = this.afterSaleDao.expressClient;
     }
 
 
@@ -145,7 +150,7 @@ public class Maintenance extends AfterSale {
         }
         else
         {//需调用服务模块取消服务单
-            if(this.getServiceOrderFeignClient().cancelServiceOrder(this.getShopId(),this.serviceOrderId,reason).getCode()==ReturnNo.OK)
+            if(this.getAfterSaleFeignClient().cancelServiceOrder(Long.parseLong(this.serviceOrderId),reason).getCode()==ReturnNo.OK)
             {
                 this.setStatus((byte) 7);
                 log.info("【Maintenance BO】已更新售后状态为已取消 - aftersaleId={}", this.getAftersaleId());

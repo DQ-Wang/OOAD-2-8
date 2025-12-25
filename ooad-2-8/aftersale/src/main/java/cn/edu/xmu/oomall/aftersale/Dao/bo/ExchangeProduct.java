@@ -34,6 +34,7 @@ public class ExchangeProduct extends AfterSale implements CreateWayBillInterface
     public ExchangeProduct(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
         this.afterSaleFeignClient = this.afterSaleDao.afterSaleFeignClient;
+        this.expressClient=this.afterSaleDao.expressClient;
     }
 
 
@@ -123,6 +124,7 @@ public class ExchangeProduct extends AfterSale implements CreateWayBillInterface
             setReason(reason);
             this.aftersalePo.setStatus((byte) 7);
             this.aftersalePo.setReason(reason);
+            expressClient.cancleExpress(getShopId(),Long.parseLong(getReturnExpress()),reason);
             this.afterSaleDao.saveAftersale(this.getAftersalePo());
             log.info("【ExchangeProduct BO】取消售后处理完成，已保存到数据库 - aftersaleId={}, status={}, reason={}",
                     this.getAftersaleId(), this.getStatus(),reason);

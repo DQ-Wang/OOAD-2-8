@@ -1,6 +1,9 @@
 package cn.edu.xmu.oomall.aftersale.Dao.bo;
 
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
+import cn.edu.xmu.oomall.aftersale.service.feign.PaymentClient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Resource;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,11 +19,15 @@ import org.springframework.beans.BeanUtils;
 @Slf4j
 public class RefundOnly extends AfterSale implements RefundInterface{
 
+
     public RefundOnly(AfterSaleDao afterSaleDao) {
         this.afterSaleDao = afterSaleDao;
+        this.paymentClient = afterSaleDao.paymentClient;
     }
 
-
+    @Resource
+    @JsonIgnore
+    private PaymentClient paymentClient;
 
     @Override
     public String HandleAftersale(boolean confirm, String reason)
@@ -51,7 +58,7 @@ public class RefundOnly extends AfterSale implements RefundInterface{
                     this.getAftersaleId());
 
             //调用接口的默认方法
-            refund(this);
+            refund(this,paymentClient);
 
             return "NULL";
         } catch (Exception e) {
@@ -62,7 +69,14 @@ public class RefundOnly extends AfterSale implements RefundInterface{
 
     @Override
     public boolean CancleAftersale(String reason) {
-        throw new IllegalArgumentException("仅退款类型不能取消！");
+        try
+        {        throw new IllegalArgumentException("仅退款类型不能取消！");}
+        catch (Exception e)
+        {
+            log.error("仅退款类型触发了取消售后逻辑,属于错误调用，请检查代码逻辑是否有误");
+        }
+
+        return false;
     }
 
     @Override

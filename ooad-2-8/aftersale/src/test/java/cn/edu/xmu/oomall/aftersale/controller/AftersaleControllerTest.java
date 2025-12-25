@@ -75,7 +75,7 @@ public class AftersaleControllerTest
         // ========== 1. 模拟依赖行为 ==========
         // 模拟物流Feign返回成功的运单号
          Random random = new Random();
-         String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+         String randomWaybillId =Long.toString(random.nextLong(10000000000L)); // 生成0-9999999999的随机数
         when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok(randomWaybillId));
 
@@ -92,7 +92,7 @@ public class AftersaleControllerTest
         // ========== 1. 模拟依赖行为 ==========
         // 模拟物流Feign返回成功的运单号
 //        Random random = new Random();
-//        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+//        String randomWaybillId =Long.toString(random.nextLong(10000000000L)); // 生成0-9999999999的随机数
 //        when(afterSaleFeignClient.createExpress(anyLong(), any(CreateExpressDto.class)))
 //                .thenReturn(ResponseEntity.ok(randomWaybillId));
 
@@ -131,7 +131,7 @@ public class AftersaleControllerTest
     void reviewReturnAndRefundTest_confirm() {
 
         Random random = new Random();
-        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+        String randomWaybillId =Long.toString(random.nextLong(10000000000L)); // 生成0-9999999999的随机数
         when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok(randomWaybillId));
 
@@ -156,7 +156,7 @@ public class AftersaleControllerTest
         // ========== 2. 执行测试方法 ==========
 
         Random random = new Random();
-        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+        String randomWaybillId =Long.toString(random.nextLong(10000000000L)); // 生成0-9999999999的随机数
         when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok(randomWaybillId));
 
@@ -183,7 +183,7 @@ public class AftersaleControllerTest
     void confirmProductTest_trueReturnAndRefund() {//用售后单ID=10测试
 
 //        Random random = new Random();
-//        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+//        String randomWaybillId =Long.toString(random.nextLong(10000000000L)); // 生成0-9999999999的随机数
 //        when(afterSaleFeignClient.createExpress(anyLong(), any(CreateExpressDto.class)))
 //                .thenReturn(ResponseEntity.ok(randomWaybillId));
 
@@ -201,7 +201,7 @@ public class AftersaleControllerTest
     void confirmProductTest_falseReturnAndRefund() {//用售后单ID=11测试
 
         Random random = new Random();
-        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+        String randomWaybillId =Long.toString(random.nextLong(10000000000L)); // 生成0-9999999999的随机数
         when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok(randomWaybillId));
 
@@ -218,7 +218,7 @@ public class AftersaleControllerTest
     void confirmProductTest_trueExchange() {//用售后单ID=12测试
 
         Random random = new Random();
-        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+        String randomWaybillId =Long.toString(random.nextLong(10000000000L)); // 生成0-9999999999的随机数
         when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok(randomWaybillId));
 
@@ -234,7 +234,7 @@ public class AftersaleControllerTest
     void confirmProductTest_falseExchange() {//用售后单ID=13测试
 
         Random random = new Random();
-        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+        String randomWaybillId =Long.toString(random.nextLong(10000000000L)); // 生成0-9999999999的随机数
         when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
                 .thenReturn(ResponseEntity.ok(randomWaybillId));
 
@@ -256,7 +256,7 @@ public class AftersaleControllerTest
     void cancleAfterSaleTest_RefundOnly() {//用售后单ID=14测试
 
 //        Random random = new Random();
-//        String randomWaybillId = "SF" + random.nextLong(10000000000L); // 生成0-9999999999的随机数
+//        String randomWaybillId =Long.toString(random.nextLong(10000000000L)); // 生成0-9999999999的随机数
 //        when(afterSaleFeignClient.createExpress(anyLong(), any(CreateExpressDto.class)))
 //                .thenReturn(ResponseEntity.ok(randomWaybillId));
 

@@ -22,15 +22,9 @@ public class DeliveryServiceOrderBuilder implements ServiceOrderBuilder {
     }
 
     @Override
-    public String getTypeName() {
-        return ServiceOrder.TYPE_NAMES.get(ServiceOrder.TYPE_DELIVERY);
-    }
-
-    @Override
     public ServiceOrder build(ServiceOrderPo po, ServiceOrderDao dao) {
         DeliveryServiceOrder bo = new DeliveryServiceOrder();
         BeanUtils.copyProperties(po, bo);
-        bo.setServiceOrderDao(dao);
         return bo;
     }
 

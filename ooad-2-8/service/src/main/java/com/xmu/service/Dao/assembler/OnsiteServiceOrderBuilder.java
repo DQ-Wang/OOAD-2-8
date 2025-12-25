@@ -22,15 +22,9 @@ public class OnsiteServiceOrderBuilder implements ServiceOrderBuilder {
     }
 
     @Override
-    public String getTypeName() {
-        return ServiceOrder.TYPE_NAMES.get(ServiceOrder.TYPE_ON_SITE);
-    }
-
-    @Override
     public ServiceOrder build(ServiceOrderPo po, ServiceOrderDao dao) {
         OnSiteServiceOrder bo = new OnSiteServiceOrder();
         BeanUtils.copyProperties(po, bo);
-        bo.setServiceOrderDao(dao);
         return bo;
     }
 

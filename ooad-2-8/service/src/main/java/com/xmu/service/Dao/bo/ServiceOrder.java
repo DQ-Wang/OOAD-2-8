@@ -2,7 +2,6 @@ package com.xmu.service.Dao.bo;
 
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
-import com.xmu.service.Dao.ServiceOrderDao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
@@ -42,9 +41,9 @@ public abstract class ServiceOrder  implements Serializable {
     public static final Byte STATUS_NEW = 0;
 
     /**
-     * 服务单状态常量：已分配
+     * 服务单状态常量：已接受
      */
-    public static final Byte STATUS_ASSIGN = 1;
+    public static final Byte STATUS_ACCEPT = 1;
 
     /**
      * 服务单状态常量：已取消
@@ -87,7 +86,7 @@ public abstract class ServiceOrder  implements Serializable {
     public static final Map<Byte, String> STATUS_NAMES = new HashMap<>() {
         {
             put(STATUS_NEW, "NEW");
-            put(STATUS_ASSIGN, "ASSIGN");
+            put(STATUS_ACCEPT, "ACCEPT");
             put(STATUS_CANCEL, "CANCEL");
             put(STATUS_ONDOOR, "ONDOOR");
             put(STATUS_RECEIVE, "RECEIVE");
@@ -99,8 +98,9 @@ public abstract class ServiceOrder  implements Serializable {
     /**
      * 构建器映射表：Byte -> ServiceOrderBuilder
      * 由 ServiceOrderDao 在初始化时设置
+     * 包内可见，供 ServiceOrderDao 使用
      */
-    private static Map<Byte, ServiceOrderBuilder> builders;
+    public static Map<Byte, ServiceOrderBuilder> builders;
 
     /**
      * 初始化构建器映射表
@@ -173,14 +173,6 @@ public abstract class ServiceOrder  implements Serializable {
     @Setter
     protected LocalDateTime appointmentTime; // 预约上门时间
 
-    /**
-     * 持久化访问对象（Dao），由 Dao 在 build 时注入
-     */
-    @JsonIgnore
-    @ToString.Exclude
-    @Setter
-    protected transient ServiceOrderDao serviceOrderDao;
-
 
     /**
      * 根据类型创建具体服务单
@@ -211,15 +203,12 @@ public abstract class ServiceOrder  implements Serializable {
             throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可接受");
         }
         this.serviceProviderId = serviceProviderId;
-        this.status = STATUS_ASSIGN;
+        this.status = STATUS_ACCEPT;
     }
 
     public void assign(Long providerId, Long workerId) {
         if (!providerId.equals(this.serviceProviderId)) {
             throw new BusinessException(ReturnNo.STATENOTALLOW, "服务商ID不匹配");
-        }
-        if (!STATUS_ASSIGN.equals(this.status)) {
-            throw new BusinessException(ReturnNo.STATENOTALLOW, "当前状态不可指派");
         }
         this.workerId = workerId;
 
@@ -235,7 +224,7 @@ public abstract class ServiceOrder  implements Serializable {
 
     /**
      * 获取状态名称
-     * @return 状态名称，如 "NEW"、"ASSIGN" 等
+     * @return 状态名称，如 "NEW"、"ACCEPT" 等
      */
     public String getStatusName() {
         return STATUS_NAMES.get(this.status);

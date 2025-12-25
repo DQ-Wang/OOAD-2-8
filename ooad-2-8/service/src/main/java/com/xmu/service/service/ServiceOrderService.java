@@ -74,11 +74,10 @@ public class ServiceOrderService {
      * 取消服务单
      */
     public ServiceOrderVo cancelServiceOrder(Long serviceOrderId) {
-        ServiceOrder serviceOrder =serviceOrderDao.findById(serviceOrderId);
+        ServiceOrder serviceOrder = serviceOrderDao.findById(serviceOrderId);
         serviceOrder.cancel();
         serviceOrderDao.update(serviceOrder);
         return toVo(serviceOrder) ;
-
     }
     /**
      * 服务商收到顾客寄件

@@ -150,7 +150,7 @@ public class Maintenance extends AfterSale {
         }
         else
         {//需调用服务模块取消服务单
-            if(this.getAfterSaleFeignClient().cancelServiceOrder(this.getShopId(),this.serviceOrderId,reason).getCode()==ReturnNo.OK)
+            if(this.getAfterSaleFeignClient().cancelServiceOrder(Long.parseLong(this.serviceOrderId),reason).getCode()==ReturnNo.OK)
             {
                 this.setStatus((byte) 7);
                 log.info("【Maintenance BO】已更新售后状态为已取消 - aftersaleId={}", this.getAftersaleId());

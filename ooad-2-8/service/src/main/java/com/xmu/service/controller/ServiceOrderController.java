@@ -65,7 +65,7 @@ public class ServiceOrderController {
        
     }
 
-    @PostMapping("/services/{id}/cancel")
+    @PutMapping("/services/{id}/cancel")
     public ReturnObject cancelServiceOrder(
             @PathVariable("id") Long serviceOrderId) // 接收服务单ID路径参数
     {

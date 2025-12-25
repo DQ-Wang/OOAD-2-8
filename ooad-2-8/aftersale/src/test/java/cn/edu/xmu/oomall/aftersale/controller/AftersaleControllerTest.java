@@ -70,6 +70,16 @@ public class AftersaleControllerTest
         afterSaleService=new AfterSaleService(afterSaleDao);
     }
 
+    @Test
+    void cancleAftersaleTest_Maintenance() {
+        Long aftersaleId = 16L;
+        when(expressClient.cancleExpress(anyLong(),anyLong(), anyString()))
+                .thenReturn(ResponseEntity.ok(""));
+//        when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
+//                .thenReturn(ResponseEntity.ok(randomWaybillId)); //这个不知道会不会涉及
+        aftersaleController.cancelAftersale(1004L,aftersaleId,"客户提出不合理维修请求");
+    }
+
      @Test
     void reviewMaintenanceTest_confirm() {
         // ========== 1. 模拟依赖行为 ==========
@@ -278,15 +288,7 @@ public class AftersaleControllerTest
         //在测试方法里其实shopId是什么无所谓，这里仅仅作为占位
     }
 
-    @Test
-    void cancleAftersaleTest_Maintenance() {
-        Long aftersaleId = 16L;
-        when(expressClient.cancleExpress(anyLong(),anyLong(), anyString()))
-                .thenReturn(ResponseEntity.ok(""));
-//        when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
-//                .thenReturn(ResponseEntity.ok(randomWaybillId)); //这个不知道会不会涉及
-        aftersaleController.cancelAftersale(1004L,aftersaleId,"客户提出不合理维修请求");
-    }
+
 
     @Test
     void cancleAftersaleTest_Exchange() {

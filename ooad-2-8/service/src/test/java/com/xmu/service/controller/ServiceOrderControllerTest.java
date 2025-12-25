@@ -5,6 +5,7 @@ import com.xmu.service.controller.dto.AppointmentDto;
 import com.xmu.service.controller.dto.ServiceOrderDto;
 import com.xmu.service.Dao.factory.DeliveryServiceOrderFactory;
 import com.xmu.service.Dao.factory.OnsiteServiceOrderFactory;
+import com.xmu.service.Dao.factory.ServiceOrderFactory;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.openfeign.ExpressClient;
 import com.xmu.service.service.ServiceOrderService;
@@ -64,8 +65,8 @@ public class ServiceOrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        // 初始化 ServiceOrder 的构建器
-        List<com.xmu.service.Dao.factory.ServiceOrderFactory> factories = Arrays.asList(
+        // 初始化 ServiceOrder 的工厂
+        List<ServiceOrderFactory> factories = Arrays.asList(
                 new OnsiteServiceOrderFactory(),
                 new DeliveryServiceOrderFactory()
         );

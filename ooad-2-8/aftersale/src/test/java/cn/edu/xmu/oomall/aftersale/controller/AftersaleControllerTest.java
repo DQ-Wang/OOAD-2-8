@@ -70,6 +70,8 @@ public class AftersaleControllerTest
         afterSaleService=new AfterSaleService(afterSaleDao);
     }
 
+
+
      @Test
     void reviewMaintenanceTest_confirm() {
         // ========== 1. 模拟依赖行为 ==========
@@ -289,11 +291,29 @@ public class AftersaleControllerTest
     }
 
     @Test
+    void cancleAftersaleTest_Maintenance_status4() {
+        Long aftersaleId = 18L;
+        when(expressClient.cancleExpress(anyLong(),anyLong(), anyString()))
+                .thenReturn(ResponseEntity.ok(""));
+//        when(expressClient.createExpress(anyLong(), any(CreateExpressDto.class)))
+//                .thenReturn(ResponseEntity.ok(randomWaybillId)); //这个不知道会不会涉及
+        aftersaleController.cancelAftersale(1004L,aftersaleId,"无合适服务商提供该服务");
+    }
+
+    @Test
     void cancleAftersaleTest_Exchange() {
         Long aftersaleId = 17L;
         when(expressClient.cancleExpress(anyLong(),anyLong(), anyString()))
                 .thenReturn(ResponseEntity.ok(""));
         aftersaleController.cancelAftersale(1004L,aftersaleId,"客户寄回物件不符合换货标准");
+    }
+
+    @Test
+    void cancleAftersaleTest_Exchange_status3() {
+        Long aftersaleId = 19L;
+        when(expressClient.cancleExpress(anyLong(),anyLong(), anyString()))
+                .thenReturn(ResponseEntity.ok(""));
+        aftersaleController.cancelAftersale(1004L,aftersaleId,"顾客要求中断换货流程");
     }
 
 

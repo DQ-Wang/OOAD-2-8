@@ -47,9 +47,6 @@ public abstract class AfterSale {
     @Autowired
     protected AfterSaleDao afterSaleDao;
 
-    public AfterSale(AfterSaleDao afterSaleDao) {
-        this.afterSaleDao = afterSaleDao;
-    }
 
 
     public void setAftersalePo(AfterSalePo aftersalePo) {

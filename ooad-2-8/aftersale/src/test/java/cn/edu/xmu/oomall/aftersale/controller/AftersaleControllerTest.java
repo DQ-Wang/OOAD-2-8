@@ -309,11 +309,11 @@ public class AftersaleControllerTest
     }
 
     @Test
-    void cancleAftersaleTest_Exchange() {
-        Long aftersaleId = 17L;
+    void cancleAftersaleTest_Exchange_status3() {
+        Long aftersaleId = 19L;
         when(expressClient.cancleExpress(anyLong(),anyLong(), anyString()))
                 .thenReturn(ResponseEntity.ok(""));
-        aftersaleController.cancelAftersale(1004L,aftersaleId,"客户寄回物件不符合换货标准");
+        aftersaleController.cancelAftersale(1004L,aftersaleId,"顾客要求中断换货流程");
     }
 
 

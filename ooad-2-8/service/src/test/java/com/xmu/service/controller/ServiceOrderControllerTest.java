@@ -3,8 +3,8 @@ package com.xmu.service.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xmu.service.controller.dto.AppointmentDto;
 import com.xmu.service.controller.dto.ServiceOrderDto;
-import com.xmu.service.Dao.assembler.DeliveryServiceOrderBuilder;
-import com.xmu.service.Dao.assembler.OnsiteServiceOrderBuilder;
+import com.xmu.service.Dao.factory.DeliveryServiceOrderFactory;
+import com.xmu.service.Dao.factory.OnsiteServiceOrderFactory;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.openfeign.ExpressClient;
 import com.xmu.service.service.ServiceOrderService;
@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -64,11 +65,11 @@ public class ServiceOrderControllerTest {
     @BeforeEach
     void setUp() {
         // 初始化 ServiceOrder 的构建器
-        List<com.xmu.service.Dao.assembler.ServiceOrderBuilder> builders = Arrays.asList(
-                new OnsiteServiceOrderBuilder(),
-                new DeliveryServiceOrderBuilder()
+        List<com.xmu.service.Dao.factory.ServiceOrderFactory> factories = Arrays.asList(
+                new OnsiteServiceOrderFactory(),
+                new DeliveryServiceOrderFactory()
         );
-        ServiceOrder.initBuilders(builders);
+        ServiceOrder.initBuilders(factories);
         
         // 禁用外键约束检查（因为 Express 模块未实现，无法插入真实数据）
         // 这样可以测试 service 模块的逻辑，而不需要依赖 Express 表
@@ -186,7 +187,7 @@ public class ServiceOrderControllerTest {
         com.xmu.service.service.vo.ServiceOrderVo serviceOrderVo = serviceOrderService.createServiceOrder(testShopId, testAfterSaleId, dto);
         Long serviceOrderId = serviceOrderVo.getId();
 
-        mockMvc.perform(post("/services/{id}/cancel", serviceOrderId))
+        mockMvc.perform(put("/services/{id}/cancel", serviceOrderId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").exists());
     }

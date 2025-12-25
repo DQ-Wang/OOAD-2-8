@@ -1,9 +1,9 @@
 package com.xmu.service.service;
 
 import com.xmu.service.Dao.ServiceOrderDao;
-import com.xmu.service.Dao.assembler.DeliveryServiceOrderBuilder;
-import com.xmu.service.Dao.assembler.OnsiteServiceOrderBuilder;
-import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
+import com.xmu.service.Dao.factory.DeliveryServiceOrderFactory;
+import com.xmu.service.Dao.factory.OnsiteServiceOrderFactory;
+import com.xmu.service.Dao.factory.ServiceOrderFactory;
 import com.xmu.service.Dao.bo.DeliveryServiceOrder;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.controller.dto.ServiceOrderDto;
@@ -57,12 +57,12 @@ public class ServiceOrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // 初始化构建器（需要在测试前初始化 ServiceOrder 的构建器映射表）
-        List<ServiceOrderBuilder> builders = Arrays.asList(
-                new OnsiteServiceOrderBuilder(),
-                new DeliveryServiceOrderBuilder()
+        // 初始化工厂（需要在测试前初始化 ServiceOrder 的工厂映射表）
+        List<ServiceOrderFactory> factories = Arrays.asList(
+                new OnsiteServiceOrderFactory(),
+                new DeliveryServiceOrderFactory()
         );
-        ServiceOrder.initBuilders(builders);
+        ServiceOrder.initBuilders(factories);
 
         // 重置 Mock 对象
         reset(expressClient);

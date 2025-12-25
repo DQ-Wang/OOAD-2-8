@@ -1,24 +1,24 @@
-package com.xmu.service.Dao.assembler;
+package com.xmu.service.Dao.factory;
 
 
 import com.xmu.service.Dao.ServiceOrderDao;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.controller.dto.ServiceOrderDto;
 import com.xmu.service.mapper.po.ServiceOrderPo;
-import com.xmu.service.mapper.ServiceOrderPoMapper;
+
 
 
 
 /**
- * ServiceOrder 子类构建器接口
+ * ServiceOrder 子类工厂接口
  * 负责根据 Po 或 DTO 构造具体的 ServiceOrder 子类
  *
  * 新增一种 ServiceOrder 子类时，只需要新增一个实现本接口的 Bean，
  *
  */
-public interface ServiceOrderBuilder {
+public interface ServiceOrderFactory {
     /**
-     * 获取构建器支持的服务单类型（Byte类型，用于匹配DTO中的type）
+     * 获取工厂支持的服务单类型（Byte类型，用于匹配DTO中的type）
      * @return 服务单类型Byte值
      */
     Byte getType();
@@ -40,3 +40,4 @@ public interface ServiceOrderBuilder {
      */
     ServiceOrder createFromDto(ServiceOrderDto dto, Long shopId, Long afterSaleId);
 }
+

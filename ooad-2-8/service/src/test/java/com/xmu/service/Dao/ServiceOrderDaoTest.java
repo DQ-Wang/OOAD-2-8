@@ -2,9 +2,9 @@ package com.xmu.service.Dao;
 
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
-import com.xmu.service.Dao.assembler.DeliveryServiceOrderBuilder;
-import com.xmu.service.Dao.assembler.OnsiteServiceOrderBuilder;
-import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
+import com.xmu.service.Dao.factory.DeliveryServiceOrderFactory;
+import com.xmu.service.Dao.factory.OnsiteServiceOrderFactory;
+import com.xmu.service.Dao.factory.ServiceOrderFactory;
 import com.xmu.service.Dao.bo.OnSiteServiceOrder;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.mapper.ServiceOrderPoMapper;
@@ -48,11 +48,11 @@ public class ServiceOrderDaoTest {
     @BeforeEach
     void setUp() {
         // 初始化构建器
-        List<ServiceOrderBuilder> builders = Arrays.asList(
-                new OnsiteServiceOrderBuilder(),
-                new DeliveryServiceOrderBuilder()
+        List<ServiceOrderFactory> factories = Arrays.asList(
+                new OnsiteServiceOrderFactory(),
+                new DeliveryServiceOrderFactory()
         );
-        ServiceOrder.initBuilders(builders);
+        ServiceOrder.initBuilders(factories);
     }
 
     // ========== findById 异常分支测试 ==========
@@ -152,7 +152,7 @@ public class ServiceOrderDaoTest {
         java.lang.reflect.Field buildersField = ServiceOrder.class.getDeclaredField("builders");
         buildersField.setAccessible(true);
         @SuppressWarnings("unchecked")
-        Map<Byte, ServiceOrderBuilder> builders = (Map<Byte, ServiceOrderBuilder>) buildersField.get(null);
+        Map<Byte, ServiceOrderFactory> builders = (Map<Byte, ServiceOrderFactory>) buildersField.get(null);
         
         // 检查 builders 是否为 null（如果为 null，说明 ServiceOrder 还没有被完全初始化）
         if (builders == null) {
@@ -162,11 +162,11 @@ public class ServiceOrderDaoTest {
             return; // 或者使用 @Disabled 注解跳过这个测试
         }
         
-        // 保存原始的 DELIVERY builder（使用 Byte 类型作为 key）
-        ServiceOrderBuilder originalDeliveryBuilder = builders.get(ServiceOrder.TYPE_DELIVERY);
-        assertNotNull(originalDeliveryBuilder, "DELIVERY builder 应该存在");
+        // 保存原始的 DELIVERY factory（使用 Byte 类型作为 key）
+        ServiceOrderFactory originalDeliveryFactory = builders.get(ServiceOrder.TYPE_DELIVERY);
+        assertNotNull(originalDeliveryFactory, "DELIVERY factory 应该存在");
         
-        // 临时移除 DELIVERY builder
+        // 临时移除 DELIVERY factory
         builders.remove(ServiceOrder.TYPE_DELIVERY);
         
         try {
@@ -190,9 +190,9 @@ public class ServiceOrderDaoTest {
             assertEquals(ReturnNo.INTERNAL_SERVER_ERR, exception.getErrno());
             assertTrue(exception.getMessage().contains("unknown type"));
         } finally {
-            // 恢复原始的 DELIVERY builder（使用 Byte 类型作为 key）
-            if (originalDeliveryBuilder != null) {
-                builders.put(ServiceOrder.TYPE_DELIVERY, originalDeliveryBuilder);
+            // 恢复原始的 DELIVERY factory（使用 Byte 类型作为 key）
+            if (originalDeliveryFactory != null) {
+                builders.put(ServiceOrder.TYPE_DELIVERY, originalDeliveryFactory);
             }
         }
     }

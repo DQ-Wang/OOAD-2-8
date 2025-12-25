@@ -3,8 +3,8 @@ package com.xmu.service.Dao.bo;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.xmu.service.Dao.ServiceOrderDao;
-import com.xmu.service.Dao.assembler.DeliveryServiceOrderBuilder;
-import com.xmu.service.Dao.assembler.OnsiteServiceOrderBuilder;
+import com.xmu.service.Dao.factory.DeliveryServiceOrderFactory;
+import com.xmu.service.Dao.factory.OnsiteServiceOrderFactory;
 import com.xmu.service.controller.dto.ServiceOrderDto;
 import com.xmu.service.openfeign.ExpressClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,11 +47,11 @@ public class ServiceOrderBranchTest {
 
     @BeforeEach
     void setUp() {
-        List<com.xmu.service.Dao.assembler.ServiceOrderBuilder> builders = Arrays.asList(
-                new OnsiteServiceOrderBuilder(),
-                new DeliveryServiceOrderBuilder()
+        List<com.xmu.service.Dao.factory.ServiceOrderFactory> factories = Arrays.asList(
+                new OnsiteServiceOrderFactory(),
+                new DeliveryServiceOrderFactory()
         );
-        ServiceOrder.initBuilders(builders);
+        ServiceOrder.initBuilders(factories);
         reset(expressClient);
     }
 

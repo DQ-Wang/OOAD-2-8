@@ -2,7 +2,7 @@ package com.xmu.service.Dao;
 
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
-import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
+import com.xmu.service.Dao.factory.ServiceOrderFactory;
 import com.xmu.service.Dao.bo.DeliveryServiceOrder;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.mapper.ServiceOrderPoMapper ;
@@ -31,10 +31,10 @@ public class ServiceOrderDao {
     private ExpressClient expressClient;
 
     @Autowired
-    public ServiceOrderDao(ServiceOrderPoMapper mapper, List<ServiceOrderBuilder> builders) {
+    public ServiceOrderDao(ServiceOrderPoMapper mapper, List<ServiceOrderFactory> factories) {
         this.mapper = mapper;
         // Dao 层和 BO 层都使用同一个 Map，通过 Byte 类型的 type 查找
-        ServiceOrder.initBuilders(builders);
+        ServiceOrder.initBuilders(factories);
     }
 
     public ServiceOrder findById(Long id) {
@@ -53,15 +53,15 @@ public class ServiceOrderDao {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
                     "ServiceOrderDao.build: po.type is null");
         }
-        // 使用 type 的 Byte 值直接查找对应的 builder
-        ServiceOrderBuilder builder = ServiceOrder.builders.get(po.getType());
+        // 使用 type 的 Byte 值直接查找对应的 factory
+        ServiceOrderFactory factory = ServiceOrder.builders.get(po.getType());
 
-        if (builder == null) {
+        if (factory == null) {
             throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR,
                     "ServiceOrderDao.build: unknown type " + po.getType());
         }
-        // 具体子类的创建与属性拷贝交给对应的构建器完成
-        ServiceOrder bo = builder.build(po, this);
+        // 具体子类的创建与属性拷贝交给对应的工厂完成
+        ServiceOrder bo = factory.build(po, this);
         // 如果是 DeliveryServiceOrder，注入 ExpressClient
         if (bo instanceof DeliveryServiceOrder && expressClient != null) {
             ((DeliveryServiceOrder) bo).setExpressClient(expressClient);

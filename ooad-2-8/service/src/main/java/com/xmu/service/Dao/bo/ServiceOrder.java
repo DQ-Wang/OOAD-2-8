@@ -4,7 +4,7 @@ import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.xmu.service.Dao.assembler.ServiceOrderBuilder;
+import com.xmu.service.Dao.factory.ServiceOrderFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -96,19 +96,19 @@ public abstract class ServiceOrder  implements Serializable {
     };
 
     /**
-     * 构建器映射表：Byte -> ServiceOrderBuilder
+     * 工厂映射表：Byte -> ServiceOrderFactory
      * 由 ServiceOrderDao 在初始化时设置
      * 包内可见，供 ServiceOrderDao 使用
      */
-    public static Map<Byte, ServiceOrderBuilder> builders;
+    public static Map<Byte, ServiceOrderFactory> builders;
 
     /**
-     * 初始化构建器映射表
-     * @param builderList 构建器列表
+     * 初始化工厂映射表
+     * @param factoryList 工厂列表
      */
-    public static void initBuilders(List<ServiceOrderBuilder> builderList) {
-        builders = builderList.stream()
-                .collect(Collectors.toMap(ServiceOrderBuilder::getType, Function.identity()));
+    public static void initBuilders(List<ServiceOrderFactory> factoryList) {
+        builders = factoryList.stream()
+                .collect(Collectors.toMap(ServiceOrderFactory::getType, Function.identity()));
     }
 
     @Getter
@@ -183,16 +183,16 @@ public abstract class ServiceOrder  implements Serializable {
      */
     public static ServiceOrder create(Long shopId, Long afterSaleId, ServiceOrderDto dto) {
         if (builders == null) {
-            throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR, "构建器未初始化，请先调用 initBuilders()");
+            throw new BusinessException(ReturnNo.INTERNAL_SERVER_ERR, "工厂未初始化，请先调用 initBuilders()");
         }
         if (dto == null || dto.getType() == null) {
             throw new BusinessException(ReturnNo.FIELD_NOTVALID, "服务单类型不能为空");
         }
-        ServiceOrderBuilder builder = builders.get(dto.getType());
-        if (builder == null) {
+        ServiceOrderFactory factory = builders.get(dto.getType());
+        if (factory == null) {
             throw new BusinessException(ReturnNo.FIELD_NOTVALID, "未知的服务单类型: " + dto.getType());
         }
-        return builder.createFromDto(dto, shopId, afterSaleId);
+        return factory.createFromDto(dto, shopId, afterSaleId);
     }
 
     /**

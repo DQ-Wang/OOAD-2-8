@@ -1,7 +1,7 @@
-package com.xmu.service.Dao.assembler;
+package com.xmu.service.Dao.factory;
 
 import com.xmu.service.Dao.ServiceOrderDao;
-import com.xmu.service.Dao.bo.OnSiteServiceOrder;
+import com.xmu.service.Dao.bo.DeliveryServiceOrder;
 import com.xmu.service.Dao.bo.ServiceOrder;
 import com.xmu.service.controller.dto.ServiceOrderDto;
 import com.xmu.service.mapper.po.ServiceOrderPo;
@@ -11,26 +11,26 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 /**
- * 上门服务单构建器
+ * 配送服务单工厂
  */
 @Component
-public class OnsiteServiceOrderBuilder implements ServiceOrderBuilder {
+public class DeliveryServiceOrderFactory implements ServiceOrderFactory {
 
     @Override
     public Byte getType() {
-        return ServiceOrder.TYPE_ON_SITE;
+        return ServiceOrder.TYPE_DELIVERY;
     }
 
     @Override
     public ServiceOrder build(ServiceOrderPo po, ServiceOrderDao dao) {
-        OnSiteServiceOrder bo = new OnSiteServiceOrder();
+        DeliveryServiceOrder bo = new DeliveryServiceOrder();
         BeanUtils.copyProperties(po, bo);
         return bo;
     }
 
     @Override
     public ServiceOrder createFromDto(ServiceOrderDto dto, Long shopId, Long afterSaleId) {
-        OnSiteServiceOrder bo = new OnSiteServiceOrder();
+        DeliveryServiceOrder bo = new DeliveryServiceOrder();
         // 先拷贝 DTO 中同名字段，忽略主键和系统字段
         BeanUtils.copyProperties(dto, bo, "id", "status", "shopId", "aftersalesId", "createTime");
         // 填充系统字段

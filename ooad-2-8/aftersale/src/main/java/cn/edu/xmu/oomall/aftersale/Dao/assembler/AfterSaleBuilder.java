@@ -1,4 +1,4 @@
-package cn.edu.xmu.oomall.aftersale.assembler;
+package cn.edu.xmu.oomall.aftersale.Dao.assembler;
 
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;

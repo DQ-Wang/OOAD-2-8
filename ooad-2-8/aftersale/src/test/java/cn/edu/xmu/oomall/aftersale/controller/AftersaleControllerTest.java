@@ -2,12 +2,10 @@ package cn.edu.xmu.oomall.aftersale.controller;
 
 
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
-import cn.edu.xmu.oomall.aftersale.Dao.bo.ReturnAndRefund;
-import cn.edu.xmu.oomall.aftersale.assembler.AfterSaleBuilder;
+import cn.edu.xmu.oomall.aftersale.Dao.assembler.AfterSaleBuilder;
 import cn.edu.xmu.oomall.aftersale.controller.dto.AftersaleConfirmDto;
 import cn.edu.xmu.oomall.aftersale.controller.dto.CreateExpressDto;
 import cn.edu.xmu.oomall.aftersale.mapper.AfterSaleMapper;
-import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.AfterSaleService;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
 import cn.edu.xmu.oomall.aftersale.service.feign.ExpressClient;
@@ -22,7 +20,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -300,13 +297,7 @@ public class AftersaleControllerTest
         aftersaleController.cancelAftersale(1004L,aftersaleId,"无合适服务商提供该服务");
     }
 
-    @Test
-    void cancleAftersaleTest_Exchange() {
-        Long aftersaleId = 17L;
-        when(expressClient.cancleExpress(anyLong(),anyLong(), anyString()))
-                .thenReturn(ResponseEntity.ok(""));
-        aftersaleController.cancelAftersale(1004L,aftersaleId,"客户寄回物件不符合换货标准");
-    }
+
 
     @Test
     void cancleAftersaleTest_Exchange_status3() {

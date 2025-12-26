@@ -1,8 +1,7 @@
-package cn.edu.xmu.oomall.aftersale.assembler;
+package cn.edu.xmu.oomall.aftersale.Dao.assembler;
 
 import cn.edu.xmu.oomall.aftersale.Dao.AfterSaleDao;
 import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
-import cn.edu.xmu.oomall.aftersale.Dao.bo.Maintenance;
 import cn.edu.xmu.oomall.aftersale.Dao.bo.RefundOnly;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import lombok.extern.slf4j.Slf4j;

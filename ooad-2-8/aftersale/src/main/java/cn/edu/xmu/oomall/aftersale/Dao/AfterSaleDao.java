@@ -3,7 +3,7 @@ package cn.edu.xmu.oomall.aftersale.Dao;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.oomall.aftersale.Dao.bo.AfterSale;
-import cn.edu.xmu.oomall.aftersale.assembler.AfterSaleBuilder;
+import cn.edu.xmu.oomall.aftersale.Dao.assembler.AfterSaleBuilder;
 import cn.edu.xmu.oomall.aftersale.mapper.AfterSaleMapper;
 import cn.edu.xmu.oomall.aftersale.mapper.po.AfterSalePo;
 import cn.edu.xmu.oomall.aftersale.service.feign.AfterSaleFeignClient;
